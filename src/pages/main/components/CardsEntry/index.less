@@ -1,0 +1,42 @@
+.cards-entry {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+  .card + .card {
+    margin-top: 0;
+  }
+  .card {
+    padding-bottom: 0;
+  }
+
+  &-item-title {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px;
+    text-align: center;
+    color: #1F1F1F;
+  }
+
+  &-item-sub-title {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #999999;
+  }
+
+  &-item-icon {
+    width: 86px;
+    height: 86px;
+    margin-top: 4px;
+  }
+  &-item-icon.special-icon {
+    width: 72px;
+    height: 72px;
+    margin-top: 11px;
+    margin-left: 7px;
+    margin-right: 7px;
+  }
+}

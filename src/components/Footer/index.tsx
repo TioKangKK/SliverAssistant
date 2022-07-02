@@ -2,9 +2,13 @@ import { View } from '@tarojs/components'
 import { FC } from 'react'
 import './index.less'
 
-const Footer: FC = ({children}) => {
+type Props = {
+  className?: string;
+}
+
+const Footer: FC<Props> = ({ children, className }) => {
   return (
-    <View className='footer'>
+    <View className={`footer ${className || ''}`}>
       {children}
     </View>
   )

@@ -1,10 +1,10 @@
 export default defineAppConfig({
   pages: [
+    'pages/main/index',
     'pagesPersonal/login/index',
     'pagesPersonal/register/index',
     'pagesPersonal/registerResult/index',
-    'pages/main/index',
-    'pages/index/index',
+    'pagesPersonal/addSocialWorker/index',
   ],
   window: {
     backgroundTextStyle: 'light',

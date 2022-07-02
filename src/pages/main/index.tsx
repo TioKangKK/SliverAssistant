@@ -4,6 +4,8 @@ import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
 import DefaultAvatar from '@/assets/default_avatar.svg'
 
+import { navigateTo } from '@/utils/navigator'
+
 import VolunteerAndElder from './components/VolunteerAndElder'
 import UserProfile from './components/UserProfile'
 import NotificationEntry from './components/NotificationEntry'
@@ -35,7 +37,7 @@ const MainPage: FC = () => {
           ? <MyElder count={10} />
           : <>
               <VolunteerAndElder count={{ elder: 100, volunteer: 200 }} />
-              {isSuperManager && <Button onClick={() => {}}>添加社工</Button> }
+              {isSuperManager && <Button onClick={() => { navigateTo('/pagesPersonal/addSocialWorker/index') }}>添加社工</Button> }
               <Button style={{ marginTop: '6px' }} type='primary' onClick={() => {}}>志愿者分组管理</Button>
             </>
         }

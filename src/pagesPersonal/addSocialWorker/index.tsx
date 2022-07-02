@@ -8,7 +8,9 @@ import Input from '@/components/Inputs/Input'
 import Selector from '@/components/Inputs/Selector'
 import Textarea from '@/components/Inputs/Textarea'
 import { showToast } from '@/utils/toast'
-import { redirectTo } from '@/utils/navigator'
+import { navigateBack, redirectTo } from '@/utils/navigator'
+
+import './index.less'
 
 const formConfig: FormConfigItem[] = [
   {
@@ -58,14 +60,30 @@ const formConfig: FormConfigItem[] = [
       return null
     }
   },
-  // {
-  //   key: 'community',
-  //   label: '所属社区',
-  //   render: (value, onChange) => {
-  //     const range = ['社区1', '社区2']
-  //     return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
-  //   }
-  // },
+  {
+    key: 'phone',
+    label: '联系电话',
+    render: (value, onChange) => {
+      return <Input type='number' value={value} onChange={onChange} placeholder='请输入联系电话' />
+    },
+    checker: (value: string) => {
+      if (!value) {
+        return { tip: '必填', msg: '联系电话未填写' }
+      } else if (value.length !== 11) {
+        return { tip: '11位', msg: '手机号应为11位' }
+      }
+      return null
+    }
+  },
+  {
+    key: 'community',
+    label: '所属社区',
+    render: (value, onChange) => {
+      const range = ['社区1', '社区2']
+      return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
+    },
+    checker: (value: number) => value ? null : { tip: '必填', msg: '社区未选择' }
+  },
   {
     key: 'address',
     label: '家庭住址',
@@ -76,14 +94,15 @@ const formConfig: FormConfigItem[] = [
   },
 ]
 
-const RegisterPage: FC = () => {
+const AddSocialWorkerPage: FC = () => {
   const [data, setData] = useState({});
   const [showTip, setShowTip] = useState(false);
   const handleChange = (key, value) => {
     setData({ ...data, [key]: value })
   }
 
-  const handleRegister = () => {
+  const handleCancel = () => navigateBack()
+  const handleAdd = () => {
     // 校验
     for (const item of formConfig) {
       if (!item.checker) { continue }
@@ -94,9 +113,10 @@ const RegisterPage: FC = () => {
         return;
       }
     }
-    // 注册
-    console.log('注册')
-    redirectTo('/pagesPersonal/registerResult/index')
+    // 添加
+    console.log('添加')
+    // 添加完了就跑真刺激
+    navigateBack();
   }
 
   return (
@@ -104,11 +124,12 @@ const RegisterPage: FC = () => {
       <Card>
         <Form config={formConfig} data={data} showTip={showTip} onChange={handleChange} />
       </Card>
-      <Footer>
-        <Button type='primary' onClick={handleRegister}>注册</Button>
+      <Footer className='button-groups'>
+        <Button type='default' onClick={handleCancel}>取消</Button>
+        <Button type='primary' onClick={handleAdd}>添加</Button>
       </Footer>
     </Page>
   )
 }
 
-export default RegisterPage
+export default AddSocialWorkerPage

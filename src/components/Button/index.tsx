@@ -8,6 +8,7 @@ type Props = {
   type?: 'primary' | 'default';
   className?: string;
   style?: string | CSSProperties;
+  disabled?: boolean;
 }
 
 const Button: FC<Props> = ({
@@ -15,10 +16,11 @@ const Button: FC<Props> = ({
   type = 'default',
   className = '',
   style,
-  children
+  children,
+  disabled
 }) => {
   return (
-    <TaroButton style={style} className={`button button-${type} ${className}`} onClick={onClick}>
+    <TaroButton disabled={disabled} style={style} className={`button button-${type} ${className}`} onClick={onClick}>
       {children}
     </TaroButton>
   )

@@ -1,6 +1,7 @@
 import Card from '@/components/Card'
 import { Image, View } from '@tarojs/components'
 import { FC } from 'react'
+import { navigateTo } from '@/utils/navigator'
 
 import IconWatchOver from '@/assets/watch_over.svg'
 import IconDoc from '@/assets/doc.svg'
@@ -29,7 +30,7 @@ const config = [
     title: '信息列表',
     subTitle: '查看已存档案',
     icon: IconSavedDoc,
-    onClick: () => { console.log('跳转信息列表页') },
+    onClick: () => { navigateTo('/pagesDocument/documentList/index') },
   },
 ]
 

@@ -26,6 +26,7 @@
     "@tarojs/react": "3.4.13",
     "@tarojs/runtime": "3.4.13",
     "@tarojs/taro": "3.4.13",
+    "dayjs": "^1.11.3",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },

@@ -1,0 +1,82 @@
+.elder-card {
+  &-content {
+    display: flex;
+    align-items: center;
+
+    &-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+    }
+
+    &-info {
+      flex-grow: 1;
+      margin-left: 8px;
+
+      &-name {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 26px;
+
+        margin-right: 10px;
+      }
+
+      &-1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &-left {
+          display: flex;
+          align-items: center;
+
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 24px;
+        }
+
+        &-right {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 20px;
+          color: #666666;
+
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      &-2 {
+        display: flex;
+        align-items: center;
+
+        .split-vertical {
+          height: 12px;
+          margin: 0 8px;
+        }
+      }
+
+      &-item {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+
+        color: #1F1F1F;
+      }
+    }
+  }
+
+  &-footer {
+    margin-top: 16px;
+    border-top: 1px solid #ECEEF0;
+
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #666666;
+
+    &-item {
+      margin-top: 10px;
+    }
+  }
+}

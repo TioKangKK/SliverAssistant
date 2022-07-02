@@ -1,0 +1,143 @@
+.filter-wrapper {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+
+  &.taroify-dropdown-menu .taroify-dropdown-menu__bar {
+    background: none;
+    box-shadow: none;
+    justify-content: flex-start;
+    height: fit-content;
+
+    .taroify-dropdown-menu-title + .taroify-dropdown-menu-title {
+      margin-left: 12px;
+    }
+
+    .taroify-dropdown-menu-title {
+      min-width: fit-content;
+      width: fit-content;
+      height: fit-content;
+      border-radius: 0;
+
+      .taroify-dropdown-menu-title__content {
+        background: none;
+        padding: 0;
+
+        &::after {
+          content: none;
+        }
+        &::before {
+          content: none;
+        }
+      }
+    }
+  }
+
+  &.taroify-dropdown-menu .taroify-dropdown-menu-item--down {
+    margin-top: 0px;
+  }
+
+  .filter-item-title {
+    display: flex;
+    align-items: center;
+
+    padding: 11px 3px 11px 0;
+
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: rgba(31, 31, 31, 0.8);
+  }
+
+  .filter-item-title-active {
+    color: #F2994A;
+  }
+
+  .icon-polygon {
+    width: 12px;
+    height: 12px;
+    margin-left: 2px;
+  }
+}
+
+.dropdown-filter-panel {
+  padding: 12px;
+
+  .dropdown-filter-panel-header {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #333333;
+    margin-bottom: 12px;
+  }
+
+  .dropdown-filter-panel-footer {
+    margin-top: 16px;
+    padding: 8px 0;
+    display: flex;
+
+    .dropdown-filter-panel-footer-btn {
+      width: calc(50% - 4px);
+    }
+  }
+}
+
+.date-range-picker-panel {
+  .date-range-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .date-range-picker-display {
+      background: rgba(0, 0, 0, 0.04);
+      padding: 7px;
+      font-size: 14px;
+      line-height: 18px;
+      border-radius: 6px;
+      width: calc(50% - 40px);
+      text-align: center;
+
+      .display__tip {
+        color: rgba(0, 0, 0, 0.24);
+      }
+      .display__main {
+        color: rgba(0, 0, 0, 0.84);
+      }
+    }
+
+    .date-range-picker-mid {
+      font-size: 14px;
+      line-height: 16px;
+      color: rgba(0, 0, 0, 0.84);
+    }
+  }
+}
+
+.number-range-panel {
+  .number-range {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .number-range-display {
+      background: rgba(0, 0, 0, 0.04);
+      padding: 7px;
+      font-size: 14px;
+      line-height: 18px;
+      border-radius: 6px;
+      width: calc(50% - 40px);
+      text-align: center;
+
+      .input {
+        padding: 0;
+      }
+    }
+
+    .number-range-mid {
+      font-size: 14px;
+      line-height: 16px;
+      color: rgba(0, 0, 0, 0.84);
+    }
+  }
+}

@@ -7,6 +7,9 @@ export default defineAppConfig({
     'pagesPersonal/addSocialWorker/index',
     'pagesNotification/notificationList/index',
     'pagesNotification/notificationDetail/index',
+    'pagesDocument/documentList/index',
+    'pagesDocument/documentSearch/index',
+    'pagesDocument/documentDetail/index',
   ],
   window: {
     backgroundTextStyle: 'light',

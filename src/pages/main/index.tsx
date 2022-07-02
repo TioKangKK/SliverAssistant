@@ -10,9 +10,9 @@ import NotificationEntry from './components/NotificationEntry'
 import ElderEntry from './components/ElderEntry'
 import CardsEntry from './components/CardsEntry'
 import DocDownloadEntry from './components/DocDownloadEntry'
+import MyElder from './components/MyElder'
 
 import './index.less';
-import MyElder from './components/MyElder'
 
 enum Role { Volunteer, SuperManager, SocialWorker }
 

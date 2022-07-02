@@ -5,6 +5,8 @@ export default defineAppConfig({
     'pagesPersonal/register/index',
     'pagesPersonal/registerResult/index',
     'pagesPersonal/addSocialWorker/index',
+    'pagesNotification/notificationList/index',
+    'pagesNotification/notificationDetail/index',
   ],
   window: {
     backgroundTextStyle: 'light',

@@ -8,7 +8,7 @@ import Input from '@/components/Inputs/Input'
 import Selector from '@/components/Inputs/Selector'
 import Textarea from '@/components/Inputs/Textarea'
 import { showToast } from '@/utils/toast'
-import { navigateBack, redirectTo } from '@/utils/navigator'
+import { navigateBack } from '@/utils/navigator'
 
 import './index.less'
 

@@ -15,10 +15,10 @@ type Props = {
   config: FormConfigItem[];
   data: { [x: string]: any };
   showTip?: boolean;
-  onChange: (key: string, value: any) => void;
+  onChange?: (key: string, value: any) => void;
 }
 
-const Form: FC<Props> = ({ config, data, showTip = false, onChange }) => {
+const Form: FC<Props> = ({ config, data, showTip = false, onChange = () => {} }) => {
   const handleChange = (key: string, value: any) => {
     console.log(key, value)
     onChange(key, value)

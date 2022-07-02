@@ -3,6 +3,7 @@ import { Image, View } from '@tarojs/components'
 import { CSSProperties, FC } from 'react'
 import IconVoiced from '@/assets/voiced.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 
@@ -12,11 +13,8 @@ type Props = {
   className?: string;
 }
 
-const handleClick = () => {
-  console.log('跳到消息通知去')
-}
-
 const NotificationEntry: FC<Props> = ({ count, style, className }) => {
+  const handleClick = () => navigateTo('/pagesNotification/notificationList/index')
   return (
     <Card style={style} className={className} onClick={handleClick}>
       <View className='notification-entry'>

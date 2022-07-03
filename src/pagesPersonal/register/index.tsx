@@ -1,12 +1,14 @@
 import { FC, useState } from 'react'
+
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import Footer from '@/components/Footer'
 import Form, { FormConfigItem } from '@/components/Form'
-import Page from "@/components/Page"
 import Input from '@/components/Inputs/Input'
 import Selector from '@/components/Inputs/Selector'
 import Textarea from '@/components/Inputs/Textarea'
+import Page from "@/components/Page"
+
 import { showToast } from '@/utils/toast'
 import { redirectTo } from '@/utils/navigator'
 

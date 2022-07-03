@@ -1,7 +1,9 @@
+import { FC, useMemo, useState } from 'react';
 import { Image, View } from '@tarojs/components';
 import { useDidShow, getMenuButtonBoundingClientRect } from '@tarojs/taro';
-import { FC, useMemo, useState } from 'react';
+
 import BackgroundPng from '@/assets/background.png'
+
 import './index.less';
 
 const Page: FC = ({ children }) => {

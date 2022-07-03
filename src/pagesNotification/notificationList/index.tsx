@@ -1,7 +1,9 @@
 import { FC } from 'react'
-import { navigateTo } from '@/utils/navigator'
 import { Image, View } from '@tarojs/components'
+
 import IconArrowRight from '@/assets/arrow_right.svg'
+
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 

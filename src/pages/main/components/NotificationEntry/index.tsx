@@ -1,8 +1,11 @@
-import Card from '@/components/Card'
 import { Image, View } from '@tarojs/components'
 import { CSSProperties, FC } from 'react'
+
+import Card from '@/components/Card'
+
 import IconVoiced from '@/assets/voiced.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
+
 import { navigateTo } from '@/utils/navigator'
 
 import './index.less'

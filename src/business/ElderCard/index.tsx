@@ -1,9 +1,10 @@
-import Split from '@/components/Split';
-import Card from '@/components/Card';
+import { FC } from 'react';
 import { Image, View } from '@tarojs/components';
-import { FC, ReactNode } from 'react';
+
+import Card from '@/components/Card';
+import Split from '@/components/Split';
+
 import IconArrowRight from '@/assets/arrow_right.svg'
-import { navigateTo } from '@/utils/navigator';
 
 import './index.less'
 

@@ -1,7 +1,8 @@
+import { FC } from 'react'
+import { Image } from '@tarojs/components';
+
 import { Flex } from '@taroify/core'
 import "@taroify/core/flex/style"
-import { Image } from '@tarojs/components';
-import { FC } from 'react'
 
 import './ImageList.less';
 

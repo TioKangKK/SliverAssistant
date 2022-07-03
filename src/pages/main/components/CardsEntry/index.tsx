@@ -1,11 +1,13 @@
-import Card from '@/components/Card'
-import { Image, View } from '@tarojs/components'
 import { FC } from 'react'
-import { navigateTo } from '@/utils/navigator'
+import { Image, View } from '@tarojs/components'
+
+import Card from '@/components/Card'
 
 import IconWatchOver from '@/assets/watch_over.svg'
 import IconDoc from '@/assets/doc.svg'
 import IconSavedDoc from '@/assets/saved_docs.svg'
+
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 

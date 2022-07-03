@@ -1,5 +1,5 @@
-import { View } from '@tarojs/components'
 import { FC } from 'react'
+import { View } from '@tarojs/components'
 import './index.less'
 
 type Props = {

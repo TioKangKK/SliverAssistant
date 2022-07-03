@@ -1,8 +1,10 @@
-import { Option } from "@/types";
+import { FC } from "react";
+import { View } from "@tarojs/components";
+
 import { Flex } from "@taroify/core";
 import "@taroify/core/flex/style"
-import { View } from "@tarojs/components";
-import { FC } from "react";
+
+import { Option } from "@/types";
 
 import './index.less';
 

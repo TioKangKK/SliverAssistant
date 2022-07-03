@@ -1,5 +1,5 @@
-import { Button as TaroButton } from '@tarojs/components';
 import { CSSProperties, FC } from 'react';
+import { Button as TaroButton } from '@tarojs/components';
 
 import './index.less';
 

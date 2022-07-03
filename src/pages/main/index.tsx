@@ -1,7 +1,9 @@
 import { FC } from 'react'
+
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
+
 import DefaultAvatar from '@/assets/default_avatar.svg'
 
 import { navigateTo } from '@/utils/navigator'

@@ -1,8 +1,10 @@
 import { FC } from 'react'
+import { View } from '@tarojs/components'
+
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
-import { View } from '@tarojs/components'
+
 import { navigateTo } from '@/utils/navigator'
 
 import './index.less'

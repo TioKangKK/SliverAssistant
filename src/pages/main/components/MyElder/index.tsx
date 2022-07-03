@@ -1,7 +1,10 @@
-import { Image, View } from '@tarojs/components'
 import { FC } from 'react'
-import IconArrowRight from '@/assets/arrow_right.svg'
+import { Image, View } from '@tarojs/components'
+
 import Split from '@/components/Split'
+
+import IconArrowRight from '@/assets/arrow_right.svg'
+
 import './index.less'
 
 type Props = {

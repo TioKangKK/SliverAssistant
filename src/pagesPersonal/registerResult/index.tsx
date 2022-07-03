@@ -1,7 +1,8 @@
 import { FC } from 'react'
+import { View } from '@tarojs/components'
+
 import Card from "@/components/Card"
 import Page from "@/components/Page"
-import { View } from '@tarojs/components'
 
 import './index.less'
 

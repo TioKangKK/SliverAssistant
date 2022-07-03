@@ -1,12 +1,15 @@
+import { FC, useState } from 'react'
+import { Image, Picker, Text, View } from '@tarojs/components'
+
 import Button from '@/components/Button'
 import Card from '@/components/Card'
 import Page from '@/components/Page'
 import Split from '@/components/Split'
-import { Image, Picker, Text, View } from '@tarojs/components'
-import { FC, useState } from 'react'
+
+import { navigateTo } from '@/utils/navigator'
+
 import IconPolygon from '@/assets/polygon.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
-import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 

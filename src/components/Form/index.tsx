@@ -1,5 +1,5 @@
-import { View } from '@tarojs/components'
 import { FC, ReactNode } from 'react'
+import { View } from '@tarojs/components'
 import FormItem from './FormItem'
 
 import './index.less'

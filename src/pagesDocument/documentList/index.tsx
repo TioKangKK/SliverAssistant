@@ -1,9 +1,12 @@
 import { Image, View } from '@tarojs/components'
 import { FC, useState } from 'react'
-import IconSearch from '@/assets/search.svg'
-import { navigateTo } from '@/utils/navigator'
-import Filter, { FilterItem } from '@/business/Filter'
+
 import ElderCard from '@/business/ElderCard'
+import Filter, { FilterItem } from '@/business/Filter'
+
+import IconSearch from '@/assets/search.svg'
+
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 

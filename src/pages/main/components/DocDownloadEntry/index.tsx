@@ -1,8 +1,11 @@
+import { FC } from 'react'
+import { Image, View } from '@tarojs/components'
+
 import Button from '@/components/Button'
 import Card from '@/components/Card'
-import { Image, View } from '@tarojs/components'
-import { FC } from 'react'
+
 import IconDocDownload from '@/assets/doc_download.svg'
+
 import './index.less'
 
 const handleClick = () => { console.log('跳转到下载档案') }

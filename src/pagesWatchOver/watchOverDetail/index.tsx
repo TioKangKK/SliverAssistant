@@ -1,3 +1,6 @@
+import { FC } from 'react'
+import { View } from '@tarojs/components'
+
 import Button from '@/components/Button'
 import Card from '@/components/Card'
 import Banner from '@/components/Displays/Banner'
@@ -6,9 +9,8 @@ import ImageList from '@/components/Displays/ImageList'
 import Footer from '@/components/Footer'
 import Form, { FormConfigItem } from '@/components/Form'
 import Page from '@/components/Page'
+
 import { navigateBack, navigateTo } from '@/utils/navigator'
-import { View } from '@tarojs/components'
-import { FC } from 'react'
 
 import './index.less'
 

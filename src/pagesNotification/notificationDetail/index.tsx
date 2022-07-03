@@ -1,10 +1,12 @@
 import { FC } from 'react'
 import { View } from '@tarojs/components'
 import { useRouter } from '@tarojs/taro';
+
 import Button from '@/components/Button';
+import FormContent from '@/components/Displays/FormContent';
 import Footer from '@/components/Footer';
 import Form, { FormConfigItem } from '@/components/Form';
-import FormContent from '@/components/Displays/FormContent';
+
 import { navigateBack } from '@/utils/navigator';
 
 import './index.less'

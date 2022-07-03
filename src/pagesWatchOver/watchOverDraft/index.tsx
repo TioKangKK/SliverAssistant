@@ -1,7 +1,10 @@
-import ElderCard from '@/business/ElderCard'
-import Page from '@/components/Page'
-import { navigateTo } from '@/utils/navigator'
 import { FC } from 'react'
+
+import Page from '@/components/Page'
+
+import ElderCard from '@/business/ElderCard'
+
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 

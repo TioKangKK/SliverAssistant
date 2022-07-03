@@ -1,13 +1,16 @@
 import { Image, Picker, View } from '@tarojs/components';
 import { FC, Key, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import IconPolygon from '@/assets/polygon.svg'
 import { DropdownMenu } from '@taroify/core';
 import "@taroify/core/dropdown-menu/style"
-import { Option } from '@/types';
+
 import Button from '@/components/Button';
-import Radio from '@/components/Radio';
 import Input from '@/components/Inputs/Input';
+import Radio from '@/components/Radio';
+
+import IconPolygon from '@/assets/polygon.svg'
+
+import { Option } from '@/types';
 
 import './index.less';
 

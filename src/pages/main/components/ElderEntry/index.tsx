@@ -1,7 +1,10 @@
-import Card from '@/components/Card'
-import { Image, View } from '@tarojs/components'
 import { FC } from 'react'
+import { Image, View } from '@tarojs/components'
+
+import Card from '@/components/Card'
+
 import IconSearch from '@/assets/search.svg'
+
 import { navigateTo } from '@/utils/navigator'
 
 import './index.less'

@@ -15,7 +15,7 @@ const config = [
     title: '添加观护',
     subTitle: '填写日常观护',
     icon: IconWatchOver,
-    onClick: () => { console.log('跳转添加观护页') },
+    onClick: () => { navigateTo(`/pagesWatchOver/watchOverForm/index?id=${null}`) },
   },
   {
     key: 'add_doc',

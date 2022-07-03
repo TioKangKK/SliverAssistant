@@ -4,11 +4,12 @@ import { useRouter } from '@tarojs/taro';
 import Button from '@/components/Button';
 import Footer from '@/components/Footer';
 import Form, { FormConfigItem } from '@/components/Form';
+import FormContent from '@/components/Displays/FormContent';
 import { navigateBack } from '@/utils/navigator';
 
 import './index.less'
 
-const render = (value) => <View className='fake-input'>{value}</View>
+const render = (value) => <FormContent>{value}</FormContent>
 const formConfig: FormConfigItem[] = [
   { key: 'name', label: '姓名', render },
   { key: 'gender', label: '性别', render },
@@ -50,7 +51,7 @@ const NotificationDetailPage: FC = () => {
       <View className='notification-detail-content'>
         <Form data={data} config={formConfig} />
       </View>
-      <Footer className='button-groups'>
+      <Footer className='buttons-group'>
         <Button type='default' onClick={handleReject}>拒绝</Button>
         <Button type='primary' onClick={handlePass}>通过</Button>
       </Footer>

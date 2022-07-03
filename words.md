@@ -9,3 +9,4 @@
 * 观护：WatchOver
 * 档案：Document
 * 通知：Notification
+* 草稿：Draft

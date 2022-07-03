@@ -122,13 +122,13 @@ const DateRangePicker: FC<{
     >
       <View className='date-range-picker'>
         <View className='date-range-picker-display'>
-          <Picker mode='date' start={start} end={endTime} value={startTime} onChange={(e) => setStartTime(e.detail.value)}>
+          <Picker mode='date' start={start} end={endTime} value={startTime || ''} onChange={(e) => setStartTime(e.detail.value)}>
             <View className={startTime ? 'display__main' : 'display__tip'}>{startTime || '开始时间'}</View>
           </Picker>
         </View>
         <View className='date-range-picker-mid'>至</View>
         <View className='date-range-picker-display'>
-          <Picker mode='date' start={startTime || start} value={endTime} onChange={(e) => setEndTime(e.detail.value)}>
+          <Picker mode='date' start={startTime || start} value={endTime || ''} onChange={(e) => setEndTime(e.detail.value)}>
             <View className={endTime ? 'display__main' : 'display__tip'}>{endTime || '结束时间'}</View>
           </Picker>
         </View>

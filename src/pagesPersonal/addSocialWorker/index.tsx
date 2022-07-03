@@ -124,7 +124,7 @@ const AddSocialWorkerPage: FC = () => {
       <Card>
         <Form config={formConfig} data={data} showTip={showTip} onChange={handleChange} />
       </Card>
-      <Footer className='button-groups'>
+      <Footer className='buttons-group'>
         <Button type='default' onClick={handleCancel}>取消</Button>
         <Button type='primary' onClick={handleAdd}>添加</Button>
       </Footer>

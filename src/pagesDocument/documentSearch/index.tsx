@@ -3,7 +3,7 @@ import { FC, useState } from 'react'
 import IconSearch from '@/assets/search.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
 import IconClear from '@/assets/clear.svg'
-import { navigateBack } from '@/utils/navigator'
+import { navigateBack, navigateTo } from '@/utils/navigator'
 import ElderCard from '@/business/ElderCard'
 import Input from '@/components/Inputs/Input'
 
@@ -91,13 +91,21 @@ const data = [
 ]
 
 const DocumentSearchPage: FC = () => {
+  const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentDetail/index?id=${id}`);
+
   return (
     <View className='document-list'>
       <View className='document-list-header'>
         <SearchBar onSearch={(name) => { console.log('search', name) }} />
       </View>
       <View className='document-list-content'>
-        {data.map(item => <ElderCard key={item.id} info={item} />)}
+        {data.map(item => (
+          <ElderCard
+            key={item.id}
+            info={item}
+            extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
+          />
+        ))}
       </View>
     </View>
   )

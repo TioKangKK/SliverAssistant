@@ -26,7 +26,7 @@ const formConfig: FormConfigItem[] = [
       const range = ['男', '女']
       return <Selector range={range} value={value} onChange={onChange} placeholder='请选择性别' />
     },
-    checker: (value: number) => value ? null : { tip: '必填', msg: '性别未填写' }
+    checker: (value: number) => value !== undefined ? null : { tip: '必填', msg: '性别未填写' }
   },
   {
     key: 'age',
@@ -58,14 +58,6 @@ const formConfig: FormConfigItem[] = [
       return null
     }
   },
-  // {
-  //   key: 'community',
-  //   label: '所属社区',
-  //   render: (value, onChange) => {
-  //     const range = ['社区1', '社区2']
-  //     return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
-  //   }
-  // },
   {
     key: 'address',
     label: '家庭住址',

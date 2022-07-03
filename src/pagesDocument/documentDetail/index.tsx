@@ -6,6 +6,7 @@ import { Image, Picker, Text, View } from '@tarojs/components'
 import { FC, useState } from 'react'
 import IconPolygon from '@/assets/polygon.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 
@@ -23,7 +24,7 @@ const mockInfo = {
 }
 const DocumentDetailCard: FC<{ info: typeof mockInfo }> = ({ info }) => {
   const handleCheckDoc = () => { console.log('查看档案') }
-  const handleAddWatchOver = () => { console.log('添加观护记录') }
+  const handleAddWatchOver = () => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${null}`)
   return (
     <Card className='document-detail-card'>
       <Button onClick={handleCheckDoc} className='document-detail-card-btn'>查看档案 &gt;</Button>
@@ -78,7 +79,7 @@ const mockLogs = [
 ]
 const WatchOverLogs: FC = () => {
   const [date, setDate] = useState('')
-  const handleCheckWatchOver = (item) => { console.log('watch over', item) }
+  const handleCheckWatchOver = id => navigateTo(`/pagesWatchOver/watchOverDetail/index?id=${id}`)
   return (
     <View className='watch-over-logs'>
       <View className='watch-over-logs-header'>
@@ -97,7 +98,7 @@ const WatchOverLogs: FC = () => {
           <Card key={item.id} className='watch-over-log-card'>
             <View className='watch-over-log-card-header'>
               <View className='watch-over-log-card-header-left'>{item.date}</View>
-              <View onClick={() => handleCheckWatchOver(item)} className='watch-over-log-card-header-right'>
+              <View onClick={() => handleCheckWatchOver(item.id)} className='watch-over-log-card-header-right'>
                 查看<Image src={IconArrowRight} className='icon-arrow-right' />
               </View>
             </View>

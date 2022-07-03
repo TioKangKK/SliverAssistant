@@ -6,7 +6,7 @@ import './index.less'
 
 export type FormConfigItem = {
   key: string;
-  label: string;
+  label?: string;
   render: (value: any, onChange: (value: any) => void) => ReactNode;
   checker?: (value: any) => { tip: string; msg: string } | null;
 }

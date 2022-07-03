@@ -56,6 +56,8 @@ const data = [
 const DocumentListPage: FC = () => {
   const [filters, setFilters] = useState({})
   const handleFilterChange = (id, value) => setFilters({ ...filters, [id]: value })
+  
+  const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentDetail/index?id=${id}`);
 
   return (
     <View className='document-list'>
@@ -64,7 +66,13 @@ const DocumentListPage: FC = () => {
         <Filter filterConfig={filterConfig} filters={filters} onFilterChange={handleFilterChange} />
       </View>
       <View className='document-list-content'>
-        {data.map(item => <ElderCard key={item.id} info={item} />)}
+        {data.map(item => (
+          <ElderCard
+            key={item.id}
+            info={item}
+            extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
+          />
+        ))}
       </View>
     </View>
   )

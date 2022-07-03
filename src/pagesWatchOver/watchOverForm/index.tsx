@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Image, View } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import dayjs from 'dayjs'
 
 import Button from '@/components/Button'
@@ -12,32 +12,15 @@ import Selector from '@/components/Inputs/Selector'
 import Textarea from '@/components/Inputs/Textarea'
 import Page from '@/components/Page'
 import Radio from '@/components/Radio'
-import Split from '@/components/Split'
+
+import DraftBoxEntry from '@/business/DraftBoxEntry'
 
 import { Option } from '@/types'
-
-import IconEdit from '@/assets/edit.svg'
-import IconArrowRight from '@/assets/arrow_right.svg'
 
 import { navigateBack, navigateTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
 
 import './index.less'
-
-const DraftEntry: FC = () => {
-  const handleClick = () => { navigateTo('/pagesWatchOver/watchOverDraft/index') }
-  return (
-    <Card onClick={handleClick} className='draft-entry'>
-      <View className='draft-entry-left'>
-        <Image src={IconEdit} className='icon-edit' />
-        <View className='draft-entry-main'>草稿箱</View>
-        <Split type='vertical'  />
-        <View className='draft-entry-tip'>未提交文档可继续填写</View>
-      </View>
-      <Image src={IconArrowRight} className='icon-arrow-right' />
-    </Card>
-  )
-}
 
 const getFormConfig = (data: { [x: string]: any }): FormConfigItem[] => [
   {
@@ -133,16 +116,17 @@ const WatchOverFormPage: FC = () => {
   const handleSaveDraft = () => {
     if (!isValidate()) { return }
     // 保存草稿
-    navigateBack();
   }
   const handleCommit = () => {
     if (!isValidate()) { return }
     // 提交
     navigateBack();
   }
+  const handleGoToDraftBox = () => { navigateTo('/pagesWatchOver/watchOverDraftBox/index') }
+  
   return (
     <Page>
-      <DraftEntry />
+      <DraftBoxEntry onClick={handleGoToDraftBox} />
       <Card className='watch-over-form'>
         <Form showTip={showTip} config={formConfig} data={formData} onChange={handleFormChange} />
       </Card>
@@ -150,7 +134,7 @@ const WatchOverFormPage: FC = () => {
         <View className='image-upload-card-title'>点击拍照或上传照片</View>
         <ImageUploader files={images} onChange={(v) => setImages(v)} />
       </Card>
-      <Footer className='buttons-group'>
+      <Footer className='two-buttons-group'>
         <Button onClick={handleSaveDraft} type='default'>保存草稿</Button>
         <Button onClick={handleCommit} type='primary'>提交</Button>
       </Footer>

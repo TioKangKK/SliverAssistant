@@ -41,7 +41,7 @@ const formConfig: FormConfigItem[] = [
     checker: (value: string) => {
       if (!value) {
         return { tip: '必填', msg: '年龄未填写' }
-      } else if (+value < 0 || +value > 120) {
+      } else if (typeof +value !== 'number' || +value < 0 || +value > 120) {
         return { tip: '0 ~ 120 岁', msg: '年龄范围在 0 ~ 120岁之间' }
       }
       return null
@@ -90,7 +90,7 @@ const formConfig: FormConfigItem[] = [
     key: 'address',
     label: '家庭住址',
     render: (value, onChange) => {
-      return <Textarea  value={value} onChange={onChange} placeholder='请输入家庭住址' />
+      return <Textarea value={value} onChange={onChange} placeholder='请输入家庭住址' />
     },
     checker: (value: string) => value ? null : { tip: '必填', msg: '家庭住址未填写' }
   },
@@ -126,7 +126,7 @@ const AddSocialWorkerPage: FC = () => {
       <Card>
         <Form config={formConfig} data={data} showTip={showTip} onChange={handleChange} />
       </Card>
-      <Footer className='buttons-group'>
+      <Footer className='two-buttons-group'>
         <Button type='default' onClick={handleCancel}>取消</Button>
         <Button type='primary' onClick={handleAdd}>添加</Button>
       </Footer>

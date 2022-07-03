@@ -53,7 +53,7 @@ const NotificationDetailPage: FC = () => {
       <View className='notification-detail-content'>
         <Form data={data} config={formConfig} />
       </View>
-      <Footer className='buttons-group'>
+      <Footer className='two-buttons-group'>
         <Button type='default' onClick={handleReject}>拒绝</Button>
         <Button type='primary' onClick={handlePass}>通过</Button>
       </Footer>

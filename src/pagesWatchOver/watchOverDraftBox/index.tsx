@@ -37,7 +37,7 @@ const data = [
   }
 ]
 
-const WatchOverDraftPage: FC = () => {
+const WatchOverDraftBoxPage: FC = () => {
   const handleClickElderCard = (id) => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${id}`)
   
   return (
@@ -53,4 +53,4 @@ const WatchOverDraftPage: FC = () => {
   )
 }
 
-export default WatchOverDraftPage
+export default WatchOverDraftBoxPage

@@ -7,6 +7,7 @@ import './index.less'
 export type FormConfigItem = {
   key: string;
   label?: string;
+  tip?: string;
   render: (value: any, onChange: (value: any) => void) => ReactNode;
   checker?: (value: any) => { tip: string; msg: string } | null;
 }
@@ -30,6 +31,7 @@ const Form: FC<Props> = ({ config, data, showTip = false, onChange = () => {} })
         <FormItem 
           key={item.key}
           label={item.label}
+          tip={item.tip}
           errorTip={showTip && item.checker ? item.checker(data[item.key])?.tip : ''}
         >
           {item.render(data[item.key], (value) => handleChange(item.key, value))}

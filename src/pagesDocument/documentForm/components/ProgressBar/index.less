@@ -1,0 +1,30 @@
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  &-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &-title {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #1F1F1F;
+    margin-top: 6px;
+  }
+
+  &-item-todo &-title {
+    color: #999999;
+  }
+}

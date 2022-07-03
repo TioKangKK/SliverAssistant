@@ -57,7 +57,7 @@ const WatchOverDetailPage: FC = () => {
         <View className='watch-over-photo-title'>照片</View>
         <ImageList urls={mockData.images} />
       </Card>
-      <Footer className='buttons-group'>
+      <Footer className='two-buttons-group'>
         <Button onClick={handleEdit}>修改内容</Button>
         <Button onClick={handleBack} type='primary'>返回</Button>
       </Footer>

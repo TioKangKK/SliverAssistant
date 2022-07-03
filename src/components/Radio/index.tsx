@@ -11,10 +11,11 @@ import './index.less';
 const RadioItem: FC<{
   selected?: boolean;
   onClick?: () => void;
-}> = ({ children, selected, onClick = () => {} }) => {
-  const className = `radio-item ${selected ? 'radio-item-active' : ''}`
+  className?: string;
+}> = ({ children, selected, onClick = () => {}, className = '' }) => {
+  const classNames = `radio-item ${selected ? 'radio-item-active' : ''} ${className}`
   return (
-    <View onClick={onClick} className={className}>{children}</View>
+    <View onClick={onClick} className={classNames}>{children}</View>
   )
 }
 
@@ -31,6 +32,7 @@ const Radio: FC<Props> = ({ options, value, onChange = () => {}, col = 2 }) => {
       {options.map(option => (
         <Flex.Item key={option.id} span={24/col}>
           <RadioItem
+            className={col === 1 ? 'online-radio-item' : ''}
             selected={value === option.id}
             onClick={() => onChange(option.id)}
           >

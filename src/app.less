@@ -3,12 +3,27 @@
   width: 18px;
 }
 
-.buttons-group {
+.two-buttons-group {
   display: flex;
   gap: 8px;
   justify-content: space-between;
 
   .button {
     width: calc(50% - 4px);
+  }
+}
+
+.three-buttons-group {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+
+  .button {
+    width: calc(25% - 3px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .button:last-child {
+    width: calc(50% - 1px);
   }
 }

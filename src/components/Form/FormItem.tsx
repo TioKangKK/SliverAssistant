@@ -5,9 +5,10 @@ import './FormItem.less'
 type Props = {
   label?: string;
   errorTip?: string;
+  tip?: string;
 }
 
-const FormItem: FC<Props> = ({ label, errorTip, children }) => {
+const FormItem: FC<Props> = ({ label, errorTip, children, tip }) => {
   return (
     <View className='form-item'>
       {label && (
@@ -15,6 +16,9 @@ const FormItem: FC<Props> = ({ label, errorTip, children }) => {
           {label}
           {Boolean(errorTip) && <View className='form-item-error-tip'>({errorTip})</View>}
         </View>
+      )}
+      {tip && (
+        <View className='form-item-tip'>{tip}</View>
       )}
       <View className='form-item-input'>{children}</View>
     </View>

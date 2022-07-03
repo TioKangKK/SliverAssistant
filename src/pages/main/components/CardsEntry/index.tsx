@@ -25,7 +25,7 @@ const config = [
     subTitle: '添加新的档案',
     icon: IconDoc,
     iconClassName: 'special-icon',
-    onClick: () => { console.log('跳转添加档案页') },
+    onClick: () => { navigateTo(`/pagesDocument/documentForm/index?id=${null}`) },
   },
   {
     key: 'doc_list',

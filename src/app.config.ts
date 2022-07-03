@@ -10,8 +10,10 @@ export default defineAppConfig({
     'pagesDocument/documentList/index',
     'pagesDocument/documentSearch/index',
     'pagesDocument/documentDetail/index',
+    'pagesDocument/documentForm/index',
+    'pagesDocument/documentDraftBox/index',
     'pagesWatchOver/watchOverDetail/index',
-    'pagesWatchOver/watchOverDraft/index',
+    'pagesWatchOver/watchOverDraftBox/index',
     'pagesWatchOver/watchOverForm/index',
   ],
   window: {

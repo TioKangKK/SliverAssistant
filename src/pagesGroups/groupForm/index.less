@@ -1,0 +1,97 @@
+.group-form {
+  min-height: 100vh;
+  background: #F5F6F9;
+  padding: 8px;
+
+  .card + .card {
+    margin-top: 8px;
+  }
+  
+  padding-bottom: 150px;
+}
+
+.group-member-form {
+  &-header {
+    padding: 6px 0 18px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-left {
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 26px;
+      color: #1F1F1F;
+    }
+
+    &-right {
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 20px;
+      color: #F2994A;
+      display: flex;
+      align-items: center;
+
+      .icon-add {
+        height: 16px;
+        width: 16px;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  &-content {
+    &-empty {
+      min-height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 34px;
+      color: #999999;
+    }
+  }
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+
+    &-left {
+      display: flex;
+      align-items: center;
+    }
+
+    &-avatar {
+      width: 50px;
+      height: 50px;
+      margin-right: 14px;
+      border-radius: 6px;
+    }
+
+    &-name {
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 26px;
+      color: #1F1F1F;
+    }
+
+    &-btn {
+      height: 40px;
+      width: 80px;
+      border: 1px solid rgba(242, 153, 74, 0.3);
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 16px;
+      color: #F2994A;
+    }
+  }
+}

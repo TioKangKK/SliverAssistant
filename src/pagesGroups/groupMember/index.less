@@ -1,0 +1,48 @@
+.group-member-page {
+  min-height: 100vh;
+  background: #F5F6F9;
+  padding: 8px;
+  
+  .taroify-index-list__anchor {
+    display: none;
+  }
+
+  padding-bottom: 150px;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: 20px;
+
+  &-checkbox {
+    margin-right: 16px;
+
+    .taroify-checkbox__icon--checked .taroify-icon {
+      background-color: #F2994A;
+      border-color: #F2994A;
+    }
+  }
+
+  &-avatar {
+    width: 50px;
+    height: 50px;
+    margin-right: 14px;
+  }
+
+  &-name {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    color: #1F1F1F;
+  }
+}
+
+.member-group:last-child {
+  min-height: calc(100vh - 160px);
+}
+
+.member-item-fix {
+  opacity: 0.5;
+}

@@ -40,7 +40,7 @@ const MainPage: FC = () => {
           : <>
               <VolunteerAndElder count={{ elder: 100, volunteer: 200 }} />
               {isSuperManager && <Button onClick={() => { navigateTo('/pagesPersonal/addSocialWorker/index') }}>添加社工</Button> }
-              <Button style={{ marginTop: '6px' }} type='primary' onClick={() => {}}>志愿者分组管理</Button>
+              <Button style={{ marginTop: '6px' }} type='primary' onClick={() => { navigateTo('/pagesGroups/groupList/index') }}>志愿者分组管理</Button>
             </>
         }
       </Card>

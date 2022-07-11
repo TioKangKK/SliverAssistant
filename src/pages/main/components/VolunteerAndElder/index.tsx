@@ -3,17 +3,19 @@ import { Image, View } from '@tarojs/components'
 
 import IconArrowRight from '@/assets/arrow_right.svg'
 
+import { navigateTo } from '@/utils/navigator'
+
 import './index.less'
 
 const config = [
   {
     key: 'volunteer',
-    onClick: () => { console.log('跳到志愿者管理') },
+    onClick: () => { navigateTo('/pagesGroups/volunteerList/index') },
     label: '志愿者数量',
   },
   {
     key: 'elder',
-    onClick: () => { console.log('跳到老人管理') },
+    onClick: () => { navigateTo('/pagesDocument/documentList/index') },
     label: '老人数量'
   }
 ]

@@ -15,6 +15,10 @@ export default defineAppConfig({
     'pagesWatchOver/watchOverDetail/index',
     'pagesWatchOver/watchOverDraftBox/index',
     'pagesWatchOver/watchOverForm/index',
+    'pagesGroups/volunteerList/index',
+    'pagesGroups/groupList/index',
+    'pagesGroups/groupForm/index',
+    'pagesGroups/groupMember/index',
   ],
   window: {
     backgroundTextStyle: 'light',

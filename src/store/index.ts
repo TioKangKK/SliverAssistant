@@ -1,4 +1,8 @@
 type Store = {
+  userInfo: {
+    code: number,
+    data: { [x: string]: any },
+  }
   group: {
     type: 'elder' | 'volunteer',
     list: { id: string; name: string; avatar: string }[]
@@ -6,6 +10,10 @@ type Store = {
 }
 
 const store: Store = {
+  userInfo: {
+    code: -1,
+    data: {},
+  },
   group: {
     type: 'elder',
     list: [],

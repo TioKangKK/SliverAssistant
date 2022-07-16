@@ -7,6 +7,8 @@ import PageWithoutTopBar from "@/components/PageWithoutTopBar"
 
 import { navigateTo } from '@/utils/navigator'
 
+import { getPhone, login, setPhone } from '@/service'
+
 import './index.less'
 
 const title = { main: '益助银龄', tip: '老人居家观护小程序' }
@@ -32,13 +34,27 @@ const RegisterEntry: FC = () => {
   )
 }
 
-const handleLogin = () => { console.log('登录一下') }
 const LoginPage: FC = () => {
+  const handleGetPhoneNumber = async (e) => {
+    const code = e.detail.code
+    console.log(e)
+    setPhone('13858953183')
+    console.log('getPhone', getPhone)
+    await login({ phone: '13858953183' })
+  }
+
   return (
     <PageWithoutTopBar>
       <Card>
         <LoginPageTitle />
-        <Button onClick={handleLogin} className='login-btn' type='primary'>微信手机号登录</Button>
+        <Button
+          openType='getPhoneNumber'
+          onGetPhoneNumber={handleGetPhoneNumber}
+          className='login-btn'
+          type='primary'
+        >
+          微信手机号登录
+        </Button>
         <RegisterEntry />
       </Card>
     </PageWithoutTopBar>

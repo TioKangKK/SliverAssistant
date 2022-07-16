@@ -10,6 +10,7 @@ export type FormConfigItem = {
   tip?: string;
   render: (value: any, onChange: (value: any) => void) => ReactNode;
   checker?: (value: any) => { tip: string; msg: string } | null;
+  transfer?: (value: any) => any;
 }
 
 type Props = {

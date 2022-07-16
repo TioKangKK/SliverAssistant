@@ -10,18 +10,20 @@ import './index.less'
 
 const handleClick = () => { console.log('跳转到下载档案') }
 
-const DocDownloadEntry: FC = () => {
+const DocDownloadEntry: FC<{
+  name: string; desc: string; btnName: string;
+}> = ({ name, desc, btnName }) => {
   return (
     <Card>
       <View className='doc-download-entry'>
         <View className='doc-download-entry-left'>
           <Image className='icon-doc-download' src={IconDocDownload} />
           <View>
-            <View className='doc-download-entry-title'>下载档案</View>
-            <View className='doc-download-entry-sub-title'>下载老人档案</View>
+            <View className='doc-download-entry-title'>{name}</View>
+            <View className='doc-download-entry-sub-title'>{desc}</View>
           </View>
         </View>
-        <Button type='primary' onClick={handleClick} className='doc-download-entry-button'>去下载</Button>
+        <Button type='primary' onClick={handleClick} className='doc-download-entry-button'>{btnName}</Button>
       </View>
     </Card>
   )

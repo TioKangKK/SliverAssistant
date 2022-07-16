@@ -9,13 +9,13 @@ import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
 
-const ElderEntry: FC = () => {
-  const handleClick = () => { navigateTo('/pagesDocument/documentList/index') }
+const ElderEntry: FC<{ title: string }> = ({ title }) => {
+  const handleClick = () => { navigateTo('/pagesDocument/documentSearch/index') }
   return (
     <Card onClick={handleClick}>
       <View className='elder-entry'>
         <Image src={IconSearch} className='icon-search' />
-        搜索老人
+        {title}
       </View>
     </Card>
   )

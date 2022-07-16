@@ -11,22 +11,23 @@ import { navigateTo } from '@/utils/navigator'
 import './index.less'
 
 type Props = {
-  count: number;
+  title: string;
+  msg: string;
   style?: string | CSSProperties;
   className?: string;
 }
 
-const NotificationEntry: FC<Props> = ({ count, style, className }) => {
+const NotificationEntry: FC<Props> = ({ title, msg, style, className }) => {
   const handleClick = () => navigateTo('/pagesNotification/notificationList/index')
   return (
     <Card style={style} className={className} onClick={handleClick}>
       <View className='notification-entry'>
         <View className='notification-entry-left'>
           <Image className='icon-voiced' src={IconVoiced} />
-          消息通知
+          {title}
         </View>
         <View className='notification-entry-right'>
-          {Boolean(count) && `${count}条新消息`}
+          {msg}
           <Image className='icon-arrow-right' src={IconArrowRight} />
         </View>
       </View>

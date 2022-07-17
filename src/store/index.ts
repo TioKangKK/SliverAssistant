@@ -1,8 +1,14 @@
+import { Community } from "@/service/types";
+
 type Store = {
   userInfo: {
     code: number,
     data: { [x: string]: any },
   }
+  community: {
+    list: Community[],
+    initialized: boolean,
+  },
   group: {
     type: 'elder' | 'volunteer',
     list: { id: string; name: string; avatar: string }[]
@@ -13,6 +19,10 @@ const store: Store = {
   userInfo: {
     code: -1,
     data: {},
+  },
+  community: {
+    list: [],
+    initialized: false,
   },
   group: {
     type: 'elder',

@@ -1,19 +1,23 @@
 import Card from '@/components/Card'
 import Split from '@/components/Split'
+import { getVolunteerList } from '@/service'
+import { Volunteer } from '@/service/types'
 import { View } from '@tarojs/components'
-import { FC } from 'react'
+import { useDidShow } from '@tarojs/taro'
+import { FC, useState } from 'react'
 
 import './index.less'
 
-const data = [
-  { id: '1', name: '李梅', phone: '13888888888', monthCount: 3, totalCount: 100 },
-  { id: '2', name: '李兰', phone: '13888888888', monthCount: 30, totalCount: 1000 },
-]
-
 const VolunteerListPage: FC = () => {
+  const [volunteers, setVolunteers] = useState<Volunteer[]>([])
+  useDidShow(async () => {
+    const list = await getVolunteerList()
+    setVolunteers(list)
+  })
+
   return (
     <View className='volunteer-list'>
-      {data.map(item => (
+      {volunteers.map(item => (
         <Card key={item.id} className='volunteer-card'>
           <View className='volunteer-card-header'>
             <View className='volunteer-card-name'>{item.name}</View>
@@ -21,8 +25,8 @@ const VolunteerListPage: FC = () => {
           </View>
           <Split style={{ marginTop: '10px' }} />
           <View className='volunteer-card-content'>
-            <View className='volunteer-card-content-item'>本月观护: {item.monthCount}次</View>
-            <View className='volunteer-card-content-item'>累计观护: {item.totalCount}次</View>
+            <View className='volunteer-card-content-item'>本月观护: {item.monthCount || 0}次</View>
+            <View className='volunteer-card-content-item'>累计观护: {item.totalCount || 0}次</View>
           </View>
         </Card>
       ))}

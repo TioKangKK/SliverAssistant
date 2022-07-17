@@ -34,8 +34,8 @@ const MainPage: FC = () => {
 
   useDidShow(async () => {
     const dashboardRes = await getDashboard()
-    console.log('dashboard', dashboardRes.data.item_list)
-    setDashboard(dashboardRes.data.item_list || [])
+    console.log('dashboard', dashboardRes)
+    setDashboard(dashboardRes)
   })
 
   const userProfile = useMemo(() => {

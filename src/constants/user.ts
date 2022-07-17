@@ -1,4 +1,6 @@
 export enum Role {
+  SuperManager = 1,
+  SocialWorker = 2,
   Volunteer = 3
 }
 

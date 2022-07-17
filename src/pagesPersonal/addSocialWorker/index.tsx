@@ -1,4 +1,5 @@
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
+import { useDidShow } from '@tarojs/taro'
 
 import Button from "@/components/Button"
 import Card from "@/components/Card"
@@ -11,10 +12,13 @@ import Page from "@/components/Page"
 
 import { showToast } from '@/utils/toast'
 import { navigateBack } from '@/utils/navigator'
+import { getCheckMsg, getParams } from '@/utils/form'
+import { Community } from '@/service/types'
+import { createSocialWorker, getCommunityList } from '@/service'
 
 import './index.less'
 
-const formConfig: FormConfigItem[] = [
+const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
   {
     key: 'name',
     label: '姓名',
@@ -30,7 +34,8 @@ const formConfig: FormConfigItem[] = [
       const range = ['男', '女']
       return <Selector range={range} value={value} onChange={onChange} placeholder='请选择性别' />
     },
-    checker: (value: number) => value ? null : { tip: '必填', msg: '性别未填写' }
+    checker: (value: number) => value ? null : { tip: '必填', msg: '性别未填写' },
+    transfer: (value: string) => +value + 1,
   },
   {
     key: 'age',
@@ -45,10 +50,11 @@ const formConfig: FormConfigItem[] = [
         return { tip: '0 ~ 120 岁', msg: '年龄范围在 0 ~ 120岁之间' }
       }
       return null
-    }
+    },
+    transfer: (value: string) => +value,
   },
   {
-    key: 'idcard',
+    key: 'id_number',
     label: '身份证号码',
     render: (value, onChange) => {
       return <Input type='idcard' value={value} onChange={onChange} placeholder='请填写身份证号码' />
@@ -78,13 +84,14 @@ const formConfig: FormConfigItem[] = [
     }
   },
   {
-    key: 'community',
+    key: 'community_id',
     label: '所属社区',
     render: (value, onChange) => {
-      const range = ['社区1', '社区2']
+      const range = communityList.map(item => item.name)
       return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
     },
-    checker: (value: number) => value ? null : { tip: '必填', msg: '社区未选择' }
+    checker: (value: number) => value ? null : { tip: '必填', msg: '社区未选择' },
+    transfer: (value: number) => communityList[value].id,
   },
   {
     key: 'address',
@@ -103,20 +110,25 @@ const AddSocialWorkerPage: FC = () => {
     setData({ ...data, [key]: value })
   }
 
+  const [communityList, setCommunityList] = useState([] as Community[])
+  useDidShow(async () => {
+    const list = await getCommunityList()
+    setCommunityList(list)
+  })
+
+  const formConfig = useMemo(() => genFormConfig(communityList), [communityList])
+
   const handleCancel = () => navigateBack()
-  const handleAdd = () => {
+  const handleAdd = async () => {
     // 校验
-    for (const item of formConfig) {
-      if (!item.checker) { continue }
-      const msg = item.checker(data[item.key])?.msg
-      if (msg) {
-        showToast(msg);
-        setShowTip(true);
-        return;
-      }
+    const msg = getCheckMsg(formConfig, data)
+    if (msg) {
+      showToast(msg);
+      setShowTip(true);
+      return;
     }
     // 添加
-    console.log('添加')
+    await createSocialWorker(getParams(formConfig, data))
     // 添加完了就跑真刺激
     navigateBack();
   }

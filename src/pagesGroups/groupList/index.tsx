@@ -1,5 +1,5 @@
 import { Image, View } from '@tarojs/components'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -10,6 +10,8 @@ import { navigateTo } from '@/utils/navigator'
 
 import IconEmpty from '@/assets/empty.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
+import { useDidShow } from '@tarojs/taro'
+import { getGroupList } from '@/service'
 
 import './index.less'
 
@@ -30,6 +32,13 @@ const data = [
 
 const GroupListPage: FC = () => {
   const handleGoToForm = (id?: string | number) => navigateTo(`/pagesGroups/groupForm/index${id ? '?id=' + id : ''}`)
+
+  const [list, setList] = useState([])
+  useDidShow(async () => {
+    const groupList = await getGroupList()
+    setList(groupList)
+  })
+
   return (
     <View className='group-list'>
       {data.length 

@@ -2,7 +2,6 @@ import { CSSProperties, FC, useEffect, useState } from 'react'
 import { Image, ScrollView, View } from '@tarojs/components';
 import { Popup } from '@taroify/core';
 import "@taroify/core/popup/style"
-import { Option } from '@/types';
 import IconPolygon from '@/assets/polygon.svg'
 
 import './PopupSelector.less'
@@ -11,15 +10,18 @@ import './Selector.less'
 type Props = {
   className?: string;
   style?: string | CSSProperties;
-  value: number[];
+  value: string[];
   title?: string;
   placeholder?: string;
   options: {
-    id: number;
+    id: string;
     name: string;
-    children: Option[];
+    children: {
+      id: string;
+      name: string;
+    }[];
   }[];
-  onChange: (value: number[]) => void
+  onChange: (value: string[]) => void
 }
 
 const PopupSelector: FC<Props> = ({ title = '', value, className, style, placeholder, onChange, options }) => {

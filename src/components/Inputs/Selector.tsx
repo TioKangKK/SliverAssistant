@@ -23,7 +23,7 @@ const Selector: FC<Props> = ({ style, className, range, value, onChange = () => 
       onChange={handleChange}
     >
       <View style={style} className={`selector-fake-input ${className || ''}`}>
-        {value 
+        {range[value]
           ? <View className='selector-fake-input-text'>{range[value]}</View>
           : <View className='selector-fake-input-text selector-fake-input-tip'>{placeholder}</View>
         }

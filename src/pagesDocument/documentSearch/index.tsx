@@ -2,6 +2,7 @@ import { Image, View } from '@tarojs/components'
 import { FC, useState } from 'react'
 
 import Input from '@/components/Inputs/Input'
+import EmptyBox from '@/components/EmptyBox'
 
 import ElderCard from '@/business/ElderCard'
 
@@ -11,21 +12,18 @@ import IconClear from '@/assets/clear.svg'
 
 import { navigateBack, navigateTo } from '@/utils/navigator'
 
-import './index.less'
+import { DocumentStatus, TDocument } from '@/service/types'
+import { getDocumentList } from '@/service'
 
-const mockResult = [
-  { name: '李春霞', id: '1' },
-  { name: '李春香', id: '2' },
-  { name: '李春君', id: '3' },
-]
+import './index.less'
 
 const SearchBar = ({ onSearch }) => {
   const [text, setText] = useState('')
-  const [results, setResults] = useState<typeof mockResult>([])
-  // const [isSearching, setIsSearching] = useState(false)
+  const [results, setResults] = useState<{ name: string, id: number|string }[]>([])
 
-  const search = (v) => {
-    setResults(v ? mockResult.filter(item => item.name.includes(v)) : [])
+  const search = async (v) => {
+    const result = await getDocumentList({ params: { keyword: v} });
+    setResults(v ? result.map(item => ({ id: item.id, name: item.name })) : [])
   }
 
   const handleSearch = (v) => {
@@ -41,7 +39,6 @@ const SearchBar = ({ onSearch }) => {
   const handleClickSearchResult = (item) => {
     setText(item.name);
     setResults([])
-    // 触发真滴search
     onSearch(item.name)
   }
 
@@ -65,51 +62,34 @@ const SearchBar = ({ onSearch }) => {
   )
 }
 
-const data = [
-  {
-    id: 1,
-    avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-    name: '周建',
-    age: '75',
-    level: 1, // 观护等级
-    levelName: '一级',
-    address: '幸福里小区',
-    status: '异常',
-    statusType: 0,
-    volunteer: '小荷',
-    date: '2022-05-01',
-  },
-  {
-    id: 2,
-    avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-    name: '周建香',
-    age: '75',
-    level: 3, // 观护等级
-    levelName: '三级',
-    address: '幸福里小区',
-    status: '正常',
-    statusType: 1,
-    volunteer: '-',
-    date: '-',
-  }
-]
-
 const DocumentSearchPage: FC = () => {
-  const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentDetail/index?id=${id}`);
+  const [documentList, setDocumentList] = useState([] as TDocument[])
+  const getData = async (params: {[x: string]: any}) => {
+    const docList = await getDocumentList({ params });
+    setDocumentList(docList.filter(item => item.status === DocumentStatus.APPROVED))
+  }
+
+  const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentProfile/index?id=${id}`);
+
+  const handleSearch = async (name) => {
+    if (name === '') { return; }
+    await getData({ keyword: name }) // 进行搜索
+  }
 
   return (
     <View className='document-list'>
       <View className='document-list-header'>
-        <SearchBar onSearch={(name) => { console.log('search', name) }} />
+        <SearchBar onSearch={handleSearch} />
       </View>
       <View className='document-list-content'>
-        {data.map(item => (
+        {documentList.map(item => (
           <ElderCard
             key={item.id}
             info={item}
             extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
           />
         ))}
+        {!documentList.length && (<EmptyBox style={{marginTop: '50px'}}>暂无符合要求的数据</EmptyBox>)}
       </View>
     </View>
   )

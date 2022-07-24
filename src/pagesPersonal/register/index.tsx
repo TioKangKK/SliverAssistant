@@ -12,7 +12,7 @@ import Page from "@/components/Page"
 
 import { showToast } from '@/utils/toast'
 import { redirectTo } from '@/utils/navigator'
-import { getCheckMsg, getParams } from '@/utils/form'
+import { getCheckMsg, getParamsFromForm } from '@/utils/form'
 import { getCommunityList, register } from '@/service'
 import { Community } from '@/service/types'
 
@@ -125,7 +125,7 @@ const RegisterPage: FC = () => {
       return;
     }
     // 注册
-    await register(getParams(formConfig, data))
+    await register(getParamsFromForm(formConfig, data))
     redirectTo('/pagesPersonal/registerResult/index')
   }
 

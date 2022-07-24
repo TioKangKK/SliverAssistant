@@ -1,54 +1,47 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import { useDidShow } from '@tarojs/taro'
 
 import Page from '@/components/Page'
+
+import EmptyBox from '@/components/EmptyBox'
+import Card from '@/components/Card'
 
 import ElderCard from '@/business/ElderCard'
 
 import { navigateTo } from '@/utils/navigator'
 
+import { DocumentStatus, TDocument } from '@/service/types'
+import { getDocumentList } from '@/service'
+
 import './index.less'
 
-const data = [
-  {
-    id: 1,
-    avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-    name: '周建',
-    age: '75',
-    level: 1, // 观护等级
-    levelName: '一级',
-    address: '幸福里小区',
-    // status: '异常',
-    // statusType: 0,
-    volunteer: '小荷',
-    date: '2022-05-01',
-  },
-  {
-    id: 2,
-    avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-    name: '周建香',
-    age: '75',
-    level: 3, // 观护等级
-    levelName: '三级',
-    address: '幸福里小区',
-    // status: '正常',
-    // statusType: 1,
-    volunteer: '-',
-    date: '-',
-  }
-]
-
 const DocumentDraftBoxPage: FC = () => {
+  const [documentList, setDocumentList] = useState([] as TDocument[])
+  const getData = async (params: {[x: string]: any}) => {
+    const docList = await getDocumentList({ params });
+    setDocumentList(docList.filter(item => item.status === DocumentStatus.DAFT))
+  }
+
   const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentForm/index?id=${id}`)
+
+  useDidShow(async () => {
+    await getData({})
+  })
 
   return (
     <Page>
-      {data.map(item => (
+      {documentList.map(item => (
         <ElderCard
           key={item.id}
           info={item}
           extra={{ text: '继续填写', onClick: () => handleClickElderCard(item.id) }}
         />
       ))}
+      {!documentList.length && (
+        <Card style={{ paddingTop: '50px', paddingBottom: '50px' }}>
+          <EmptyBox>暂无数据</EmptyBox>
+        </Card>
+      )}
     </Page>
   )
 }

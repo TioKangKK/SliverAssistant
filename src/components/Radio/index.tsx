@@ -29,8 +29,8 @@ type Props = {
 const Radio: FC<Props> = ({ options, value, onChange = () => {}, col = 2 }) => {
   return (
     <Flex gutter={8} wrap='wrap' className='radio'>
-      {options.map(option => (
-        <Flex.Item key={option.id} span={24/col}>
+      {options.map((option, index) => (
+        <Flex.Item className={`${index % col === 0 ? 'first-item' : ''}  ${(index+1) % col === 0 ? 'last-item' : ''}`} key={option.id} span={24/col}>
           <RadioItem
             className={col === 1 ? 'online-radio-item' : ''}
             selected={value === option.id}

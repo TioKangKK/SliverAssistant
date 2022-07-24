@@ -10,6 +10,7 @@ export default defineAppConfig({
     'pagesNotification/notificationDetail/index',
     'pagesDocument/documentList/index',
     'pagesDocument/documentSearch/index',
+    'pagesDocument/documentProfile/index',
     'pagesDocument/documentDetail/index',
     'pagesDocument/documentForm/index',
     'pagesDocument/documentDraftBox/index',

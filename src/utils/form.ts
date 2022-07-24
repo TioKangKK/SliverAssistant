@@ -1,6 +1,6 @@
 import { FormConfigItem } from "@/components/Form"
 
-export const getParams = (formConfig: FormConfigItem[], data: {[x: string]: any}) => {
+export const getParamsFromForm = (formConfig: FormConfigItem[], data: {[x: string]: any}) => {
   let params: {[x: string]: any} = {}
   for (const item of formConfig) {
     if (data[item.key] === undefined) { continue }

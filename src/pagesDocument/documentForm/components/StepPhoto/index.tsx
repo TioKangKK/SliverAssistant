@@ -10,10 +10,11 @@ import { showToast } from '@/utils/toast'
 
 const formConfig: FormConfigItem[] = [
   {
-    key: 'photos',
+    key: 'photo_uris',
     label: '老人正面照',
     render: (value, onChange) => {
-      return <ImageUploader files={value} onChange={onChange} />
+      console.log('value', value)
+      return <ImageUploader files={value || []} onChange={onChange} />
     },
     checker: (value: string[]) => value && value.length ? null : { tip: '必传', msg: '请上传照片' }
   },
@@ -23,10 +24,11 @@ type Props = {
   data: {[x: string]: any}
   onChange: (value: {[x: string]: any}) => void
   onPrevStep: () => void
-  onCommit: () => void
+  onCommit: (value: {[x: string]: any}) => void
+  onSaveDaft: (value: {[x: string]: any}) => void
 }
 
-const StepPhoto: FC<Props> = ({ data: outData, onChange, onPrevStep, onCommit }) => {
+const StepPhoto: FC<Props> = ({ data: outData, onChange, onPrevStep, onCommit, onSaveDaft }) => {
   const [data, setData] = useState(outData)
   useEffect(() => { setData(outData) }, [outData])
 
@@ -45,18 +47,14 @@ const StepPhoto: FC<Props> = ({ data: outData, onChange, onPrevStep, onCommit })
   }
   const handleSaveDraft = () => {
     if (!isValidate()) { return }
-    console.log('保存草稿')
-    onChange(data);
+    onSaveDaft(data);
   }
   const handleCommit = () => {
     if (!isValidate()) { return }
-    console.log('下一步')
-    onChange(data);
-    onCommit();
+    onCommit(data);
   }
   const handlePrevStep = () => {
     if (!isValidate()) { return }
-    console.log('上一步')
     onChange(data);
     onPrevStep();
   }

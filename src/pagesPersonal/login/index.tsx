@@ -1,11 +1,13 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { View } from '@tarojs/components'
 
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
+import Input from '@/components/Inputs/Input'
 
 import { navigateTo } from '@/utils/navigator'
+import { showToast } from '@/utils/toast'
 
 import { getPhone, login, setPhone } from '@/service'
 
@@ -38,15 +40,28 @@ const LoginPage: FC = () => {
   const handleGetPhoneNumber = async (e) => {
     const code = e.detail.code
     console.log(e)
-    setPhone('13858953183')
-    console.log('getPhone', getPhone)
-    await login({ phone: '13858953183' })
+    // setPhone('13858953183')
+    // console.log('getPhone', getPhone)
+    // await login({ phone: '13858953183' })
+  }
+
+  const [input, setInput] = useState('') 
+  const handleLogin = async () => {
+    if (input.length !== 11) { 
+      showToast('请输入11位电话号码')
+      return
+    }
+    await login({ phone: input })
   }
 
   return (
     <PageWithoutTopBar>
       <Card>
         <LoginPageTitle />
+        <View style={{ display: 'flex' }}>
+          <Input style={{ flex: 1 }} placeholder='请输入手机号' type='number' value={input} onChange={setInput} />
+          <Button style={{ width: 'max-content' }} onClick={handleLogin}>登录</Button>          
+        </View>
         <Button
           openType='getPhoneNumber'
           onGetPhoneNumber={handleGetPhoneNumber}

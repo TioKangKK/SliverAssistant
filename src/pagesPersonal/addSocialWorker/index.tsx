@@ -12,7 +12,7 @@ import Page from "@/components/Page"
 
 import { showToast } from '@/utils/toast'
 import { navigateBack } from '@/utils/navigator'
-import { getCheckMsg, getParams } from '@/utils/form'
+import { getCheckMsg, getParamsFromForm } from '@/utils/form'
 import { Community } from '@/service/types'
 import { createSocialWorker, getCommunityList } from '@/service'
 
@@ -128,7 +128,7 @@ const AddSocialWorkerPage: FC = () => {
       return;
     }
     // 添加
-    await createSocialWorker(getParams(formConfig, data))
+    await createSocialWorker(getParamsFromForm(formConfig, data))
     // 添加完了就跑真刺激
     navigateBack();
   }

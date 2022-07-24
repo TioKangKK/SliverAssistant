@@ -14,16 +14,17 @@ import { Option } from '@/types';
 
 import './index.less';
 
-export type FilterItem = {
+export type FilterConfigItem = {
   id: number;
   name: string;
   type: 'single' | 'date-range-picker' | 'number-range';
   children?: Option[] | null;
   title?: string;
+  transfer?: (value: any) => { [x:string]: any };
 };
 
 type Props = {
-  filterConfig: FilterItem[];
+  filterConfig: FilterConfigItem[];
   filters: { [x: number]: any };
   onFilterChange: (id: number, value: any) => void;
 };

@@ -9,10 +9,11 @@ import Form, { FormConfigItem } from '@/components/Form'
 import { showToast } from '@/utils/toast'
 import Radio from '@/components/Radio'
 import Textarea from '@/components/Inputs/Textarea'
+import { getCheckMsg } from '@/utils/form'
 
 const formConfig: FormConfigItem[] = [
   {
-    key: 'phone',
+    key: 'contact',
     label: '联系方式',
     render: (value, onChange) => {
       return <Input type='number' value={value} onChange={onChange} placeholder='填写联系方式' />
@@ -27,16 +28,16 @@ const formConfig: FormConfigItem[] = [
     }
   },
   {
-    key: 'livingSituation',
-    label: '居住情况（单选）',
+    key: 'living_situation',
+    label: '居住情况',
     render: (value, onChange) => {
-      const options = [{ id: 1, name: '独居(一个人住)' },{ id: 2, name: '空巢(夫妻同住，子女不在身边)' },{ id: 3, name: '其他(与保姆或护工同住)' }]
+      const options = [{ id: 1, name: '独居(一个人住)' },{ id: 2, name: '空巢(夫妻同住，子女不在身边)' },{ id:3, name: '家人同住(与子女、孙辈共同居住)' },{ id: 4, name: '其他(与保姆或护工同住)' }]
       return <Radio col={1} options={options} value={value} onChange={onChange} />
     },
     checker: (value) => value !== undefined ? null : { tip: '必选', msg: '居住情况未选择' }
   },
   {
-    key: 'emergencyContact',
+    key: 'emergency_contact',
     label: '紧急联系人',
     render: (value, onChange) => {
       return <Input value={value} onChange={onChange} placeholder='请输入紧急联系人' />
@@ -44,7 +45,7 @@ const formConfig: FormConfigItem[] = [
     checker: (value: string) => value ? null : { tip: '必填', msg: '紧急联系人未填写' }
   },
   {
-    key: 'emergencyPhone',
+    key: 'emergency_phone_number',
     label: '紧急联系电话',
     render: (value, onChange) => {
       return <Input type='number' value={value} onChange={onChange} placeholder='填写联系方式' />
@@ -73,39 +74,34 @@ type Props = {
   onChange: (value: {[x: string]: any}) => void
   onPrevStep: () => void
   onNextStep: () => void
+  onSaveDaft: (value: {[x: string]: any}) => void
 }
 
-const StepContact: FC<Props> = ({ data: outData, onChange, onPrevStep, onNextStep }) => {
+const StepContact: FC<Props> = ({ data: outData, onChange, onPrevStep, onNextStep, onSaveDaft }) => {
   const [data, setData] = useState(outData)
   useEffect(() => { setData(outData) }, [outData])
 
   const [showTip, setShowTip] = useState(false);
   const isValidate = () => {
-    for (const item of formConfig) {
-      if (!item.checker) { continue }
-      const msg = item.checker(data[item.key])?.msg
-      if (msg) {
-        showToast(msg);
-        setShowTip(true);
-        return false;
-      }
+    const msg = getCheckMsg(formConfig, data)
+    if (msg) {
+      showToast(msg);
+      setShowTip(true);
+      return false;
     }
     return true
   }
   const handleSaveDraft = () => {
     if (!isValidate()) { return }
-    console.log('保存草稿')
-    onChange(data);
+    onSaveDaft(data);
   }
   const handleNextStep = () => {
     if (!isValidate()) { return }
-    console.log('下一步')
     onChange(data);
     onNextStep();
   }
   const handlePrevStep = () => {
     if (!isValidate()) { return }
-    console.log('上一步')
     onChange(data);
     onPrevStep();
   }

@@ -4,7 +4,7 @@ import { delay } from '@/utils'
 import { redirectTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
 import Taro from '@tarojs/taro'
-import { AuditStatus, Community, DashboardItems, Volunteer } from './types'
+import { AuditStatus, Community, DashboardItems, DocumentOperate, TDocument, Volunteer } from './types'
 
 const KeyForPhone = 'phone'
 export const getPhone = () => Taro.getStorageSync(KeyForPhone)
@@ -24,7 +24,7 @@ const call = async ({
   path, method = 'POST', data = {}, header = {}
 }: {
   path: string,
-  method?: 'POST' | 'GET',
+  method?: 'POST' | 'GET' | 'PUT' | 'DELETE',
   data?: { [x: string]: any }
   header?: { [x: string]: any }
 }) => {
@@ -32,7 +32,7 @@ const call = async ({
   const res = await client.callContainer({
     path, method, header: {
       'X-WX-SERVICE': 'golang-88fq',
-      'Content-Type': method === 'POST' ? 'application/x-www-form-urlencoded' : 'application/json',
+      'Content-Type': method === 'GET' ? 'application/json' : 'application/x-www-form-urlencoded',
       'Cookie': getCookie(),
       ...header
     }, data
@@ -61,6 +61,7 @@ export const login = async ({ phone }) => {
   cookie && setCookie(cookie)
   const redirectPage = loginInfo.data.data.redirect_page
   console.log('login redirectPage', redirectPage)
+  if (redirectPage === 'dashboard') { setPhone(phone) }
   redirectTo(pageMap[redirectPage] || '/pagesPersonal/login/index')
 }
 
@@ -131,4 +132,65 @@ export const audit = async ({ id, status }: { id: string, status: AuditStatus })
     data: { id, status }
   })
   return res?.data
+}
+
+export const getDocumentList = async ({ params }: { params: {[x: string]: any} }) => {
+  const res = await call({
+    path: `${prefix}/doc/`,
+    method: 'GET',
+    data: params,
+  })
+  console.log(res);
+  return (res?.data.data?.list || []) as TDocument[]
+}
+
+export const getDocument = async ({ id }: { id: number | string }) => {
+  const res = await call({
+    path: `${prefix}/doc/${id}/`,
+    method: 'GET',
+  })
+  return res?.data.data as (TDocument | undefined)
+}
+
+export const createDocument = async (params) => {
+  const res = await call({
+    path: `${prefix}/doc/`,
+    data: params,
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data as (TDocument | undefined)
+}
+
+export const editDocument = async (params) => {
+  const res = await call({
+    path: `${prefix}/doc/${params.id}/`,
+    method: 'PUT',
+    data: params,
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data as (TDocument | undefined)
+}
+
+export const operateDocument = async ({ id, op }: { id: number; op: DocumentOperate }) => {
+  const res = await call({
+    path: `${prefix}/doc/${id}/op`,
+    method: 'PUT',
+    data: { op },
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data
+}
+
+export const getGroupList = async () => {
+  const res = await call({
+    path: `${prefix}/group_info/`,
+    method: 'GET',
+  })
+  return res?.data.data?.list || []
 }

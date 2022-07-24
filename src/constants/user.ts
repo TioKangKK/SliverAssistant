@@ -17,3 +17,13 @@ export const buttonStyleToType = {
   [ButtonStyle.Default]: 'default',
   [ButtonStyle.Primary]: 'primary',
 }
+
+export const livingLevelToName = {
+  1: '一级',
+  2: '二级',
+  3: '三级'
+}
+export const statusToName = {
+  1: '正常',
+  0: '异常'
+}

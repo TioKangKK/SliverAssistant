@@ -1,7 +1,7 @@
 import Split from '@/components/Split'
 import { Image, View } from '@tarojs/components'
 import { useDidShow, showModal, useRouter } from '@tarojs/taro'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -9,13 +9,17 @@ import Footer from '@/components/Footer'
 
 import IconAdd from '@/assets/add.svg'
 
-import store from '@/store'
-import { navigateTo } from '@/utils/navigator'
+import { navigateBack, navigateTo } from '@/utils/navigator'
+import { deleteGroup, deleteGroupMember, getGroupInfo } from '@/service'
+import { delay } from '@/utils'
+import { Group, GroupMemberType } from '@/service/types'
+import { showToast } from '@/utils/toast'
 
 import './index.less'
 
+
 const GroupMemberForm: FC<{
-  list: { id: string; name: string; avatar: string; }[],
+  list: Group['member'],
   title: string,
   onAdd: () => void,
   onDelete: (id: string) => void,
@@ -33,12 +37,11 @@ const GroupMemberForm: FC<{
       <View className='group-member-form-content'>
         {list.length ? (
           list.map(item => (
-            <View key={item.id} className='group-member-form-item'>
+            <View key={item.member_id} className='group-member-form-item'>
               <View className='group-member-form-item-left'>
-                <Image className='group-member-form-item-avatar' src={item.avatar} />
-                <View className='group-member-form-item-name'>{item.name}</View>
+                <View className='group-member-form-item-name'>{item.member_name}</View>
               </View>
-              <View onClick={() => onDelete(item.id)} className='group-member-form-item-btn'>
+              <View onClick={() => onDelete('' + item.member_id)} className='group-member-form-item-btn'>
                 删除
               </View>
             </View>
@@ -53,74 +56,74 @@ const GroupMemberForm: FC<{
 
 const GroupFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
-  console.log(params.id)
-  
-  const [volunteerList, setVolunteerList] = useState([
-    {
-      id: '1',
-      avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      name: '周建',
-    },
-    {
-      id: '2',
-      avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      name: '周建2',
-    },
-  ])
-  const [elderList, setElderList] = useState([
-    {
-      id: '2',
-      avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      name: '李春',
-    }
-  ])
+
+  const [volunteerList, setVolunteerList] = useState<Group['member']>([])
+  const [elderList, setElderList] = useState<Group['member']>([])
+
+  const initGroup = async () => {
+    const groupInfo: Group = await getGroupInfo({ id: params.id })
+    // 操作一波，setVolunteerList, setElderList
+    setVolunteerList(groupInfo?.member?.filter(item => item.member_type === GroupMemberType.VOLUNTEER) || [])
+    setElderList(groupInfo?.member?.filter(item => item.member_type === GroupMemberType.ELDER) || [])
+  }
 
   useDidShow(() => {
-    const groupConfig = store.get('group')
-    if (groupConfig.list.length === 0) { return }
-    const setList = groupConfig.type === 'elder' ? setElderList : setVolunteerList
-    setList(groupConfig.list)
-    store.set('group', 'list', [])
+    initGroup()
   })
 
-  const onAdd = (type: 'elder' | 'volunteer') => {
-    store.set('group', 'type', type)
-    store.set('group', 'list', type === 'elder' ? elderList : volunteerList)
-    navigateTo('/pagesGroups/groupMember/index')
+  const onAdd = (type: GroupMemberType) => {
+    navigateTo(`/pagesGroups/groupMember/index?id=${params.id}&type=${type}`)
   }
 
-  const onDelete = async (type: 'elder' | 'volunteer', id: string) => {
-    const res = await showModal({ title: '确认删除', content: '仅从分组删除，如有需要，可重新添加' })
-    if (res.cancel) { return }
-    const list = type === 'elder' ? elderList : volunteerList
-    const setList = type === 'elder' ? setElderList : setVolunteerList
-    const index = list.findIndex(item => item.id === id)
-    setList([...volunteerList.slice(0, index), ...volunteerList.slice(index + 1)])
+  const onDelete = async (type: GroupMemberType, id: string) => {
+    const modalRes = await showModal({ title: '确认删除', content: '仅从分组删除，如有需要，可重新添加' })
+    if (modalRes.cancel) { return }
+    const res = await deleteGroupMember({
+      id: params.id,
+      member_id: id,
+      member_type: type
+    })
+    if (res) {
+      showToast('删除成员成功')
+      await initGroup();
+    } else {
+      showToast('删除成员失败')
+    }
   }
-  const handleConfirm = () => {
-    console.log('do it')
-  }
+
   const handleDelete = () => {
-    console.log('delete')
+    showModal({
+      title: '确定要删除分组吗？',
+      success: async ({ confirm }) => {
+        if (confirm) {
+          deleteGroup({ id: params.id })
+          await delay(1000)
+          navigateBack()
+        }
+      }
+    })
   }
   return (
     <View className='group-form'>
       <GroupMemberForm
         title='志愿者'
         list={volunteerList}
-        onAdd={() => onAdd('volunteer')}
-        onDelete={(id) => onDelete('volunteer', id)}
+        onAdd={() => onAdd(GroupMemberType.VOLUNTEER)}
+        onDelete={(id) => onDelete(GroupMemberType.VOLUNTEER, id)}
       />
       <GroupMemberForm
         title='观护老人'
         list={elderList}
-        onAdd={() => onAdd('elder')}
-        onDelete={(id) => onDelete('elder', id)}
+        onAdd={() => onAdd(GroupMemberType.ELDER)}
+        onDelete={(id) => onDelete(GroupMemberType.ELDER, id)}
       />
-      <Footer className={`${params.id ? 'two-buttons-group' : ''}`}>
-        {params.id && <Button onClick={() => handleDelete()}>删除</Button>}
-        <Button onClick={() => handleConfirm()} type='primary' disabled={!volunteerList.length || ! elderList.length}>确定</Button>
-      </Footer>
+      {
+        params.id && (
+          <Footer>
+            <Button onClick={() => handleDelete()}>删除</Button>
+          </Footer>
+        )
+      }
     </View>
   )
 }

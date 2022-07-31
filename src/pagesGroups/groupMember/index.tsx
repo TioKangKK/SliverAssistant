@@ -1,118 +1,52 @@
-import store from '@/store'
-import { Image, View } from '@tarojs/components'
-import { useDidShow, setNavigationBarTitle } from '@tarojs/taro'
-import { FC, Fragment, useState } from 'react'
+import { View } from '@tarojs/components'
+import { useDidShow, setNavigationBarTitle, useRouter } from '@tarojs/taro'
+import { FC, useState } from 'react'
 
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import Footer from '@/components/Footer';
+import Checkbox from '@/components/Checkbox';
+import EmptyBox from '@/components/EmptyBox';
 
 import { navigateBack } from '@/utils/navigator';
 
-import { IndexList, Checkbox } from '@taroify/core';
 import "@taroify/core/index-list/style"
-import "@taroify/core/checkbox/style"
+
+import { DocumentStatus, Group, GroupMemberType } from '@/service/types';
+import { addGroupMember, getDocumentList, getGroupInfo, getVolunteerList } from '@/service';
 
 import './index.less'
 
-const data = [
-  { 
-    index: 'a',
-    children: [
-      { 
-        id: 'a1',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      }
-    ]
-  },
-  { 
-    index: 'b',
-    children: [
-      { 
-        id: 'b1',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      }
-    ]
-  },
-  { 
-    index: 'c',
-    children: [
-      { 
-        id: 'c1',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      }
-    ]
-  },
-  { 
-    index: 'd',
-    children: [
-      { 
-        id: 'd1',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      { 
-        id: 'd2',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      { 
-        id: 'd3',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      { 
-        id: 'd4',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      { 
-        id: 'd5',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      { 
-        id: 'd6',
-        name: '安子',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-    ]
-  },
-  {
-    index: 'z',
-    children: [
-      {
-        id: '1',
-        name: '周建',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-      },
-      {
-        id: '2',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-        name: '周建2',
-      },
-      {
-        id: '3',
-        avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-        name: '周建3',
-      },
-    ]
+const getList = async (type: GroupMemberType) => {
+  if (type === GroupMemberType.VOLUNTEER) {
+    const list = await getVolunteerList()
+    return list.map(item => ({ id: '' + item.id, name: item.name }))
+  } else {
+    const list = await getDocumentList({ params: {} })
+    return list.filter(item => item.status === DocumentStatus.APPROVED).map(item => ({ id: '' + item.id, name: item.name }))
   }
-]
+}
 
 const GroupMemberPage: FC = () => {
-  const [type, setType] = useState('elder')
+  const { params } = useRouter<Required<{ id: string; type: string }>>(); // 路由上的参数
+  const type = +params.type
   const [fixed, setFixed] = useState<Set<string>>(new Set())
-  useDidShow(() => {
-    const groupConfig = store.get('group')
-    setNavigationBarTitle({ title: groupConfig.type === 'elder' ? '选择观护老人' : '选择志愿者' })
 
-    setType(groupConfig.type)
-    setFixed(new Set(groupConfig.list.map(item => item.id)))
-    store.set('group', 'list', []) // 阅后即焚
+  const [data, setData] = useState<{ id: string, name: string }[]>([])
+  
+  useDidShow(async () => {
+    setNavigationBarTitle({ title: type === GroupMemberType.ELDER ? '选择观护老人' : '选择志愿者' })
+
+    const groupInfo: Group = await getGroupInfo({ id: params.id })
+
+    setFixed(new Set(
+      (groupInfo?.member
+        ?.filter(item => item.member_type === type)
+        .map(item => item.member_name)
+      || [])
+    ))
+    
+    setData(await getList(type))
   })
   const [selected, setSelected] = useState<Set<string>>(new Set())
 
@@ -126,39 +60,36 @@ const GroupMemberPage: FC = () => {
     setSelected(new Set(selected))
   }
 
-  const handleConfirm = () => {
-    store.set('group', 'type', type)
-    const list = [...fixed, ...selected].map(str => data.flatMap(dataItem => dataItem.children).find(child => child.id === str))
-    store.set('group', 'list', list)
+  const handleConfirm = async () => {
+    for (const member_id of selected) {
+      await addGroupMember({
+        id: params.id,
+        member_id,
+        member_type: type
+      })
+    }
     navigateBack();
   }
 
   return (
     <View className='group-member-page'>
       <Card>
-        <IndexList>
-          {data.map(item => (
-            <Fragment key={item.index}>
-              <IndexList.Anchor index={item.index} />
-              <View className='member-group'>
-                {
-                  item.children.map(child => (
-                    <View key={child.id} className={`member-item ${fixed.has(child.id) ? 'member-item-fix' : ''}`}>
-                      <Checkbox onClick={() => handleClick(child.id)} size={20} className='member-item-checkbox' checked={fixed.has(child.id) || selected.has(child.id)} />
-                      <Image className='member-item-avatar' src={child.avatar} />
-                      <View className='member-item-name'>{child.name}</View>
-                    </View>
-                  ))
-                }
-              </View>
-            </Fragment>
-          ))}
-        </IndexList>
+        {data.map(item => (
+          <View key={item.id} className={`member-item ${fixed.has(item.id) ? 'member-item-fix' : ''}`}>
+            <Checkbox onChange={() => handleClick(item.id)} value={fixed.has(item.id) || selected.has(item.id)} />
+            <View className='member-item-name'>{item.name}</View>
+          </View>
+        ))}
+        {data.length === 0 && (
+          <EmptyBox>
+            { type === GroupMemberType.VOLUNTEER ? '请先添加志愿者' : '请先添加老人档案' }
+          </EmptyBox>
+        )}
       </Card>
-      <Footer className='two-buttons-group'>
+      {data.length > 0 && <Footer className='two-buttons-group'>
         <Button onClick={() => navigateBack()}>取消</Button>
         <Button onClick={() => handleConfirm()} type='primary'>确认</Button>
-      </Footer>
+      </Footer>}
     </View>
   )
 }

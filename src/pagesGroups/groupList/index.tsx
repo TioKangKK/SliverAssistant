@@ -1,5 +1,6 @@
 import { Image, View } from '@tarojs/components'
 import { FC, useState } from 'react'
+import { useDidShow } from '@tarojs/taro'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -10,39 +11,44 @@ import { navigateTo } from '@/utils/navigator'
 
 import IconEmpty from '@/assets/empty.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
-import { useDidShow } from '@tarojs/taro'
-import { getGroupList } from '@/service'
+
+import { createGroup, getGroupList } from '@/service'
+import { Group, GroupMemberType } from '@/service/types'
+import { showToast } from '@/utils/toast'
 
 import './index.less'
 
-const data = [
-  {
-    id: '1',
-    name: '分组1',
-    volunteers: ['李雪', '韩梅梅', '李华'],
-    elders: ['李朝阳', '李钊', '李昭', '李兆', '李召', '李照'],
-  },
-  {
-    id: '1',
-    name: '分组1',
-    volunteers: ['李雪', '韩梅梅', '李华'],
-    elders: ['李朝阳', '李钊', '李昭', '李兆', '李召', '李照'],
-  },
-]
+const addVolunteersAndElders = (groups: Group[]) => {
+  return groups.map((item) => ({
+    ...item,
+    volunteers: item.member?.filter(subItem => subItem.member_type === GroupMemberType.VOLUNTEER).map(subItem => subItem.member_name) || [],
+    elders: item.member?.filter(subItem => subItem.member_type === GroupMemberType.ELDER).map(subItem => subItem.member_name) || [],
+  })) as Group[]
+}
 
 const GroupListPage: FC = () => {
   const handleGoToForm = (id?: string | number) => navigateTo(`/pagesGroups/groupForm/index${id ? '?id=' + id : ''}`)
 
-  const [list, setList] = useState([])
+  const [list, setList] = useState<Group[]>([])
   useDidShow(async () => {
     const groupList = await getGroupList()
-    setList(groupList)
+    setList(addVolunteersAndElders(groupList))
   })
+
+  const handleCreate = async () => {
+    const res = await createGroup()
+    console.log(res)
+    if (res?.group_id) {
+      handleGoToForm(res.group_id)
+    } else {
+      showToast('创建失败')
+    }
+  }
 
   return (
     <View className='group-list'>
-      {data.length 
-        ? (data.map(item => (
+      {list.length 
+        ? (list.map(item => (
           <Card key={item.id} className='group-card'>
             <View className='group-card-header'>
               <View className='group-card-header-left'>{item.name}</View>
@@ -53,7 +59,7 @@ const GroupListPage: FC = () => {
             <Split style={{ marginTop: '10px' }} />
             <View className='group-card-content'>
               <View className='group-card-content-item'>志愿者{item.volunteers.length}人: {item.volunteers.join(',')}</View>
-              <View className='group-card-content-item'>老人{item.elders.length}人: {item.elders.join(',')}人</View>
+              <View className='group-card-content-item'>老人{item.elders.length}人: {item.elders.join(',')}</View>
             </View>
           </Card>
         )))
@@ -67,9 +73,9 @@ const GroupListPage: FC = () => {
           </View>
         )
       }
-      {Boolean(data.length) && (
+      {Boolean(list.length) && (
         <Footer>
-          <Button onClick={() => handleGoToForm()}>新建</Button>
+          <Button onClick={handleCreate}>新建</Button>
         </Footer>
       )}
     </View>

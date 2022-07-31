@@ -112,3 +112,21 @@ export type TDocument = {
   updated_at: string;
   volunteer_id: number;
 };
+
+export enum GroupMemberType {
+  VOLUNTEER = 1,
+  ELDER = 2,
+}
+
+export type Group = {
+  name: string,
+  group_id: number,
+  id: number,
+  member: {
+    member_id: number,
+    member_type: GroupMemberType,
+    member_name: string,
+  }[]
+  volunteers: [],
+  elders: [],
+}

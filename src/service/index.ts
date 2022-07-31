@@ -212,3 +212,63 @@ export const getGroupList = async () => {
   })
   return res?.data.data?.list || []
 }
+
+export const getGroupInfo = async ({ id }) => {
+  const res = await call({
+    path: `${prefix}/group_info/${id}/`,
+    method: 'GET',
+  })
+  return res?.data.data
+}
+
+export const createGroup = async () => {
+  const res = await call({
+    path: `${prefix}/group_info/`,
+    method: 'POST',
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data
+}
+
+export const deleteGroup = async ({ id }) => {
+  const res = await call({
+    path: `${prefix}/group_info/${id}`,
+    method: 'DELETE',
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data
+}
+
+export const addGroupMember = async ({ id, member_id, member_type }) => {
+  const res = await call({
+    path: `${prefix}/group_info/${id}/add`,
+    method: 'PUT',
+    data: {
+      member_id,
+      member_type,
+    },
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data
+}
+
+export const deleteGroupMember = async ({ id, member_id, member_type }) => {
+  const res = await call({
+    path: `${prefix}/group_info/${id}/remove`,
+    method: 'PUT',
+    data: {
+      member_id,
+      member_type,
+    },
+    header: {
+      'Content-Type': 'application/json',
+    }
+  })
+  return res?.data.data
+}

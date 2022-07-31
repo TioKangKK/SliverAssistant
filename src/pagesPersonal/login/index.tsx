@@ -38,7 +38,8 @@ const RegisterEntry: FC = () => {
 
 const LoginPage: FC = () => {
   const handleGetPhoneNumber = async (e) => {
-    const code = e.detail.code
+    const cloudID = e.detail.cloudID
+    // 去换手机号
     console.log(e)
     // setPhone('13858953183')
     // console.log('getPhone', getPhone)

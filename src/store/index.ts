@@ -9,10 +9,6 @@ type Store = {
     list: Community[],
     initialized: boolean,
   },
-  group: {
-    type: 'elder' | 'volunteer',
-    list: { id: string; name: string; avatar: string }[]
-  }
 }
 
 const store: Store = {
@@ -24,10 +20,6 @@ const store: Store = {
     list: [],
     initialized: false,
   },
-  group: {
-    type: 'elder',
-    list: [],
-  }
 }
 
 const get = (name: keyof Store, key?: string) => {

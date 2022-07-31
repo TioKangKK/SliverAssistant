@@ -115,7 +115,7 @@ const computedLivingLevel = (data: {[x:string]: any}) => {
 
 const DocumentFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
-  const id = useRef(11)
+  const id = useRef(+params.id)
   
   const handleGoToDraftBox = () => { navigateTo('/pagesDocument/documentDraftBox/index') }
   

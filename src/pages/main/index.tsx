@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useMemo, useState } from 'react'
+import { CSSProperties, FC, useEffect, useMemo, useState } from 'react'
 import { useDidShow } from '@tarojs/taro'
 
 import { buttonStyleToType } from '@/constants/user'

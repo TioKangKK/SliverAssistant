@@ -1,8 +1,12 @@
 import { Image, View } from '@tarojs/components'
 import { FC, useState } from 'react'
+import { useRouter, showLoading, hideLoading } from '@tarojs/taro'
 
 import Input from '@/components/Inputs/Input'
 import EmptyBox from '@/components/EmptyBox'
+import Footer from '@/components/Footer'
+import Checkbox from '@/components/Checkbox'
+import Button from '@/components/Button'
 
 import ElderCard from '@/business/ElderCard'
 
@@ -63,6 +67,9 @@ const SearchBar = ({ onSearch }) => {
 }
 
 const DocumentSearchPage: FC = () => {
+  const { params: { type } } = useRouter<Required<{ type: 'list' | 'download' }>>(); // 路由上的参数
+  const canDownload = type === 'download'
+  
   const [documentList, setDocumentList] = useState([] as TDocument[])
   const getData = async (params: {[x: string]: any}) => {
     const docList = await getDocumentList({ params });
@@ -76,6 +83,23 @@ const DocumentSearchPage: FC = () => {
     await getData({ keyword: name }) // 进行搜索
   }
 
+  const [selected, setSelected] = useState<Set<number>>(new Set())
+  const handleSelect = (id: number, v: boolean) => {
+    v ? selected.add(id) : selected.delete(id)
+    setSelected(new Set(selected))
+  }
+  const handleSelectAll = (v) => {
+    setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
+  }
+
+  const handleDownload = async () => {
+    showLoading();
+    for (const id of selected) {
+      console.log(id)
+    }
+    hideLoading();
+  }
+
   return (
     <View className='document-list'>
       <View className='document-list-header'>
@@ -87,10 +111,22 @@ const DocumentSearchPage: FC = () => {
             key={item.id}
             info={item}
             extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
+            selected={canDownload ? selected.has(item.id) : undefined}
+            onSelect={(v) => handleSelect(item.id, v)}
           />
         ))}
         {!documentList.length && (<EmptyBox style={{marginTop: '50px'}}>暂无符合要求的数据</EmptyBox>)}
       </View>
+      {
+        canDownload && documentList.length > 0 && (
+          <Footer className='two-buttons-group three-and-seven'>
+            <View className='button select-all-wrapper'>
+              <Checkbox value={selected.size === documentList.length} onChange={(v) => handleSelectAll(v)} />
+            </View>
+            <Button disabled={selected.size === 0} onClick={handleDownload} type='primary'>下载档案</Button>
+          </Footer>
+        )
+      }
     </View>
   )
 }

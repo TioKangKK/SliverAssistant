@@ -1,9 +1,12 @@
 import { Image, View } from '@tarojs/components'
 import { FC, useMemo, useState } from 'react'
-import { useDidShow } from '@tarojs/taro'
+import { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
 import dayjs from 'dayjs'
 
 import EmptyBox from '@/components/EmptyBox'
+import Footer from '@/components/Footer'
+import Checkbox from '@/components/Checkbox'
+import Button from '@/components/Button'
 
 import ElderCard from '@/business/ElderCard'
 import Filter, { FilterConfigItem } from '@/business/Filter'
@@ -12,15 +15,16 @@ import IconSearch from '@/assets/search.svg'
 
 import { navigateTo } from '@/utils/navigator'
 import { getParamsFromFilters } from '@/utils/filter'
+import { showToast } from '@/utils/toast'
 
-import { getCommunityList, getDocumentList } from '@/service'
+import { exportDocument, getCommunityList, getDocumentList } from '@/service'
 import { Community, DocumentStatus, TDocument } from '@/service/types'
 
 import './index.less'
 
-const SearchEntry: FC = () => {
+const SearchEntry: FC<{ type: 'download' | 'list' }> = ({ type }) => {
   return (
-    <View className='search-entry' onClick={() => navigateTo('/pagesDocument/documentSearch/index')}>
+    <View className='search-entry' onClick={() => navigateTo(`/pagesDocument/documentSearch/index?type=${type}`)}>
       <Image src={IconSearch} className='icon-search' />
       搜索老人
     </View>
@@ -63,6 +67,9 @@ const genFilterConfig = (communityList: Community[]): FilterConfigItem[] => [
 ]
 
 const DocumentListPage: FC = () => {
+  const { params: { type } } = useRouter<Required<{ type: 'list' | 'download' }>>(); // 路由上的参数
+  const canDownload = type === 'download'
+
   const [documentList, setDocumentList] = useState([] as TDocument[])
   const getData = async (params: {[x: string]: any}) => {
     const docList = await getDocumentList({ params });
@@ -91,10 +98,28 @@ const DocumentListPage: FC = () => {
     await getData({})
   });
 
+  const [selected, setSelected] = useState<Set<number>>(new Set())
+  const handleSelect = (id: number, v: boolean) => {
+    v ? selected.add(id) : selected.delete(id)
+    setSelected(new Set(selected))
+  }
+  const handleSelectAll = (v) => {
+    setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
+  }
+
+  const handleDownload = async () => {
+    showLoading()
+    for (const id of selected) {
+      await exportDocument({ id })
+    }
+    hideLoading()
+    showToast('下载成功')
+  }
+
   return (
     <View className='document-list'>
       <View className='document-list-header'>
-        <SearchEntry />
+        <SearchEntry type={canDownload ? 'download' : 'list'} />
         <Filter filterConfig={filterConfig} filters={filters} onFilterChange={handleFilterChange} />
       </View>
       <View className='document-list-content'>
@@ -103,10 +128,23 @@ const DocumentListPage: FC = () => {
             key={item.id}
             info={item}
             extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
+            selected={canDownload ? selected.has(item.id) : undefined}
+            onSelect={(v) => handleSelect(item.id, v)}
           />
         ))}
         {!documentList.length && (<EmptyBox style={{marginTop: '50px'}}>暂无数据</EmptyBox>)}
       </View>
+      {
+        canDownload && documentList.length > 0 && (
+          <Footer className='two-buttons-group three-and-seven'>
+            <View className='button select-all-wrapper'>
+              <Checkbox value={selected.size === documentList.length} onChange={(v) => handleSelectAll(v)} />
+              全选
+            </View>
+            <Button disabled={selected.size === 0} onClick={handleDownload} type='primary'>下载档案</Button>
+          </Footer>
+        )
+      }
     </View>
   )
 }

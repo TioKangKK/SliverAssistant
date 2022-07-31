@@ -5,14 +5,15 @@ import Button from '@/components/Button'
 import Card from '@/components/Card'
 
 import IconDocDownload from '@/assets/doc_download.svg'
+import { navigateTo } from '@/utils/navigator'
 
 import './index.less'
-
-const handleClick = () => { console.log('跳转到下载档案') }
 
 const DocDownloadEntry: FC<{
   name: string; desc: string; btnName: string;
 }> = ({ name, desc, btnName }) => {
+  const handleClick = () => { navigateTo('/pagesDocument/documentList/index?type=download') }
+  
   return (
     <Card>
       <View className='doc-download-entry'>

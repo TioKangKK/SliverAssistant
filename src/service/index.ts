@@ -1,9 +1,9 @@
 import { Role } from '@/constants/user'
 import store from '@/store'
-import { delay } from '@/utils'
+import { delay, getCurrentRoute } from '@/utils'
 import { redirectTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentPages } from '@tarojs/taro'
 import { AuditStatus, Community, DashboardItems, DocumentOperate, TDocument, Volunteer } from './types'
 
 const KeyForPhone = 'phone'
@@ -64,7 +64,14 @@ export const login = async ({ phone }) => {
   cookie && setCookie(cookie)
   const redirectPage = loginInfo.data.data.redirect_page
   console.log('login redirectPage', redirectPage)
-  if (redirectPage === 'dashboard') { setPhone(phone) }
+  console.log(getCurrentPages()[0].route)
+  if (redirectPage === 'dashboard') {
+    setPhone(phone)
+    const curRoute = getCurrentRoute()
+    if (curRoute && !['pages/blank/index', 'pagesPersonal/login/index'].includes(curRoute)) {
+      return;
+    }
+  }
   redirectTo(pageMap[redirectPage] || '/pagesPersonal/login/index')
 }
 
@@ -176,6 +183,14 @@ export const editDocument = async (params) => {
     }
   })
   return res?.data.data as (TDocument | undefined)
+}
+
+export const exportDocument = async (params) => {
+  const res = await call({
+    path: `${prefix}/doc/${params.id}/export/`,
+    method: 'GET',
+  })
+  console.log(res?.data)
 }
 
 export const operateDocument = async ({ id, op }: { id: number; op: DocumentOperate }) => {

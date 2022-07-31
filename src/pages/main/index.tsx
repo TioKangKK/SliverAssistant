@@ -45,7 +45,6 @@ const MainPage: FC = () => {
     return {
       name: userInfo.name,
       phone: userInfo.phone,
-      avatar: DefaultAvatar, // TODO
     }
   }, [dashboard])
 

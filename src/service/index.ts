@@ -12,6 +12,9 @@ export const setPhone = (phone) => Taro.setStorageSync(KeyForPhone, phone)
 const KeyForCookie = 'cookie'
 export const getCookie = () => Taro.getStorageSync(KeyForCookie)
 export const setCookie = (cookie) => Taro.setStorageSync(KeyForCookie, cookie)
+const KeyForAvatar = 'avatar'
+export const getAvatar = () => Taro.getStorageSync(KeyForAvatar)
+export const setAvatar = (avatar) => Taro.setStorageSync(KeyForAvatar, avatar)
 
 const prefix = '/silver_assistant'
 

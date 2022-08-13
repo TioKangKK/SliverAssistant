@@ -11,7 +11,7 @@ import { navigateBack } from '@/utils/navigator';
 import { delay } from '@/utils';
 import { showToast } from '@/utils/toast';
 import { audit, getCommunityList, getUserDetail } from '@/service';
-import { AuditStatus, Community } from '@/service/types';
+import { AuditStatus, Community, NoticeType } from '@/service/types';
 
 import './index.less'
 
@@ -35,7 +35,7 @@ const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
 
 const NotificationDetailPage: FC = () => {
   // 用id： 2暂代
-  const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
+  const { params } = useRouter<Required<{ id: string; text: string }>>(); // 路由上的参数
 
   const [data, setData] = useState<{[x: string]: any}>({})
   const [communityList, setCommunityList] = useState([] as Community[])
@@ -48,8 +48,6 @@ const NotificationDetailPage: FC = () => {
 
   const formConfig = useMemo(() => genFormConfig(communityList), [communityList])
 
-  const msg = '谁把谁的灵魂，装进谁的身体'
-
   const handleAudit = async (status: AuditStatus) => {
     await audit({ id: params.id, status })
     showToast('审核成功')
@@ -59,9 +57,9 @@ const NotificationDetailPage: FC = () => {
 
   return (
     <View className='notification-detail'>
-      <View className='notification-detail-header'>
-        {msg}
-      </View>
+      {params.text && <View className='notification-detail-header'>
+        {params.text}
+      </View>}
       <View className='notification-detail-content'>
         <Form data={data} config={formConfig} />
       </View>

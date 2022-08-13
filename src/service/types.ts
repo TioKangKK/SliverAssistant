@@ -12,6 +12,23 @@ export type DashboardItems = {
   item_type: DashboardItemType,
 }[]
 
+export enum NoticeType {
+  VolunteerRegister = 1, // 志愿者注册
+  SubmitDoc = 2, // 档案提交
+  SubmitRiskCare = 3, // 异常观护记录
+}
+export type NoticeItem = {
+  create_time: string,
+  detail: {
+    user_id: number,
+    text: string,
+  },
+  id: number
+  notice_type: NoticeType,
+  org_id: number,
+  update_time: string,
+}
+
 export enum AuditStatus {
   Passed = 1,   // 已通过
   Pending = 2,  // 待审批

@@ -4,11 +4,11 @@ import { delay, getCurrentRoute } from '@/utils'
 import { redirectTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
 import Taro from '@tarojs/taro'
-import { AuditStatus, Community, DashboardItems, DocumentOperate, TDocument, Volunteer } from './types'
+import { AuditStatus, Community, DashboardItems, DocumentOperate, NoticeItem, TDocument, Volunteer } from './types'
 
-const KeyForPhone = 'cloudId'
-export const getCloudId = () => Taro.getStorageSync(KeyForPhone)
-export const setCloudId = (phone) => Taro.setStorageSync(KeyForPhone, phone)
+const KeyForPhone = 'phone'
+export const getPhone = () => Taro.getStorageSync(KeyForPhone)
+export const setPhone = (phone) => Taro.setStorageSync(KeyForPhone, phone)
 const KeyForCookie = 'cookie'
 export const getCookie = () => Taro.getStorageSync(KeyForCookie)
 export const setCookie = (cookie) => Taro.setStorageSync(KeyForCookie, cookie)
@@ -64,7 +64,7 @@ export const login = async ({ cloudId }: { cloudId: string }) => {
   cookie && setCookie(cookie)
   const redirectPage = loginInfo.data.data.redirect_page
   if (redirectPage === 'dashboard') {
-    setCloudId(cloudId)
+    // setPhone(cloudId)
     const curRoute = getCurrentRoute()
     if (curRoute && !['pages/blank/index', 'pagesPersonal/login/index'].includes(curRoute)) {
       return;
@@ -137,6 +137,18 @@ export const getUserDetail = async ({ id }: { id: string }) => {
     data: { id },
   })
   return (res?.data.data.user_info || {}) as {[x: string]: any}
+}
+
+export const getNoticeList = async ({ offset, limit }) => {
+  const res = await call({
+    path: `${prefix}/notice/list/`,
+    method: 'GET',
+    data: { offset, limit },
+  })
+  console.log(res?.data.data)
+  return (res?.data.data.item_list || []).map(item => ({
+    ...item, detail: JSON.parse(item.detail)
+  })) as NoticeItem[]
 }
 
 export const audit = async ({ id, status }: { id: string, status: AuditStatus }) => {

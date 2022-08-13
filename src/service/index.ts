@@ -3,12 +3,12 @@ import store from '@/store'
 import { delay, getCurrentRoute } from '@/utils'
 import { redirectTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
-import Taro, { getCurrentPages } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { AuditStatus, Community, DashboardItems, DocumentOperate, TDocument, Volunteer } from './types'
 
-const KeyForPhone = 'phone'
-export const getPhone = () => Taro.getStorageSync(KeyForPhone)
-export const setPhone = (phone) => Taro.setStorageSync(KeyForPhone, phone)
+const KeyForPhone = 'cloudId'
+export const getCloudId = () => Taro.getStorageSync(KeyForPhone)
+export const setCloudId = (phone) => Taro.setStorageSync(KeyForPhone, phone)
 const KeyForCookie = 'cookie'
 export const getCookie = () => Taro.getStorageSync(KeyForCookie)
 export const setCookie = (cookie) => Taro.setStorageSync(KeyForCookie, cookie)
@@ -54,23 +54,26 @@ const pageMap = {
   dashboard: '/pages/main/index',
   pending_approve: '/pagesPersonal/registerResult/index',
 }
-export const login = async ({ phone }) => {
+export const login = async ({ cloudId }: { cloudId: string }) => {
   const loginInfo = await call({ 
     path: `${prefix}/login/wx/`,
-    data: { phone }
+    data: { cloud_id: cloudId }
   })
   if (loginInfo === null) { return }
   const cookie = loginInfo.header['set-cookie']
   cookie && setCookie(cookie)
   const redirectPage = loginInfo.data.data.redirect_page
-  console.log('login redirectPage', redirectPage)
-  console.log(getCurrentPages()[0].route)
   if (redirectPage === 'dashboard') {
-    setPhone(phone)
+    setCloudId(cloudId)
     const curRoute = getCurrentRoute()
     if (curRoute && !['pages/blank/index', 'pagesPersonal/login/index'].includes(curRoute)) {
       return;
     }
+  } else if (redirectPage === undefined) {
+    const curRoute = getCurrentRoute()
+    if (curRoute && ['pagesPersonal/login/index'].includes(curRoute)) {
+      return;
+    } 
   }
   redirectTo(pageMap[redirectPage] || '/pagesPersonal/login/index')
 }
@@ -150,7 +153,6 @@ export const getDocumentList = async ({ params }: { params: {[x: string]: any} }
     method: 'GET',
     data: params,
   })
-  console.log(res);
   return (res?.data.data?.list || []) as TDocument[]
 }
 

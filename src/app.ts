@@ -1,6 +1,6 @@
 import { Component } from 'react'
 
-import { getPhone, login } from '@/service/index';
+import { getCloudId, login } from '@/service/index';
 import { redirectTo } from '@/utils/navigator';
 
 import './app.less'
@@ -18,14 +18,14 @@ class App extends Component {
   componentDidCatchError () {}
 
   async onLaunch() {
-    const phone = getPhone()
-    if (!phone) {
+    const cloudId = getCloudId()
+    if (!cloudId) {
       showToast('用户尚未登录，请先登录')
       await delay(1000);
       redirectTo('/pagesPersonal/login/index')
       return;
     }
-    await login({ phone })
+    await login({ cloudId })
   }
 
   // this.props.children 是将要会渲染的页面

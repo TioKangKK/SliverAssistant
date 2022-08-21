@@ -54,10 +54,12 @@ const formConfig: FormConfigItem[] = [
 type Props = {
   data: {[x: string]: any}
   onNextStep: () => void
+  onReject: () => void
 }
 
-const StepBasicInfo: FC<Props> = ({ data, onNextStep }) => {
+const StepBasicInfo: FC<Props> = ({ data, onNextStep, onReject }) => {
   const handleNextStep = () => onNextStep()
+  const handleReject = () => onReject()
 
   return (
     <>
@@ -67,7 +69,8 @@ const StepBasicInfo: FC<Props> = ({ data, onNextStep }) => {
           data={data}
         />
       </Card>
-      <Footer>
+      <Footer className='two-buttons-group'>
+        <Button onClick={handleReject}>拒绝</Button>
         <Button onClick={handleNextStep} type='primary'>下一页</Button>
       </Footer>
     </>

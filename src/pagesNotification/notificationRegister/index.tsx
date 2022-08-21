@@ -11,7 +11,7 @@ import { navigateBack } from '@/utils/navigator';
 import { delay } from '@/utils';
 import { showToast } from '@/utils/toast';
 import { audit, getCommunityList, getUserDetail } from '@/service';
-import { AuditStatus, Community, NoticeType } from '@/service/types';
+import { AuditStatus, Community } from '@/service/types';
 
 import './index.less'
 
@@ -33,7 +33,7 @@ const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
   { key: 'address', label: '家庭住址', render, },
 ]
 
-const NotificationDetailPage: FC = () => {
+const NotificationRegisterPage: FC = () => {
   // 用id： 2暂代
   const { params } = useRouter<Required<{ id: string; text: string }>>(); // 路由上的参数
 
@@ -71,4 +71,4 @@ const NotificationDetailPage: FC = () => {
   )
 }
 
-export default NotificationDetailPage
+export default NotificationRegisterPage

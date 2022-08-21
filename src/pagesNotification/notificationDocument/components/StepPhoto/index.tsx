@@ -17,18 +17,24 @@ const formConfig: FormConfigItem[] = [
 type Props = {
   data: {[x: string]: any}
   onPrevStep: () => void
+  onReject: () => void
+  onConfirm: () => void
 }
 
-const StepPhoto: FC<Props> = ({ data, onPrevStep }) => {
+const StepPhoto: FC<Props> = ({ data, onPrevStep, onReject, onConfirm }) => {
   const handlePrevStep = () => onPrevStep()
+  const handleReject = () => onReject()
+  const handleConfirm = () => onConfirm()
 
   return (
     <>
       <Card>
         <Form config={formConfig} data={data} />
       </Card>
-      <Footer>
+      <Footer className='three-buttons-group'>
+        <Button onClick={handleReject} type='default'>拒绝</Button>
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
+        <Button onClick={handleConfirm} type='default'>通过</Button>
       </Footer>
     </>
   )

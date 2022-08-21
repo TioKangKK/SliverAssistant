@@ -7,7 +7,7 @@ import IconArrowRight from '@/assets/arrow_right.svg'
 import { navigateTo } from '@/utils/navigator'
 
 import { getNoticeList } from '@/service'
-import { NoticeItem } from '@/service/types'
+import { NoticeItem, NoticeType } from '@/service/types'
 
 import './index.less'
 
@@ -38,9 +38,18 @@ const NotificationListPage: FC = () => {
     const list = await getNoticeList({ offset: 0, limit: 10 });
     setData(list)
   })
-  const handleClick = (detail: NoticeItem['detail'], noticeType) => {
-    const id = detail.user_id, text = detail.text;
-    navigateTo(`/pagesNotification/notificationDetail/index?id=${id}&text=${text}&notice_type=${noticeType}`)
+  const handleClick = (detail: NoticeItem['detail'], noticeType: NoticeType) => {
+    if (noticeType === NoticeType.VolunteerRegister) {
+      const id = detail.user_id, text = detail.text;
+      navigateTo(`/pagesNotification/notificationRegister/index?id=${id}&text=${text}`)
+    } else if (noticeType === NoticeType.SubmitDoc) {
+      const id = detail.user_id
+      navigateTo(`/pagesNotification/notificationDocument/index?id=${id}`)
+    } else if (noticeType === NoticeType.SubmitRiskCare) {
+      // ..
+      const id = detail.user_id
+      navigateTo(`/pagesNotification/notificationWatchOver/index?id=${id}`)
+    }
   }
   return (
     <View className='notification-list'>

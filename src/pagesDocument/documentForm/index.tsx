@@ -13,6 +13,7 @@ import { Option } from '@/types'
 import { createDocument, editDocument, getDocument, operateDocument } from '@/service'
 import { DocumentOperate, TDocument } from '@/service/types'
 import { showToast } from '@/utils/toast'
+import { delay } from '@/utils'
 
 import StepBasicInfo from './components/StepBasicInfo'
 import StepContact from './components/StepContact'
@@ -150,6 +151,7 @@ const DocumentFormPage: FC = () => {
     await handleSaveDraft(v, false) // 先保存草稿
     await operateDocument({ id: id.current, op: DocumentOperate.SUBMIT });
     showToast('成功提交')
+    await delay(1000);
     navigateTo(`/pagesDocument/documentProfile/index?id=${id.current}`)
   }
 

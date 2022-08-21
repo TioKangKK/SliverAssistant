@@ -2,27 +2,54 @@ export default defineAppConfig({
   pages: [
     'pages/main/index',
     'pages/blank/index',
-    'pagesPersonal/login/index',
-    'pagesPersonal/register/index',
-    'pagesPersonal/registerResult/index',
-    'pagesPersonal/addSocialWorker/index',
-    'pagesNotification/notificationList/index',
-    'pagesNotification/notificationRegister/index',
-    'pagesNotification/notificationDocument/index',
-    'pagesNotification/notificationWatchOver/index',
-    'pagesDocument/documentList/index',
-    'pagesDocument/documentSearch/index',
-    'pagesDocument/documentProfile/index',
-    'pagesDocument/documentDetail/index',
-    'pagesDocument/documentForm/index',
-    'pagesDocument/documentDraftBox/index',
-    'pagesWatchOver/watchOverDetail/index',
-    'pagesWatchOver/watchOverDraftBox/index',
-    'pagesWatchOver/watchOverForm/index',
-    'pagesGroups/volunteerList/index',
-    'pagesGroups/groupList/index',
-    'pagesGroups/groupForm/index',
-    'pagesGroups/groupMember/index',
+  ],
+  subPackages: [
+    {
+      root: "pagesPersonal",
+      pages: [
+        "login/index",
+        "register/index",
+        "registerResult/index",
+        "addSocialWorker/index",
+      ]
+    },
+    {
+      root: "pagesNotification",
+      pages: [
+        'notificationList/index',
+        'notificationRegister/index',
+        'notificationDocument/index',
+        'notificationWatchOver/index',
+      ]
+    },
+    {
+      root: "pagesDocument",
+      pages: [
+        'documentList/index',
+        'documentSearch/index',
+        'documentProfile/index',
+        'documentDetail/index',
+        'documentForm/index',
+        'documentDraftBox/index',
+      ]
+    },
+    {
+      root: "pagesWatchOver",
+      pages: [
+        'watchOverDetail/index',
+        'watchOverDraftBox/index',
+        'watchOverForm/index',
+      ],
+    },
+    {
+      root: "pagesGroups",
+      pages: [
+        'volunteerList/index',
+        'groupList/index',
+        'groupForm/index',
+        'groupMember/index',
+      ]
+    }
   ],
   window: {
     backgroundTextStyle: 'light',

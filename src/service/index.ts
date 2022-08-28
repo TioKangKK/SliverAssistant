@@ -66,7 +66,7 @@ export const login = async ({ cloudId }: { cloudId: string }) => {
   if (redirectPage === 'dashboard') {
     // setPhone(cloudId)
     const curRoute = getCurrentRoute()
-    if (curRoute && !['pages/blank/index', 'pagesPersonal/login/index'].includes(curRoute)) {
+    if (curRoute && !['pagesPersonal/login/index'].includes(curRoute)) {
       return;
     }
   } else if (redirectPage === undefined) {

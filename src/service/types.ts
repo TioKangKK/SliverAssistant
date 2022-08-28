@@ -22,6 +22,7 @@ export type NoticeItem = {
   detail: {
     user_id: number,
     text: string,
+    doc_id: number,
   },
   id: number
   notice_type: NoticeType,

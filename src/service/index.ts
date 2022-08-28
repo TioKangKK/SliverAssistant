@@ -286,3 +286,23 @@ export const deleteGroupMember = async ({ id, member_id, member_type }) => {
   })
   return res?.data.data
 }
+
+export const createWatchOver = async (params) => {
+  const res = await call({
+    path: `${prefix}/care_record/create`,
+    method: 'POST',
+    data: params,
+  })
+  console.log('KTH: a', res?.data);
+  return res?.data.data
+}
+
+export const updateWatchOver = async (params) => {
+  const res = await call({
+    path: `${prefix}/care_record/update`,
+    method: 'POST',
+    data: params,
+  })
+  console.log('KTH: a', res?.data);
+  return res?.data.data
+}

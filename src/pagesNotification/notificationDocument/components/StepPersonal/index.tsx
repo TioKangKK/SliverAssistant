@@ -32,7 +32,7 @@ const healthFormConfig: FormConfigItem[] = [
   {
     key: 'diseases',
     label: '疾病情况',
-    render: (value) => render(value.join(',')),
+    render: (value) => render(value?.join(',') || '-'),
   },
   {
     key: 'is_special_disease',

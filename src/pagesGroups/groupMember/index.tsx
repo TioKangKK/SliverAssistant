@@ -64,7 +64,7 @@ const GroupMemberPage: FC = () => {
     for (const member_id of selected) {
       await addGroupMember({
         id: params.id,
-        member_id,
+        member_id: Number(member_id),
         member_type: type
       })
     }

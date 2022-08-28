@@ -80,7 +80,7 @@ const GroupFormPage: FC = () => {
     if (modalRes.cancel) { return }
     const res = await deleteGroupMember({
       id: params.id,
-      member_id: id,
+      member_id: Number(id),
       member_type: type
     })
     if (res) {

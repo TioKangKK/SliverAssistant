@@ -35,7 +35,7 @@ const NotificationItem: FC<{
 const NotificationListPage: FC = () => {
   const [data, setData] = useState<NoticeItem[]>([])
   useDidShow(async () => {
-    const list = await getNoticeList({ offset: 0, limit: 10 });
+    const list = await getNoticeList({ offset: 0, limit: 1000 });
     setData(list)
   })
   const handleClick = (detail: NoticeItem['detail'], noticeType: NoticeType) => {
@@ -43,7 +43,7 @@ const NotificationListPage: FC = () => {
       const id = detail.user_id, text = detail.text;
       navigateTo(`/pagesNotification/notificationRegister/index?id=${id}&text=${text}`)
     } else if (noticeType === NoticeType.SubmitDoc) {
-      const id = detail.user_id
+      const id = detail.doc_id
       navigateTo(`/pagesNotification/notificationDocument/index?id=${id}`)
     } else if (noticeType === NoticeType.SubmitRiskCare) {
       // ..

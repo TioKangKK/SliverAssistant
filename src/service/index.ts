@@ -215,6 +215,7 @@ export const exportDocument = async (params) => {
     method: 'GET',
   })
   console.log(res?.data)
+  return res?.data
 }
 
 export const operateDocument = async ({ id, op }: { id: number; op: DocumentOperate }) => {

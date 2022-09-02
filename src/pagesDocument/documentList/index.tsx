@@ -42,7 +42,7 @@ const genFilterConfig = (communityList: Community[]): FilterConfigItem[] => [
   {
     id: 1, name: '社区', type: 'single',
     children: communityList,
-    transfer: (value) => ({ community: value }),
+    transfer: (value) => ({ community: communityList.find(item => item.id === value)?.name }),
   },
   {
     id: 2, name: '类型', type: 'single',
@@ -110,10 +110,14 @@ const DocumentListPage: FC = () => {
   const handleDownload = async () => {
     showLoading()
     for (const id of selected) {
-      await exportDocument({ id })
+      const res = await exportDocument({ id })
+      if (res?.data) {
+        showToast(`文件${id}下载成功`)
+      } else {
+        showToast(res?.msg)
+      }
     }
     hideLoading()
-    showToast('下载成功')
   }
 
   return (

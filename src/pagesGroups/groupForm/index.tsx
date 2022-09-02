@@ -12,14 +12,14 @@ import IconAdd from '@/assets/add.svg'
 import { navigateBack, navigateTo } from '@/utils/navigator'
 import { deleteGroup, deleteGroupMember, getGroupInfo } from '@/service'
 import { delay } from '@/utils'
-import { Group, GroupMemberType } from '@/service/types'
+import { Group, GroupMemberType, TDocument, Volunteer } from '@/service/types'
 import { showToast } from '@/utils/toast'
 
 import './index.less'
 
 
 const GroupMemberForm: FC<{
-  list: Group['member'],
+  list: { id: number | string; name: string; image?: string; }[],
   title: string,
   onAdd: () => void,
   onDelete: (id: string) => void,
@@ -37,11 +37,12 @@ const GroupMemberForm: FC<{
       <View className='group-member-form-content'>
         {list.length ? (
           list.map(item => (
-            <View key={item.member_id} className='group-member-form-item'>
+            <View key={item.id} className='group-member-form-item'>
+              {item.image && <Image className='group-member-form-item-image' src={item.image} />}
               <View className='group-member-form-item-left'>
-                <View className='group-member-form-item-name'>{item.member_name}</View>
+                <View className='group-member-form-item-name'>{item.name}</View>
               </View>
-              <View onClick={() => onDelete('' + item.member_id)} className='group-member-form-item-btn'>
+              <View onClick={() => onDelete('' + item.id)} className='group-member-form-item-btn'>
                 删除
               </View>
             </View>
@@ -57,14 +58,14 @@ const GroupMemberForm: FC<{
 const GroupFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
 
-  const [volunteerList, setVolunteerList] = useState<Group['member']>([])
-  const [elderList, setElderList] = useState<Group['member']>([])
+  const [volunteerList, setVolunteerList] = useState<Volunteer[]>([])
+  const [elderList, setElderList] = useState<TDocument[]>([])
 
   const initGroup = async () => {
     const groupInfo: Group = await getGroupInfo({ id: params.id })
     // 操作一波，setVolunteerList, setElderList
-    setVolunteerList(groupInfo?.member?.filter(item => item.member_type === GroupMemberType.VOLUNTEER) || [])
-    setElderList(groupInfo?.member?.filter(item => item.member_type === GroupMemberType.ELDER) || [])
+    setVolunteerList(groupInfo?.volunteers || [])
+    setElderList(groupInfo?.docs || [])
   }
 
   useDidShow(() => {
@@ -113,7 +114,7 @@ const GroupFormPage: FC = () => {
       />
       <GroupMemberForm
         title='观护老人'
-        list={elderList}
+        list={elderList.map(item => ({ id: item.id, name: item.name, image: item.individual_info?.photo_uris?.[0] }))}
         onAdd={() => onAdd(GroupMemberType.ELDER)}
         onDelete={(id) => onDelete(GroupMemberType.ELDER, id)}
       />

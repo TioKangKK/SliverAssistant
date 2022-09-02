@@ -18,13 +18,13 @@ import { showToast } from '@/utils/toast'
 
 import './index.less'
 
-const addVolunteersAndElders = (groups: Group[]) => {
-  return groups.map((item) => ({
-    ...item,
-    volunteers: item.member?.filter(subItem => subItem.member_type === GroupMemberType.VOLUNTEER).map(subItem => subItem.member_name) || [],
-    elders: item.member?.filter(subItem => subItem.member_type === GroupMemberType.ELDER).map(subItem => subItem.member_name) || [],
-  })) as Group[]
-}
+// const addVolunteersAndElders = (groups: Group[]) => {
+//   return groups.map((item) => ({
+//     ...item,
+//     volunteers: item.volunteers.map(item => item.name),
+//     elders: item.member?.filter(subItem => subItem.member_type === GroupMemberType.ELDER).map(subItem => subItem.member_name) || [],
+//   })) as Group[]
+// }
 
 const GroupListPage: FC = () => {
   const handleGoToForm = (id?: string | number) => navigateTo(`/pagesGroups/groupForm/index${id ? '?id=' + id : ''}`)
@@ -32,7 +32,7 @@ const GroupListPage: FC = () => {
   const [list, setList] = useState<Group[]>([])
   useDidShow(async () => {
     const groupList = await getGroupList()
-    setList(addVolunteersAndElders(groupList))
+    setList(groupList)
   })
 
   const handleCreate = async () => {
@@ -58,8 +58,8 @@ const GroupListPage: FC = () => {
             </View>
             <Split style={{ marginTop: '10px' }} />
             <View className='group-card-content'>
-              <View className='group-card-content-item'>志愿者{item.volunteers.length}人: {item.volunteers.join(',')}</View>
-              <View className='group-card-content-item'>老人{item.elders.length}人: {item.elders.join(',')}</View>
+              <View className='group-card-content-item'>志愿者{item.volunteers.length}人{item.volunteers.length > 0 && ':'} {item.volunteers.map(v => v.name).join(',')}</View>
+              <View className='group-card-content-item'>老人{item.docs.length}人{item.docs.length > 0 && ':'} {item.docs.map(d => d.name).join(',')}</View>
             </View>
           </Card>
         )))

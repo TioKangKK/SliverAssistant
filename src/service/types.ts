@@ -140,11 +140,10 @@ export type Group = {
   name: string,
   group_id: number,
   id: number,
-  member: {
-    member_id: number,
-    member_type: GroupMemberType,
-    member_name: string,
-  }[]
-  volunteers: [],
-  elders: [],
+  org_id: number,
+  create_at: string,
+  delete_at: string,
+  update_at: string,
+  docs: TDocument[],
+  volunteers: Volunteer[],
 }

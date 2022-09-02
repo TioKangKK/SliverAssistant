@@ -8,10 +8,10 @@ import './index.less'
 
 const Checkbox: FC<{
   value: boolean;
-  onChange: (v: boolean) => void;
+  onChange?: (v: boolean) => void;
 }> = ({value, onChange}) => {
   return (
-    <View className='checkbox' onClick={() => onChange(!value)}>
+    <View className='checkbox' onClick={() => onChange && onChange(!value)}>
       <Image className='checkbox-icon' src={value ? IconSelected : IconUnselected} />
     </View>
   )

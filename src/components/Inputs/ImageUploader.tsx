@@ -1,8 +1,9 @@
 import { FC } from 'react'
 import { Uploader } from '@taroify/core'
-import { chooseImage } from '@tarojs/taro'
+import { chooseImage, showLoading, hideLoading } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import "@taroify/core/uploader/style"
+import { uploadFile } from '@/service'
 
 import './ImageUploader.less'
 
@@ -19,6 +20,17 @@ type Props = {
   onChange: (files: string[]) => void;
 }
 
+const upload = async (paths: string[]) => {
+  showLoading({ title: '图片上传中' });
+  const urls: string[] = []
+  for (const path of paths) {
+    const res = await uploadFile({ type: 'image', path });
+    urls.push(res.fileID)
+  }
+  hideLoading();
+  return urls
+}
+
 const ImageUploader: FC<Props> = ({
   files = [],
   onChange = () => {}
@@ -29,10 +41,11 @@ const ImageUploader: FC<Props> = ({
     chooseImage({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera']
-    }).then(({ tempFiles }) => {
+    }).then(async ({ tempFiles }) => {
+      const newImages = await upload(tempFiles.map(item => item.path))
       onChange([
         ...files,
-        ...tempFiles.map(({ path }) => path)
+        ...newImages,
       ].slice(0, 9))
     })
   }

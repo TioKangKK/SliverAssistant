@@ -1,6 +1,7 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Image, Picker, Text, View } from '@tarojs/components'
 import { useDidShow, useRouter } from '@tarojs/taro'
+import dayjs from 'dayjs'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -9,8 +10,8 @@ import Split from '@/components/Split'
 
 import { navigateTo } from '@/utils/navigator'
 
-import { getDocument } from '@/service'
-import { TDocument } from '@/service/types'
+import { getDocument, getWatchOverList } from '@/service'
+import { TDocument, WatchOverStatus } from '@/service/types'
 import { livingLevelToName } from '@/constants/user'
 
 import IconPolygon from '@/assets/polygon.svg'
@@ -56,25 +57,28 @@ const DocumentProfileCard: FC<{ info: TDocument }> = ({ info }) => {
   )
 }
 
-const mockLogs = [
-  {
-    id: 1,
-    date: '2022-05-05',
-    volunteer: '禾小荷',
-    status: '正常',
-    statusType: 1,
-  },
-  {
-    id: 1,
-    date: '2022-05-05',
-    volunteer: '禾小荷',
-    status: '异常',
-    statusType: 0,
-    statusDescription: '慢性病发作，身体不适；进食状态不佳'
-  },
-]
-const WatchOverLogs: FC = () => {
+const WatchOverLogs: FC<{ docId: number | string }> = ({ docId }) => {
+  const [data, setData] = useState<{ id: number; date: string; volunteer: string; status: string; statusType: WatchOverStatus; statusDescription?: string }[]>([])
   const [date, setDate] = useState('')
+
+  const getList = async () => {
+    const params = { id: docId, count: 100, offset: 0 } as { id: string | number; count: number; offset: number; query_time?: number; }
+    if (date) { params.query_time = dayjs(date).valueOf()  }
+    const list = await getWatchOverList(params)
+    setData(list.map(item => ({
+      id: item.id,
+      date: dayjs(item.care_time).format('YYYY-MM-DD'),
+      volunteer: item.name,
+      status: item.care_status === WatchOverStatus.NORMAL ? '正常' : '异常',
+      statusType: item.care_status,
+      // statusDescription: item.XXX
+    })))
+  }
+
+  useEffect(() => {
+    getList()
+  }, [date])
+
   const handleCheckWatchOver = id => navigateTo(`/pagesWatchOver/watchOverDetail/index?id=${id}`)
   return (
     <View className='watch-over-logs'>
@@ -90,7 +94,7 @@ const WatchOverLogs: FC = () => {
         </View>
       </View>
       <View className='watch-over-logs-content'>
-        {mockLogs.map(item => (
+        {data.map(item => (
           <Card key={item.id} className='watch-over-log-card'>
             <View className='watch-over-log-card-header'>
               <View className='watch-over-log-card-header-left'>{item.date}</View>
@@ -131,7 +135,7 @@ const DocumentProfilePage: FC = () => {
   return (
     <Page>
       {doc && <DocumentProfileCard info={doc} />}
-      {doc?.need_probation && <WatchOverLogs />}
+      {doc?.need_probation && <WatchOverLogs docId={params.id} />}
     </Page>
   )
 }

@@ -4,7 +4,7 @@ import { delay, getCurrentRoute } from '@/utils'
 import { redirectTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
 import Taro from '@tarojs/taro'
-import { AuditStatus, Community, DashboardItems, DocumentOperate, NoticeItem, TDocument, Volunteer } from './types'
+import { AuditStatus, Community, DashboardItems, DocumentOperate, NoticeItem, TDocument, Volunteer, WatchOverDetail, WatchOverListItem } from './types'
 
 const KeyForPhone = 'phone'
 export const getPhone = () => Taro.getStorageSync(KeyForPhone)
@@ -22,6 +22,16 @@ const client = new Taro.cloud.Cloud({
   resourceAppid: 'wx5658dc9fb87f15d8', // 环境所属的账号appid
   resourceEnv: 'prod-1g6fwfvt19a68410', // 微信云托管的环境ID
 })
+
+export const uploadFile = async ({ type, path }: { type: 'image', path: string }) => {
+  await client.init();
+  const fileName = path.split('/')[path.split('/').length - 1];
+  const res = await client.uploadFile({
+    cloudPath: `${type}/${fileName}`,
+    filePath: path
+  })
+  return res
+}
 
 const call = async ({
   path, method = 'POST', data = {}, header = {}
@@ -292,9 +302,12 @@ export const createWatchOver = async (params) => {
     path: `${prefix}/care_record/create`,
     method: 'POST',
     data: params,
+    header: {
+      'Content-Type': 'application/json',
+    }
   })
   console.log('KTH: a', res?.data);
-  return res?.data.data
+  return res?.data.data?.care_id as number | undefined
 }
 
 export const updateWatchOver = async (params) => {
@@ -302,7 +315,35 @@ export const updateWatchOver = async (params) => {
     path: `${prefix}/care_record/update`,
     method: 'POST',
     data: params,
+    header: {
+      'Content-Type': 'application/json',
+    }
   })
   console.log('KTH: a', res?.data);
   return res?.data.data
+}
+
+export const getWatchOverList = async (params: {
+  id?: string| number; // 老人详情中使用
+  count: number;
+  offset: number;
+  query_time?: number;
+}): Promise<WatchOverListItem[]> => {
+  const res = await call({
+    path: `${prefix}/care_record/list`,
+    method: 'GET',
+    data: params,
+  })
+  console.log('KTH: a', res?.data);
+  return res?.data.data?.list || []
+}
+
+export const getWatchOverDetail = async (id: string | number): Promise<WatchOverDetail | undefined> => {
+  const res = await call({
+    path: `${prefix}/care_record/list`,
+    method: 'GET',
+    data: { id },
+  })
+  console.log('KTH: a', res?.data);
+  return res?.data.data?.care_info
 }

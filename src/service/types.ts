@@ -147,3 +147,43 @@ export type Group = {
   docs: TDocument[],
   volunteers: Volunteer[],
 }
+
+export enum WatchOverStatus {
+  NORMAL = 0,
+  ABNORMAL = 1, 
+}
+
+export type WatchOverListItem = {
+  id: number,     // 主键id
+  volunteer_id: number, // 志愿者id
+  name: string,
+  care_status: WatchOverStatus, // 关护状态 0-正常 1-异常
+  care_time: number, // 观护时间，时间戳
+}
+
+export enum WatchOverSituationStatus {
+  DEFAULT = 0,
+  NORMAL = 1,
+  ABNORMAL = 2,
+}
+
+export enum WatchOverDetailStatus {
+  DRAFT = 0,
+  SUBMITTED = 1,
+}
+
+export type WatchOverDetail = {
+  user_id: number, // 老人id
+  health_situation: WatchOverSituationStatus,
+  daily_diet: WatchOverSituationStatus,
+  emotion_situation: WatchOverSituationStatus,
+  housing_security: WatchOverSituationStatus,
+  family_relation: WatchOverSituationStatus,
+  status: WatchOverDetailStatus, // 观护记录状态
+  health_situation_reason: string,
+  daily_diet_reason: string,
+  emotion_situation_reason: string,
+  housing_security_reason: string,
+  family_relation_reason: string,
+  pictures: string,
+}

@@ -1,5 +1,6 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { View } from '@tarojs/components'
+import { useRouter } from '@tarojs/taro'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -12,50 +13,125 @@ import Page from '@/components/Page'
 
 import { navigateBack, navigateTo } from '@/utils/navigator'
 
+import { DocumentStatus, WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
+import { getDocumentList, getWatchOverDetail } from '@/service'
+
 import './index.less'
 
 const render = value => <FormContent>{value}</FormContent>
-const getFormConfig = (data: { [x: string]: any }): FormConfigItem[] => [
+const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[]): FormConfigItem[] => [
   { key: 'date', render: (value) => <Banner>观护日期: {value}</Banner> },
-  { key: 'name', label: '姓名', render, },
-  { key: 'health', label: '身体情况', render },
-  ...(data.health === 0 ? [
-    { key: 'healthAbnormal', label: '身体情况异常记录', render },
-    { key: 'healthFollowUp', label: '身体情况跟进记录', render }
+  { key: 'user_id', render: (value) => render(elders.find(item => String(item.id) === String(value))?.name || '-') },
+  { key: 'health_situation', label: '身体情况', render, },
+  ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'health_situation_reason',
+      label: '身体情况异常记录',
+      render,
+    },
   ] : []),
-  { key: 'diet', label: '饮食情况', render, },
-  ...(data.diet === 0 ? [
-    { key: 'dietAbnormal', label: '饮食情况异常记录', render, },
-    { key: 'dietFollowUp', label: '饮食情况跟进记录', render }
+  {
+    key: 'daily_diet',
+    label: '饮食情况',
+    render,
+  },
+  ...(data.daily_diet === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'daily_diet_reason',
+      label: '饮食情况异常记录',
+      render,
+    },
+  ] : []),
+  {
+    key: 'emotion_situation',
+    label: '情绪状态',
+    render,
+  },
+  ...(data.emotion_situation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'emotion_situation_reason',
+      label: '情绪状态异常记录',
+      render,
+    },
+  ] : []),
+  {
+    key: 'housing_security',
+    label: '住房安全',
+    render,
+  },
+  ...(data.housing_security === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'housing_security_reason',
+      label: '住房安全异常记录',
+      render,
+    },
+  ] : []),
+  {
+    key: 'family_relation',
+    label: '家庭关系',
+    render,
+  },
+  ...(data.family_relation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'family_relation_reason',
+      label: '家庭关系异常记录',
+      render,
+    },
   ] : []),
 ]
 
-const image = 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132'
-const mockData = {
-  id: 1,
-  date: '2022-06-06',
-  name: '康康康',
-  health: 1,
-  diet: 0,
-  dietAbnormal: '???',
-  dietFollowUp: '???',
-  images: new Array(5).fill(image)
+const getElders = async () => {
+  const list = await getDocumentList({ params: {} })
+  return list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation).map(item => ({ id: '' + item.id, name: item.name }))
+}
+
+const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; name:string }[]): { [x: string]: any } => {
+  const data: Partial<WatchOverDetail> = { ...detail }
+  data.user_id = elders.findIndex(item => String(item.id) === String(detail.user_id))
+  delete data.pictures
+  delete data.status
+  return data
 }
 
 const WatchOverDetailPage: FC = () => {
-  const formConfig = getFormConfig(mockData)
+  const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
 
-  const handleEdit = () => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${mockData.id}`)
+  const [images, setImages] = useState<string[]>([]);
+
+  const [elders, setElders] = useState<{ id:string, name: string }[]>([]);
+
+  const [formData, setFormData] = useState<{ [x: string]: any }>({
+    // date: dayjs().format('YYYY-MM-DD')
+  })
+
+  const formConfig = getFormConfig(formData, elders);
+
+  const init = async () => {
+    const elderList = await getElders()
+    setElders(elderList);
+    if (params.id) {
+      const detail = await getWatchOverDetail(params.id);
+      if (!detail) return;
+      if (detail.pictures) {
+        setImages(detail.pictures.split(','))
+      }
+      setFormData(transformDetailToData(detail, elderList))
+    }
+  }
+
+  useEffect(() => { init() }, [])
+
+  const handleEdit = () => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${params.id}`)
   const handleBack = () => navigateBack()
 
   return (
     <Page>
       <Card>
-        <Form config={formConfig} data={mockData} />
+        <Form config={formConfig} data={formData} />
       </Card>
       <Card>
         <View className='watch-over-photo-title'>照片</View>
-        <ImageList urls={mockData.images} />
+        <ImageList urls={images} />
       </Card>
       <Footer className='two-buttons-group'>
         <Button onClick={handleEdit}>修改内容</Button>

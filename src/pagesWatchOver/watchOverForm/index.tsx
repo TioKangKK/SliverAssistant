@@ -21,9 +21,10 @@ import { Option } from '@/types'
 import { navigateBack, navigateTo } from '@/utils/navigator'
 import { showToast } from '@/utils/toast'
 import { getParamsFromForm } from '@/utils/form'
+import { delay } from '@/utils'
 
-import { createWatchOver, getDocumentList, updateWatchOver } from '@/service'
-import { DocumentStatus } from '@/service/types'
+import { createWatchOver, getDocumentList, getWatchOverDetail, updateWatchOver } from '@/service'
+import { DocumentStatus, WatchOverDetail, WatchOverDetailStatus, WatchOverSituationStatus } from '@/service/types'
 
 import './index.less'
 
@@ -32,14 +33,13 @@ const renderNormalOrAbnormal = (value: number, onChange: (number) => void) => {
   return <Radio options={options} value={value} onChange={onChange} />
 };
 
-
 const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[]): FormConfigItem[] => [
   {
     key: 'date',
     render: (value) => <Banner>观护日期: {value}</Banner>
   },
   {
-    key: 'elder',
+    key: 'user_id',
     label: '姓名',
     render: (value, onChange) => {
       const range = elders.map(item => item.name);
@@ -54,7 +54,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
     render: renderNormalOrAbnormal,
     checker: (value) => value !== undefined ? null : { tip: '必填', msg: '身体情况未填写' },
   },
-  ...(data.health_situation === 2 ? [
+  ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'health_situation_reason',
       label: '身体情况异常记录',
@@ -70,7 +70,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
     render: renderNormalOrAbnormal,
     checker: (value) => value !== undefined ? null : { tip: '必填', msg: '饮食情况未填写' }
   },
-  ...(data.daily_diet === 2 ? [
+  ...(data.daily_diet === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'daily_diet_reason',
       label: '饮食情况异常记录',
@@ -86,7 +86,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
     render: renderNormalOrAbnormal,
     checker: (value) => value !== undefined ? null : { tip: '必填', msg: '情绪状态未填写' }
   },
-  ...(data.emotion_situation === 2 ? [
+  ...(data.emotion_situation === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'emotion_situation_reason',
       label: '情绪状态异常记录',
@@ -102,7 +102,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
     render: renderNormalOrAbnormal,
     checker: (value) => value !== undefined ? null : { tip: '必填', msg: '住房安全未填写' }
   },
-  ...(data.housing_security === 2 ? [
+  ...(data.housing_security === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'housing_security_reason',
       label: '住房安全异常记录',
@@ -118,7 +118,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
     render: renderNormalOrAbnormal,
     checker: (value) => value !== undefined ? null : { tip: '必填', msg: '家庭关系未填写' }
   },
-  ...(data.family_relation === 2 ? [
+  ...(data.family_relation === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'family_relation_reason',
       label: '家庭关系异常记录',
@@ -132,24 +132,27 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
 
 const getElders = async () => {
   const list = await getDocumentList({ params: {} })
-  return list.filter(item => item.status !== DocumentStatus.APPROVED).map(item => ({ id: '' + item.id, name: item.name }))
+  return list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation).map(item => ({ id: '' + item.id, name: item.name }))
 }
 
 const defaultKeys = ['health_situation', 'daily_diet', 'emotion_situation', 'housing_security', 'family_relation']
 const transformDataToParams = (formConfig: FormConfigItem[], data: {[x: string]: any}, imageList: string[]) => {
   const params = getParamsFromForm(formConfig, data);
-  // if (params.elder) {
-  //   params.doc_id = params.elder.doc_id;
-  //   params.name = params.elder.name;
-  // }
   for (const key of defaultKeys) {
-    params[key] = params[key] || 0
+    params[key] = params[key] || WatchOverSituationStatus.DEFAULT
   }
   if (imageList.length) {
     params.pictures = imageList;
   }
-  delete params.elder;
   return params
+}
+
+const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; name:string }[]): { [x: string]: any } => {
+  const data: Partial<WatchOverDetail> = { ...detail }
+  data.user_id = elders.findIndex(item => String(item.id) === String(detail.user_id))
+  delete data.pictures
+  delete data.status
+  return data
 }
 
 const WatchOverFormPage: FC = () => {
@@ -159,12 +162,26 @@ const WatchOverFormPage: FC = () => {
   const [images, setImages] = useState<string[]>([]);
 
   const [elders, setElders] = useState<{ id:string, name: string }[]>([]);
-  useEffect(() => { getElders().then((list) => setElders(list)) }, [])
 
   const [showTip, setShowTip] = useState(false);
   const [formData, setFormData] = useState<{ [x: string]: any }>({
     date: dayjs().format('YYYY-MM-DD')
   })
+  
+  const init = async () => {
+    const elderList = await getElders()
+    setElders(elderList);
+    if (id.current) {
+      const detail = await getWatchOverDetail(id.current);
+      if (!detail) return;
+      if (detail.pictures) {
+        setImages(detail.pictures.split(','))
+      }
+      setFormData(transformDetailToData(detail, elderList))
+    }
+  }
+
+  useEffect(() => { init() }, [])
   const formConfig = getFormConfig(formData, elders);
   const handleFormChange = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value })
@@ -181,35 +198,33 @@ const WatchOverFormPage: FC = () => {
     }
     return true
   }
-  const handleSaveDraft = () => {
-    if (!formData.elder) {
+  const handleSaveDraft = async () => {
+    if (!formData.user_id) {
       showToast("选择老人后才能保存草稿");
       return
     }
     if (!id.current) {
-      const res = createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: 0 })
-      // TODO: update id;
+      const newId = await createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.DRAFT })
+      if (newId) { id.current = newId }
     } else {
-      updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: 0 })
+      updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.DRAFT })
     }
+    showToast('保存成功')
   }
-  const handleCommit = () => {
+  const handleCommit = async () => {
     if (!isValidate()) { return }
     if (!id.current) {
-      const res = createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: 1 })
-      // TODO: update id;
+      const newId = await createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
+      if (newId) { id.current = newId }
     } else {
-      updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: 1 })
+      await updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
     }
+    showToast('提交成功')
+    await delay(1000)
     // 提交
     navigateBack();
   }
   const handleGoToDraftBox = () => { navigateTo('/pagesWatchOver/watchOverDraftBox/index') }
-  
-  useEffect(() => {
-    // TODO 获取数据
-    // id.current && getData();
-  }, []);
 
   return (
     <Page>

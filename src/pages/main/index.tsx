@@ -1,13 +1,12 @@
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react'
 import { useDidShow } from '@tarojs/taro'
 
-import { buttonStyleToType } from '@/constants/user'
+import { buttonStyleToType, roleToName } from '@/constants/user'
+import { orgList } from '@/constants/org'
 
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
-
-import DefaultAvatar from '@/assets/default_avatar.svg'
 
 import { navigateTo } from '@/utils/navigator'
 
@@ -45,6 +44,9 @@ const MainPage: FC = () => {
     return {
       name: userInfo.name,
       phone: userInfo.phone,
+      image: userInfo.avatar,
+      org: orgList.find(item => item.id === userInfo.org_id)?.name || '-',
+      role: roleToName[userInfo.role] || '-'
     }
   }, [dashboard])
 

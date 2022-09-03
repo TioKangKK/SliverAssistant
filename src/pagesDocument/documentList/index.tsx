@@ -1,6 +1,6 @@
 import { Image, View } from '@tarojs/components'
 import { FC, useMemo, useState } from 'react'
-import { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
+import Taro, { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
 import dayjs from 'dayjs'
 
 import EmptyBox from '@/components/EmptyBox'

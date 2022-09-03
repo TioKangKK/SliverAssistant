@@ -3,6 +3,11 @@ export enum Role {
   SocialWorker = 2,
   Volunteer = 3
 }
+export const roleToName = {
+  [Role.SuperManager]: '超管',
+  [Role.SocialWorker]: '社工',
+  [Role.Volunteer]: '志愿者',
+}
 
 export enum Gender {
   Male = 1,

@@ -1,37 +1,32 @@
-import { FC, useState } from 'react'
-import { Button, Image, View } from '@tarojs/components'
+import { FC } from 'react'
+import { Image, View } from '@tarojs/components'
 
-import { getAvatar, setAvatar } from '@/service';
+import Split from '@/components/Split';
 
 import './index.less'
 
 type Props = {
   name: string;
   phone: string;
+  image: string;
+  org: string;
+  role: string;
 }
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
-const UserProfile: FC<Props> = ({ name, phone }) => {
-  const [image, setImage] = useState(getAvatar())
-  const handleChooseAvatar = ({ detail }) => {
-    const avatar = detail.avatarUrl
-    setAvatar(avatar)
-    setImage(avatar)
-  }
+const UserProfile: FC<Props> = ({ name, phone, image, org, role }) => {
   return (
     <View className='user-profile'>
-      {
-        image ? (
-          <Image className='user-profile-avatar' src={image} />
-        ) : (
-          <Button className='user-profile-avatar-wrapper' openType='chooseAvatar' onChooseAvatar={handleChooseAvatar}>
-            <Image className='user-profile-avatar' src={image || defaultAvatarUrl} />
-          </Button>
-        )
-      }
+      <Image className='user-profile-avatar' src={image} />
       <View className='user-profile-right'>
-        <View className='user-profile-name'>{name}</View>
-        <View className='user-profile-phone'>{phone}</View>
+        <View className='user-profile-right-item'>
+          <View className='user-profile-name'>{name}</View>
+          <View className='user-profile-phone'>{phone}</View>          
+        </View>
+        <View className='user-profile-right-item'>
+          <View className='user-profile-org'>{org}</View>
+          <Split type='vertical' />
+          <View className='user-profile-role'>{role}</View>          
+        </View>
       </View>
     </View>
   )

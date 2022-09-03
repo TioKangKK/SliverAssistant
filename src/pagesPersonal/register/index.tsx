@@ -2,6 +2,8 @@ import { FC, useMemo, useState } from 'react'
 import { useDidShow, showLoading, hideLoading } from '@tarojs/taro'
 import { Image, Button as TaroBtn } from '@tarojs/components'
 
+import { orgList } from '@/constants/org'
+
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import Footer from '@/components/Footer'
@@ -21,11 +23,6 @@ import { delay } from '@/utils'
 import './index.less'
 
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
-
-const orgList = [
-  { id: 1, name: '跳跳糖' },
-  { id: 2, name: '益友公益' },
-]
 
 const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
   {

@@ -25,7 +25,6 @@ class App extends Component {
       redirectTo('/pagesPersonal/login/index')
       return;
     }
-    // await login({ cloudId })
   }
 
   // this.props.children 是将要会渲染的页面

@@ -158,11 +158,10 @@ const RegisterPage: FC = () => {
     const codeStr = String(res?.code)
     if (codeStr.startsWith('4')) {
       showToast(`注册失败，${res?.msg || res?.prompts}`)
-    } else if (codeStr.startsWith('2')) {
-      showToast('注册成功')
-      await delay(1000)
-      redirectTo('/pagesPersonal/registerResult/index')
     }
+    showToast('注册成功')
+    await delay(1000)
+    redirectTo('/pagesPersonal/registerResult/index')
   }
 
   const buttonProps = getCheckMsg(formConfig, data)

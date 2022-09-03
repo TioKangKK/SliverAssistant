@@ -1,5 +1,6 @@
 import { Image, View } from '@tarojs/components'
 import { CSSProperties, FC } from 'react'
+// import { requestSubscribeMessage } from '@tarojs/taro'
 
 import Card from '@/components/Card'
 
@@ -18,7 +19,15 @@ type Props = {
 }
 
 const NotificationEntry: FC<Props> = ({ title, msg, style, className }) => {
-  const handleClick = () => navigateTo('/pagesNotification/notificationList/index')
+  const handleClick = () => {
+    // requestSubscribeMessage({
+    //   tmplIds: ['47pxYHTBwTZVWHFVMU4UDctpvM0MoMNldcbnLySmLJs'],
+    //   success: (res) => {
+    //     console.log(res);
+    //   }
+    // })
+    navigateTo('/pagesNotification/notificationList/index')
+  }
   return (
     <Card style={style} className={className} onClick={handleClick}>
       <View className='notification-entry'>

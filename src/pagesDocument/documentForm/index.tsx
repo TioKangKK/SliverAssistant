@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react'
-import { useRouter } from '@tarojs/taro'
+import { useDidShow, useRouter } from '@tarojs/taro'
 
 import Page from '@/components/Page'
 
@@ -10,8 +10,8 @@ import { navigateTo } from '@/utils/navigator'
 
 import { Option } from '@/types'
 
-import { createDocument, editDocument, getDocument, operateDocument } from '@/service'
-import { DocumentOperate, TDocument } from '@/service/types'
+import { createDocument, editDocument, getCommunityList, getDocument, operateDocument } from '@/service'
+import { Community, DocumentOperate, TDocument } from '@/service/types'
 import { showToast } from '@/utils/toast'
 import { delay } from '@/utils'
 
@@ -22,6 +22,7 @@ import StepSpecial from './components/StepSpecial'
 import StepPhoto from './components/StepPhoto'
 
 import './index.less'
+import { checkFormData } from './formConfig'
 
 const progressOptions: Option[] = [
   { id: 0, name: '基础资料' },
@@ -118,9 +119,16 @@ const DocumentFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
   const id = useRef(+params.id)
   
+  const [communityList, setCommunityList] = useState([] as Community[])
+  useDidShow(async () => {
+    const list = await getCommunityList()
+    setCommunityList(list)
+  })
+
   const handleGoToDraftBox = () => { navigateTo('/pagesDocument/documentDraftBox/index') }
   
   const [step, setStep] = useState(0)
+  const [showTip, setShowTip] = useState(false);
 
   const [data, setData] = useState<{[x: string]: any}>({
   })
@@ -136,18 +144,35 @@ const DocumentFormPage: FC = () => {
   const handleSaveDraft = async (daft: {[x: string]: any}, show = true) => {
     // 操作了就更新下数据
     const nextData = { ...data, ...daft }
+    if (!nextData.name) {
+      setStep(0)
+      showToast('至少填写老人姓名后保存草稿');
+      return;
+    }
     setData(nextData)
 
     if (id.current) {
       await editDocument(transformDataToParams(nextData))
     } else {
       const doc = await createDocument(transformDataToParams(nextData))
-      if (doc && doc.id) { id.current = doc.id }
-      await getData()
+      if (doc && doc.id) { 
+        id.current = doc.id
+        await getData()
+        show && showToast('保存草稿成功')
+      } else {
+        show && showToast('保存草稿失败')
+      }
     }
-    show && showToast('保存草稿成功')
   }
   const handleCommit = async (v: {[x: string]: any}) => {
+    const checkRes = checkFormData(communityList, v);
+    if (checkRes) {
+      setStep(checkRes.step)
+      setShowTip(true)
+      showToast(checkRes.msg)
+      return;
+    }
+
     await handleSaveDraft(v, false) // 先保存草稿
     await operateDocument({ id: id.current, op: DocumentOperate.SUBMIT });
     showToast('成功提交')
@@ -168,11 +193,11 @@ const DocumentFormPage: FC = () => {
     <Page>
       <DraftBoxEntry onClick={handleGoToDraftBox} />
       <ProgressBar options={progressOptions} step={step} />
-      {step === 0 && <StepBasicInfo data={data} onChange={handleChange} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
-      {step === 1 && <StepContact data={data} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
-      {step === 2 && <StepPersonal data={data} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
-      {step === 3 && <StepSpecial data={data} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
-      {step === 4 && <StepPhoto data={data} onChange={handleChange} onPrevStep={handlePrevStep} onCommit={handleCommit} onSaveDaft={handleSaveDraft} />}
+      {step === 0 && <StepBasicInfo communityList={communityList} data={data} showTip={showTip} onChange={handleChange} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
+      {step === 1 && <StepContact data={data} showTip={showTip} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
+      {step === 2 && <StepPersonal data={data} showTip={showTip} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
+      {step === 3 && <StepSpecial data={data} showTip={showTip} onChange={handleChange} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onSaveDaft={handleSaveDraft} />}
+      {step === 4 && <StepPhoto data={data} showTip={showTip} onChange={handleChange} onPrevStep={handlePrevStep} onCommit={handleCommit} onSaveDaft={handleSaveDraft} />}
     </Page>
   )
 }

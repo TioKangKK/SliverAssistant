@@ -34,7 +34,7 @@ const ElderCard: FC<Props> = ({ info, extra, selected, onSelect }) => {
       }
       <View className='elder-card-right'>
         <View className='elder-card-content'>
-          <Image className='elder-card-content-avatar' src={info.individual_info.photo_uris?.[0]} />
+          <Image className='elder-card-content-avatar' src={info.individual_info?.photo_uris?.[0]} />
           <View className='elder-card-content-info'>
             <View className='elder-card-content-info-1'>
               <View className='elder-card-content-info-1-left'>

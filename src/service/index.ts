@@ -213,6 +213,9 @@ export const exportDocument = async (params) => {
   const res = await call({
     path: `${prefix}/doc/${params.id}/export/`,
     method: 'GET',
+    header: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    }
   })
   console.log(res?.data)
   return res?.data

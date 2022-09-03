@@ -108,16 +108,19 @@ const DocumentListPage: FC = () => {
   }
 
   const handleDownload = async () => {
-    showLoading()
-    for (const id of selected) {
-      const res = await exportDocument({ id })
-      if (res?.data) {
-        showToast(`文件${id}下载成功`)
-      } else {
-        showToast(res?.msg)
+    showLoading({ title: '下载中' })
+    try {
+      for (const id of selected) {
+        const res = await exportDocument({ id })
+        if (res?.data) {
+          showToast(`文件${id}下载成功`)
+        } else {
+          showToast(res?.msg)
+        }
       }
+    } finally {
+      hideLoading()
     }
-    hideLoading()
   }
 
   return (

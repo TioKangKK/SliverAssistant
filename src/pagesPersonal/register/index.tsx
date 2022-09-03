@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from 'react'
-import { useDidShow } from '@tarojs/taro'
+import { useDidShow, showLoading, hideLoading } from '@tarojs/taro'
+import { Image, Button as TaroBtn } from '@tarojs/components'
 
 import Button from "@/components/Button"
 import Card from "@/components/Card"
@@ -13,8 +14,18 @@ import Page from "@/components/Page"
 import { showToast } from '@/utils/toast'
 import { redirectTo } from '@/utils/navigator'
 import { getCheckMsg, getParamsFromForm } from '@/utils/form'
-import { getCommunityList, register } from '@/service'
+import { getCommunityList, register, uploadFile } from '@/service'
 import { Community } from '@/service/types'
+import { delay } from '@/utils'
+
+import './index.less'
+
+const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+
+const orgList = [
+  { id: 1, name: '跳跳糖' },
+  { id: 2, name: '益友公益' },
+]
 
 const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
   {
@@ -24,6 +35,29 @@ const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
       return <Input value={value} onChange={onChange} placeholder='请输入姓名' />
     },
     checker: (value: string) => value ? null : { tip: '必填', msg: '姓名未填写' }
+  },
+  {
+    key: 'avatar',
+    label: '头像',
+    render: (value, onChange) => {
+      const handleChooseAvatar = async ({ detail }) => {
+        const avatar = detail.avatarUrl
+        // console.log(avatar)
+        showLoading({ title: '图片上传中' });
+        try {
+          const res = await uploadFile({ type: "image", path: avatar })
+          onChange(res.fileID)
+        } finally {
+          hideLoading()
+        }
+      } 
+      return (
+        <TaroBtn className='form-avatar-btn' openType='chooseAvatar' onChooseAvatar={handleChooseAvatar}>
+          <Image className='form-avatar-img' src={value || defaultAvatarUrl} />
+        </TaroBtn>
+      )
+    },
+    checker: (value: string) => value ? null : { tip: '必填', msg: '未上传头像' }
   },
   {
     key: 'gender',
@@ -67,19 +101,14 @@ const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
     },
   },
   {
-    key: 'phone',
-    label: '联系电话',
+    key: 'org_id',
+    label: '所属机构',
     render: (value, onChange) => {
-      return <Input type='number' value={value} onChange={onChange} placeholder='请输入联系电话' />
+      const range = orgList.map(item => item.name)
+      return <Selector range={range} value={value} onChange={onChange} placeholder='请选择机构' />
     },
-    checker: (value: string) => {
-      if (!value) {
-        return { tip: '必填', msg: '联系电话未填写' }
-      } else if (value.length !== 11) {
-        return { tip: '11位', msg: '手机号应为11位' }
-      }
-      return null
-    }
+    checker: (value: number) => value !== undefined ? null : { tip: '必填', msg: '社区未选择' },
+    transfer: (value: number) => orgList[value].id,
   },
   {
     key: 'community_id',
@@ -124,10 +153,28 @@ const RegisterPage: FC = () => {
       setShowTip(true);
       return;
     }
-    // 注册
-    await register(getParamsFromForm(formConfig, data))
-    redirectTo('/pagesPersonal/registerResult/index')
   }
+  const handleGetPhoneNumber = async (e) => {
+    // 注册
+    const cloudID = e.detail.cloudID
+    const res = await register(getParamsFromForm(formConfig, { ...data, cloud_id: cloudID }))
+    const codeStr = String(res?.code)
+    if (codeStr.startsWith('4')) {
+      showToast(`注册失败，${res?.msg || res?.prompts}`)
+    } else if (codeStr.startsWith('2')) {
+      showToast('注册成功')
+      await delay(1000)
+      redirectTo('/pagesPersonal/registerResult/index')
+    }
+  }
+
+  const buttonProps = getCheckMsg(formConfig, data)
+    ? {
+      onClick: handleRegister
+    } as const : {
+      openType: 'getPhoneNumber',
+      onGetPhoneNumber: handleGetPhoneNumber,
+    } as const
 
   return (
     <Page>
@@ -135,7 +182,12 @@ const RegisterPage: FC = () => {
         <Form config={formConfig} data={data} showTip={showTip} onChange={handleChange} />
       </Card>
       <Footer>
-        <Button type='primary' onClick={handleRegister}>注册</Button>
+        <Button
+          type='primary'
+          {...buttonProps}
+        >
+          注册
+        </Button>
       </Footer>
     </Page>
   )

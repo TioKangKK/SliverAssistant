@@ -64,7 +64,7 @@ const WatchOverLogs: FC<{ docId: number | string }> = ({ docId }) => {
   const getList = async () => {
     const params = { id: docId, count: 100, offset: 0 } as { id: string | number; count: number; offset: number; query_time?: number; }
     if (date) { params.query_time = dayjs(date).valueOf()  }
-    const list = await getWatchOverList(params)
+    const { list } = await getWatchOverList(params)
     setData(list.map(item => ({
       id: item.id,
       date: dayjs(item.care_time).format('YYYY-MM-DD'),

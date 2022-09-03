@@ -131,7 +131,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
 ]
 
 const getElders = async () => {
-  const list = await getDocumentList({ params: {} })
+  const { list } = await getDocumentList({ params: {} })
   return list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation).map(item => ({ id: '' + item.id, name: item.name }))
 }
 

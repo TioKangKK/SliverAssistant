@@ -26,7 +26,7 @@ const SearchBar = ({ onSearch }) => {
   const [results, setResults] = useState<{ name: string, id: number|string }[]>([])
 
   const search = async (v) => {
-    const result = await getDocumentList({ params: { keyword: v} });
+    const { list: result } = await getDocumentList({ params: { keyword: v} });
     setResults(v ? result.map(item => ({ id: item.id, name: item.name })) : [])
   }
 
@@ -72,7 +72,7 @@ const DocumentSearchPage: FC = () => {
   
   const [documentList, setDocumentList] = useState([] as TDocument[])
   const getData = async (params: {[x: string]: any}) => {
-    const docList = await getDocumentList({ params });
+    const { list: docList } = await getDocumentList({ params });
     setDocumentList(docList.filter(item => item.status === DocumentStatus.APPROVED))
   }
 

@@ -1,5 +1,5 @@
-import { Image, View } from '@tarojs/components'
-import { FC, useState } from 'react'
+import { Image, ScrollView, View } from '@tarojs/components'
+import { FC, useMemo, useState } from 'react'
 import { useDidShow } from '@tarojs/taro'
 
 import Button from '@/components/Button'
@@ -13,27 +13,44 @@ import IconEmpty from '@/assets/empty.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
 
 import { createGroup, getGroupList } from '@/service'
-import { Group, GroupMemberType } from '@/service/types'
+import { Group } from '@/service/types'
 import { showToast } from '@/utils/toast'
 
 import './index.less'
-
-// const addVolunteersAndElders = (groups: Group[]) => {
-//   return groups.map((item) => ({
-//     ...item,
-//     volunteers: item.volunteers.map(item => item.name),
-//     elders: item.member?.filter(subItem => subItem.member_type === GroupMemberType.ELDER).map(subItem => subItem.member_name) || [],
-//   })) as Group[]
-// }
 
 const GroupListPage: FC = () => {
   const handleGoToForm = (id?: string | number) => navigateTo(`/pagesGroups/groupForm/index${id ? '?id=' + id : ''}`)
 
   const [list, setList] = useState<Group[]>([])
-  useDidShow(async () => {
-    const groupList = await getGroupList()
-    setList(groupList)
+  
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 1,
   })
+  const [loading, setLoading] = useState(false)
+  const hasMore = useMemo(() => pagination.current * pagination.pageSize < pagination.total, [pagination])
+
+  const getList = async (current = pagination.current) => {
+    if (loading) { return; }
+    setLoading(true)
+    try {
+      const offset = (current - 1) * pagination.pageSize
+      const { list: groupList, total } = await getGroupList({ offset, limit: pagination.pageSize });
+      setList(pre => [...pre, ...groupList])
+      setPagination(pre => ({ ...pre, current, total }))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleScrollToLower = () => {
+    if (loading) { return; }
+    if (!hasMore) { return; }
+    getList(pagination.current + 1)
+  }
+  
+  useDidShow(() => getList(1))
 
   const handleCreate = async () => {
     const res = await createGroup()
@@ -48,22 +65,30 @@ const GroupListPage: FC = () => {
   return (
     <View className='group-list'>
       {list.length 
-        ? (list.map(item => (
-          <Card key={item.id} className='group-card'>
-            <View className='group-card-header'>
-              <View className='group-card-header-left'>{item.name}</View>
-              <View onClick={() => handleGoToForm(item.id)} className='group-card-header-right'>
-                管理<Image src={IconArrowRight} className='icon-arrow-right' />
-              </View>
+        ? (
+          <ScrollView className='group-list-scroll' scrollY onScrollToLower={handleScrollToLower}>
+            {
+              list.map(item => (
+                <Card key={item.id} className='group-card'>
+                  <View className='group-card-header'>
+                    <View className='group-card-header-left'>{item.name}</View>
+                    <View onClick={() => handleGoToForm(item.id)} className='group-card-header-right'>
+                      管理<Image src={IconArrowRight} className='icon-arrow-right' />
+                    </View>
+                  </View>
+                  <Split style={{ marginTop: '10px' }} />
+                  <View className='group-card-content'>
+                    <View className='group-card-content-item'>志愿者{item.volunteers.length}人{item.volunteers.length > 0 && ':'} {item.volunteers.map(v => v.name).join(',')}</View>
+                    <View className='group-card-content-item'>老人{item.docs.length}人{item.docs.length > 0 && ':'} {item.docs.map(d => d.name).join(',')}</View>
+                  </View>
+                </Card>
+              ))
+            }
+            <View className='group-list-scroll-footer'>
+              {loading ? '正在加载~' : hasMore ? '下滑加载更多' : '没有更多了~'}
             </View>
-            <Split style={{ marginTop: '10px' }} />
-            <View className='group-card-content'>
-              <View className='group-card-content-item'>志愿者{item.volunteers.length}人{item.volunteers.length > 0 && ':'} {item.volunteers.map(v => v.name).join(',')}</View>
-              <View className='group-card-content-item'>老人{item.docs.length}人{item.docs.length > 0 && ':'} {item.docs.map(d => d.name).join(',')}</View>
-            </View>
-          </Card>
-        )))
-        : (
+          </ScrollView>
+        ) : (
           <View className='group-list-empty'>
             <View className='group-list-empty-wrapper'>
               <Image className='group-list-empty-icon' src={IconEmpty} />

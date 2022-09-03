@@ -8,10 +8,19 @@
   }
 
   &-content {
-    padding: 8px;
 
     .card + .card {
       margin-top: 8px;
+    }
+  }
+
+  &-scroll {
+    height: calc(100vh - 120px);
+    // padding: 8px;
+    box-sizing: border-box;
+
+    .card {
+      margin: 8px;
     }
   }
 }

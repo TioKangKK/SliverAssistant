@@ -1,6 +1,6 @@
-import { Image, View } from '@tarojs/components'
+import { Image, ScrollView, View } from '@tarojs/components'
 import { FC, useMemo, useState } from 'react'
-import Taro, { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
+import { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
 import dayjs from 'dayjs'
 
 import EmptyBox from '@/components/EmptyBox'
@@ -71,9 +71,22 @@ const DocumentListPage: FC = () => {
   const canDownload = type === 'download'
 
   const [documentList, setDocumentList] = useState([] as TDocument[])
+  
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 1,
+  })
+
+  const displayList = useMemo(() => {
+    return documentList.slice(0, pagination.current * pagination.pageSize)
+  }, [documentList, pagination]);
+
   const getData = async (params: {[x: string]: any}) => {
-    const docList = await getDocumentList({ params });
-    setDocumentList(docList.filter(item => item.status === DocumentStatus.APPROVED))
+    const { list: docList } = await getDocumentList({ params });
+    const docs = docList.filter(item => item.status === DocumentStatus.APPROVED)
+    setDocumentList(docs)
+    setPagination(pre => ({ ...pre, current: 1, total: docs.length }))
   }
 
   const [filters, setFilters] = useState({})
@@ -123,6 +136,10 @@ const DocumentListPage: FC = () => {
     }
   }
 
+  const handleScrollToLower = () => {
+    setPagination(pre => ({ ...pre, current: pre.current + 1 }))
+  }
+
   return (
     <View className='document-list'>
       <View className='document-list-header'>
@@ -130,16 +147,22 @@ const DocumentListPage: FC = () => {
         <Filter filterConfig={filterConfig} filters={filters} onFilterChange={handleFilterChange} />
       </View>
       <View className='document-list-content'>
-        {documentList.map(item => (
-          <ElderCard
-            key={item.id}
-            info={item}
-            extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
-            selected={canDownload ? selected.has(item.id) : undefined}
-            onSelect={(v) => handleSelect(item.id, v)}
-          />
-        ))}
-        {!documentList.length && (<EmptyBox style={{marginTop: '50px'}}>暂无数据</EmptyBox>)}
+        {!!documentList.length && (
+          <ScrollView className='document-list-scroll' scrollY onScrollToLower={handleScrollToLower}>
+            {
+              displayList.map(item => (
+                <ElderCard
+                  key={item.id}
+                  info={item}
+                  extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
+                  selected={canDownload ? selected.has(item.id) : undefined}
+                  onSelect={(v) => handleSelect(item.id, v)}
+                />
+              ))
+            }
+          </ScrollView>
+        )}
+        {!documentList.length && (<EmptyBox style={{marginTop: '50px', margin: '8px'}}>暂无数据</EmptyBox>)}
       </View>
       {
         canDownload && documentList.length > 0 && (

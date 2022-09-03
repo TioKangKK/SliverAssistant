@@ -23,10 +23,9 @@ import './index.less'
 const getList = async (type: GroupMemberType) => {
   if (type === GroupMemberType.VOLUNTEER) {
     const list = await getVolunteerList()
-    console.log(list);
     return list.map(item => ({ id: item.id, name: item.name }))
   } else {
-    const list = await getDocumentList({ params: {} })
+    const { list } = await getDocumentList({ params: {} })
     return list.filter(item => item.status === DocumentStatus.APPROVED).map(item => ({ id: item.id, name: item.name, image: item.individual_info.photo_uris?.[0] }))
   }
 }

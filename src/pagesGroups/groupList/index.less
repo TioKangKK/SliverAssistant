@@ -1,7 +1,6 @@
 .group-list {
   min-height: 100vh;
   background: #F5F6F9;
-  padding: 8px;
 
   &-empty {
     width: 100%;
@@ -36,7 +35,25 @@
     margin-top: 8px;
   }
 
+  &-scroll {
+    height: 100vh;
+    padding-top: 8px;
+    padding-bottom: 83px;
+    box-sizing: border-box;
+
+    &-footer {
+      padding: 16px;
+      text-align: center;
+      color: #999999;
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+
   .group-card {
+    margin-left: 8px;
+    margin-right: 8px;
+    
     &-header {
       display: flex;
       align-items: center;

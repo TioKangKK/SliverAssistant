@@ -153,9 +153,12 @@ export const getNoticeList = async ({ offset, limit }) => {
     data: { offset, limit },
   })
   console.log(res?.data.data)
-  return (res?.data.data.item_list || []).map(item => ({
-    ...item, detail: JSON.parse(item.detail)
-  })) as NoticeItem[]
+  return { 
+    list: (res?.data.data.item_list || []).map(item => ({
+      ...item, detail: JSON.parse(item.detail)
+    })) as NoticeItem[],
+    total: res?.data.data.total || 0
+  };
 }
 
 export const audit = async ({ id, status }: { id: string, status: AuditStatus }) => {
@@ -172,7 +175,10 @@ export const getDocumentList = async ({ params }: { params: {[x: string]: any} }
     method: 'GET',
     data: params,
   })
-  return (res?.data.data?.list || []) as TDocument[]
+  return {
+    list: (res?.data.data?.list || []) as TDocument[],
+    total: res?.data.data?.total || 0,
+  }
 }
 
 export const getDocument = async ({ id }: { id: number | string }) => {
@@ -230,12 +236,16 @@ export const operateDocument = async ({ id, op }: { id: number; op: DocumentOper
   return res?.data
 }
 
-export const getGroupList = async () => {
+export const getGroupList = async ({ offset, limit }: {offset: number, limit: number}) => {
   const res = await call({
     path: `${prefix}/group_info/`,
     method: 'GET',
+    data: { offset, limit },
   })
-  return res?.data.data?.list || []
+  return {
+    list: res?.data.data?.list || [],
+    total: res?.data.data.total || 0,
+  }
 }
 
 export const getGroupInfo = async ({ id }) => {
@@ -329,14 +339,17 @@ export const getWatchOverList = async (params: {
   count: number;
   offset: number;
   query_time?: number;
-}): Promise<WatchOverListItem[]> => {
+}) => {
   const res = await call({
     path: `${prefix}/care_record/list`,
     method: 'GET',
     data: params,
   })
   console.log('KTH: a', res?.data);
-  return res?.data.data?.list || []
+  return {
+    list: (res?.data.data?.list || []) as WatchOverListItem[],
+    total: res?.data.data.total || 0,
+  }
 }
 
 export const getWatchOverDetail = async (id: string | number): Promise<WatchOverDetail | undefined> => {

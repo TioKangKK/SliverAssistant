@@ -99,7 +99,7 @@ export type IndividualInfo = {
 }
 
 export enum DocumentStatus {
-  DAFT = 1,
+  DRAFT = 1,
   SUBMITTED= 2,
   APPROVED = 3,
   REJECT = 4,

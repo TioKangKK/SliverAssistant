@@ -15,8 +15,8 @@ const WatchOverDraftBoxPage: FC = () => {
 
   const getData = async () => {
     // TODO 仅保留草稿态
-    const watchOverList = await getWatchOverList({ count: 1000, offset: 0 });
-    const docList = (await getDocumentList({ params: {} })).filter(item => item.status === DocumentStatus.APPROVED && item.need_probation);
+    const { list: watchOverList } = await getWatchOverList({ count: 1000, offset: 0 });
+    const docList = (await getDocumentList({ params: {} })).list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation);
   }
 
   const handleClickElderCard = (id) => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${id}`)

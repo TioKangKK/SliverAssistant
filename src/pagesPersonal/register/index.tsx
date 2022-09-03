@@ -154,7 +154,7 @@ const RegisterPage: FC = () => {
   const handleGetPhoneNumber = async (e) => {
     // 注册
     const cloudID = e.detail.cloudID
-    const res = await register(getParamsFromForm(formConfig, { ...data, cloud_id: cloudID }))
+    const res = await register({ ...getParamsFromForm(formConfig, { ...data }), cloud_id: cloudID})
     const codeStr = String(res?.code)
     if (codeStr.startsWith('4')) {
       showToast(`注册失败，${res?.msg || res?.prompts}`)

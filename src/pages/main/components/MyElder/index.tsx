@@ -9,17 +9,17 @@ import { navigateTo } from '@/utils/navigator'
 import './index.less'
 
 type Props = {
-  count: number
+  text: string
 }
 
-const MyElder: FC<Props> = ({ count }) => {
+const MyElder: FC<Props> = ({ text }) => {
   const handleClick = () => { navigateTo('/pagesDocument/documentList/index') }
   return (
     <>
       <Split style={{ marginTop: '16px', marginBottom: '16px' }} />
       <View className='my-elder'>
         <View className='my-elder-left'>
-          我负责的老人共{count}人
+          {text}
         </View>
         <View className='my-elder-right' onClick={handleClick}>
           查看

@@ -165,6 +165,8 @@ const DocumentFormPage: FC = () => {
     }
   }
   const handleCommit = async (v: {[x: string]: any}) => {
+    setData(v);
+
     const checkRes = checkFormData(communityList, v);
     if (checkRes) {
       setStep(checkRes.step)

@@ -54,12 +54,17 @@ const MainPage: FC = () => {
     const basicConfig = dashboard.find(item => item.item_type === DashboardItemType.Basic)
     const countList = basicConfig?.item_info.count_list
     if (!countList) { return null }
-    return countList.length === 1 ? {
-        elder: countList[0].num,
-      } : {
-        elder: countList[1].num,
-        volunteer:  countList[0].num,
-      }
+    return {
+      elder: countList[1]?.num,
+      volunteer:  countList[0]?.num,
+    }
+  }, [dashboard])
+
+  const myElder = useMemo(() => {
+    const basicConfig = dashboard.find(item => item.item_type === DashboardItemType.Basic)
+    const barList = basicConfig?.item_info.bar_list
+    if (!barList) { return null }
+    return barList?.[0].name || '-'
   }, [dashboard])
 
   const basicButtons = useMemo(() => {
@@ -106,11 +111,8 @@ const MainPage: FC = () => {
     <PageWithoutTopBar title='益助银龄'>
       <Card>
         {userProfile && <UserProfile {...userProfile} />}
-        {volunteerAndElder && (
-          volunteerAndElder.volunteer
-            ? <VolunteerAndElder count={{ elder: volunteerAndElder.elder, volunteer: volunteerAndElder.volunteer }} />
-            : <MyElder count={volunteerAndElder.elder} />
-        )}
+        {volunteerAndElder && <VolunteerAndElder count={{ elder: volunteerAndElder.elder, volunteer: volunteerAndElder.volunteer }} />}
+        {myElder && <MyElder text={myElder} />}
         {basicButtons.map(btn => <Button key={btn.id} style={btn.style} onClick={btn.onClick} type={btn.type}>{btn.name}</Button>)}
       </Card>
       {notificationProps && <NotificationEntry {...notificationProps} />}

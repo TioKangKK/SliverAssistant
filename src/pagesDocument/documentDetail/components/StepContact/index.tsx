@@ -42,11 +42,13 @@ type Props = {
   data: {[x: string]: any}
   onPrevStep: () => void
   onNextStep: () => void
+  onEdit: () => void
 }
 
-const StepContact: FC<Props> = ({ data, onPrevStep, onNextStep }) => {
+const StepContact: FC<Props> = ({ data, onPrevStep, onNextStep, onEdit }) => {
   const handleNextStep = () => onNextStep()
   const handlePrevStep = () => onPrevStep()
+  const handleEdit = () => onEdit()
 
   return (
     <>
@@ -56,7 +58,8 @@ const StepContact: FC<Props> = ({ data, onPrevStep, onNextStep }) => {
           data={data}
         />
       </Card>
-      <Footer className='two-buttons-group'>
+      <Footer className='three-buttons-group'>
+        <Button onClick={handleEdit}>修改内容</Button>
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
         <Button onClick={handleNextStep} type='primary'>下一页</Button>
       </Footer>

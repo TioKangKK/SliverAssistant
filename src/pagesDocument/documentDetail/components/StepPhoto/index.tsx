@@ -17,17 +17,20 @@ const formConfig: FormConfigItem[] = [
 type Props = {
   data: {[x: string]: any}
   onPrevStep: () => void
+  onEdit: () => void
 }
 
-const StepPhoto: FC<Props> = ({ data, onPrevStep }) => {
+const StepPhoto: FC<Props> = ({ data, onEdit, onPrevStep }) => {
   const handlePrevStep = () => onPrevStep()
+  const handleEdit = () => onEdit()
 
   return (
     <>
       <Card>
         <Form config={formConfig} data={data} />
       </Card>
-      <Footer>
+      <Footer className='two-buttons-group'>
+        <Button onClick={handleEdit}>修改内容</Button>
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
       </Footer>
     </>

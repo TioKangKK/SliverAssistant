@@ -55,10 +55,12 @@ const formConfig: FormConfigItem[] = [
 type Props = {
   data: {[x: string]: any}
   onNextStep: () => void
+  onEdit: () => void
 }
 
-const StepBasicInfo: FC<Props> = ({ data, onNextStep }) => {
+const StepBasicInfo: FC<Props> = ({ data, onNextStep, onEdit }) => {
   const handleNextStep = () => onNextStep()
+  const handleEdit = () => onEdit()
 
   return (
     <>
@@ -68,7 +70,8 @@ const StepBasicInfo: FC<Props> = ({ data, onNextStep }) => {
           data={data}
         />
       </Card>
-      <Footer>
+      <Footer className='two-buttons-group'>
+        <Button onClick={handleEdit}>修改内容</Button>
         <Button onClick={handleNextStep} type='primary'>下一页</Button>
       </Footer>
     </>

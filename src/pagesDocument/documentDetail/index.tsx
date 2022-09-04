@@ -6,6 +6,7 @@ import Page from "@/components/Page"
 
 import { getDocument } from "@/service"
 import { TDocument } from "@/service/types"
+import { redirectTo } from "@/utils/navigator"
 
 import ProgressBar from "@/business/ProgressBar"
 import StepBasicInfo from './components/StepBasicInfo'
@@ -52,15 +53,19 @@ const DocumentDetailPage: FC = () => {
   useDidShow(async () => {
     await getData();
   })
+
+  const handleEdit = () => {
+    redirectTo(`/pagesDocument/documentForm/index?id=${params.id}`)
+  }
   
   return (
     <Page>
       <ProgressBar options={progressOptions} step={step} />
-      {step === 0 && <StepBasicInfo data={data} onNextStep={handleNextStep} />}
-      {step === 1 && <StepContact data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
-      {step === 2 && <StepPersonal data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
-      {step === 3 && <StepSpecial data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
-      {step === 4 && <StepPhoto data={data} onPrevStep={handlePrevStep} />}
+      {step === 0 && <StepBasicInfo data={data} onEdit={handleEdit} onNextStep={handleNextStep} />}
+      {step === 1 && <StepContact data={data} onEdit={handleEdit} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
+      {step === 2 && <StepPersonal data={data} onEdit={handleEdit} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
+      {step === 3 && <StepSpecial data={data} onEdit={handleEdit} onPrevStep={handlePrevStep} onNextStep={handleNextStep} />}
+      {step === 4 && <StepPhoto data={data} onEdit={handleEdit} onPrevStep={handlePrevStep} />}
     </Page>
   )
 }

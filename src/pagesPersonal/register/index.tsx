@@ -155,13 +155,13 @@ const RegisterPage: FC = () => {
     // 注册
     const cloudID = e.detail.cloudID
     const res = await register({ ...getParamsFromForm(formConfig, { ...data }), cloud_id: cloudID})
-    const codeStr = String(res?.code)
-    if (codeStr.startsWith('4')) {
+    if (res?.code !== 0) {
       showToast(`注册失败，${res?.msg || res?.prompts}`)
-    }
-    showToast('注册成功')
-    await delay(1000)
-    redirectTo('/pagesPersonal/registerResult/index')
+    } else {
+      showToast('注册成功')
+      await delay(1000)
+      redirectTo('/pagesPersonal/registerResult/index')
+    } 
   }
 
   const buttonProps = getCheckMsg(formConfig, data)

@@ -15,6 +15,7 @@ import { navigateBack } from '@/utils/navigator'
 import { getCheckMsg, getParamsFromForm } from '@/utils/form'
 import { Community } from '@/service/types'
 import { createSocialWorker, getCommunityList } from '@/service'
+import { delay } from '@/utils'
 
 import './index.less'
 
@@ -128,9 +129,17 @@ const AddSocialWorkerPage: FC = () => {
       return;
     }
     // 添加
-    await createSocialWorker(getParamsFromForm(formConfig, data))
-    // 添加完了就跑真刺激
-    navigateBack();
+    try {
+      const res = await createSocialWorker(getParamsFromForm(formConfig, data))
+      res?.prompts && showToast(res.prompts)
+      if (res?.code === 0) {
+        !res?.prompts && showToast(res?.msg || '添加成功')
+        await delay(1000);
+        navigateBack();
+      }
+    } catch (e) {
+      showToast(e)
+    }
   }
 
   return (

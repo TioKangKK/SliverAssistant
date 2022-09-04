@@ -5,6 +5,7 @@ import Card from '@/components/Card'
 import FormContent from '@/components/Displays/FormContent'
 import Footer from '@/components/Footer'
 import Form, { FormConfigItem } from '@/components/Form'
+import { Gender } from '@/constants/user'
 
 const render = (value) => <FormContent>{value ?? '-'}</FormContent>
 
@@ -37,7 +38,7 @@ const formConfig: FormConfigItem[] = [
   {
     key: 'gender',
     label: '性别',
-    render,
+    render: value => render(value === Gender.Male ? '男' : '女'),
   },
   {
     key: 'age',

@@ -152,13 +152,14 @@ const familyFormConfig: FormConfigItem[] = [
 ]
 
 type Props = {
+  canOperate: boolean;
   data: {[x: string]: any}
   onPrevStep: () => void
   onNextStep: () => void
   onReject: () => void
 }
 
-const StepPersonal: FC<Props> = ({ data, onPrevStep, onNextStep, onReject }) => {
+const StepPersonal: FC<Props> = ({ data, canOperate, onPrevStep, onNextStep, onReject }) => {
   const handleNextStep = () => onNextStep()
   const handlePrevStep = () => onPrevStep()
   const handleReject = () => onReject()
@@ -193,8 +194,8 @@ const StepPersonal: FC<Props> = ({ data, onPrevStep, onNextStep, onReject }) => 
           data={data}
         />
       </Card>
-      <Footer className='three-buttons-group'>
-        <Button onClick={handleReject} type='default'>拒绝</Button>
+      <Footer className={canOperate ? 'three-buttons-group' : 'two-buttons-group'}>
+        {canOperate && <Button onClick={handleReject} type='default'>拒绝</Button>}
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
         <Button onClick={handleNextStep} type='primary'>下一页</Button>
       </Footer>

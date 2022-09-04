@@ -5,7 +5,7 @@ import { useDidShow, useRouter } from "@tarojs/taro"
 import Page from "@/components/Page"
 
 import { getDocument, operateDocument } from "@/service"
-import { DocumentOperate, TDocument } from "@/service/types"
+import { DocumentOperate, DocumentStatus, TDocument } from "@/service/types"
 import { showToast } from "@/utils/toast"
 import { delay } from "@/utils"
 import { navigateBack } from "@/utils/navigator"
@@ -48,9 +48,11 @@ const NotificationDocumentPage: FC = () => {
   const handleNextStep = () => setStep(step + 1)
 
   const [data, setData] = useState<{[x: string]: any}>({})
+  const [canOperate, setCanOperate] = useState<boolean>(false)
   const getData = async () => {
     const doc = await getDocument({ id: params.id })
     setData(doc ? docToData(doc) : {})
+    setCanOperate(doc?.status === DocumentStatus.SUBMITTED)
   }
   useDidShow(async () => {
     await getData();
@@ -72,11 +74,11 @@ const NotificationDocumentPage: FC = () => {
   return (
     <Page>
       <ProgressBar options={progressOptions} step={step} />
-      {step === 0 && <StepBasicInfo data={data} onNextStep={handleNextStep} onReject={handleReject} />}
-      {step === 1 && <StepContact data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
-      {step === 2 && <StepPersonal data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
-      {step === 3 && <StepSpecial data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
-      {step === 4 && <StepPhoto data={data} onPrevStep={handlePrevStep} onReject={handleReject} onConfirm={handleConfirm} />}
+      {step === 0 && <StepBasicInfo canOperate={canOperate} data={data} onNextStep={handleNextStep} onReject={handleReject} />}
+      {step === 1 && <StepContact canOperate={canOperate} data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
+      {step === 2 && <StepPersonal canOperate={canOperate} data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
+      {step === 3 && <StepSpecial canOperate={canOperate} data={data} onPrevStep={handlePrevStep} onNextStep={handleNextStep} onReject={handleReject} />}
+      {step === 4 && <StepPhoto canOperate={canOperate} data={data} onPrevStep={handlePrevStep} onReject={handleReject} onConfirm={handleConfirm} />}
     </Page>
   )
 }

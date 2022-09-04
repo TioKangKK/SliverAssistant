@@ -15,13 +15,14 @@ const formConfig: FormConfigItem[] = [
 ]
 
 type Props = {
+  canOperate: boolean;
   data: {[x: string]: any}
   onPrevStep: () => void
   onReject: () => void
   onConfirm: () => void
 }
 
-const StepPhoto: FC<Props> = ({ data, onPrevStep, onReject, onConfirm }) => {
+const StepPhoto: FC<Props> = ({ data, canOperate, onPrevStep, onReject, onConfirm }) => {
   const handlePrevStep = () => onPrevStep()
   const handleReject = () => onReject()
   const handleConfirm = () => onConfirm()
@@ -31,10 +32,10 @@ const StepPhoto: FC<Props> = ({ data, onPrevStep, onReject, onConfirm }) => {
       <Card>
         <Form config={formConfig} data={data} />
       </Card>
-      <Footer className='three-buttons-group'>
-        <Button onClick={handleReject} type='default'>拒绝</Button>
+      <Footer className={canOperate ? 'three-buttons-group' : ''}>
+        {canOperate && <Button onClick={handleReject} type='default'>拒绝</Button>}
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
-        <Button onClick={handleConfirm} type='default'>通过</Button>
+        {canOperate && <Button onClick={handleConfirm} type='default'>通过</Button>}
       </Footer>
     </>
   )

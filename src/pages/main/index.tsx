@@ -56,7 +56,8 @@ const MainPage: FC = () => {
       phone: userInfo.phone,
       image: userInfo.avatar,
       org: orgList.find(item => item.id === userInfo.org_id)?.name || '-',
-      role: roleToName[userInfo.role] || '-'
+      role: roleToName[userInfo.role] || '-',
+      userId: userInfo.id,
     }
   }, [dashboard])
 

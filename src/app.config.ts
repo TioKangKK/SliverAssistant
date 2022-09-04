@@ -1,6 +1,7 @@
 export default defineAppConfig({
   pages: [
     'pages/main/index',
+    'pages/userInfo/index',
   ],
   subPackages: [
     {

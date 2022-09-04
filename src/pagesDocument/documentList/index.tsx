@@ -1,6 +1,6 @@
 import { Image, ScrollView, View } from '@tarojs/components'
 import { FC, useMemo, useState } from 'react'
-import { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
+import { useDidShow, useRouter, showLoading, hideLoading, openDocument } from '@tarojs/taro'
 import dayjs from 'dayjs'
 
 import EmptyBox from '@/components/EmptyBox'
@@ -17,7 +17,7 @@ import { navigateTo } from '@/utils/navigator'
 import { getParamsFromFilters } from '@/utils/filter'
 import { showToast } from '@/utils/toast'
 
-import { exportDocument, getCommunityList, getDocumentList } from '@/service'
+import { downloadFile, exportDocument, getCommunityList, getDocumentList } from '@/service'
 import { Community, DocumentStatus, TDocument } from '@/service/types'
 
 import './index.less'
@@ -111,26 +111,31 @@ const DocumentListPage: FC = () => {
     await getData({})
   });
 
-  const [selected, setSelected] = useState<Set<number>>(new Set())
-  const handleSelect = (id: number, v: boolean) => {
-    v ? selected.add(id) : selected.delete(id)
-    setSelected(new Set(selected))
-  }
-  const handleSelectAll = (v) => {
-    setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
-  }
+  // const [selected, setSelected] = useState<Set<number>>(new Set())
+  // const handleSelect = (id: number, v: boolean) => {
+  //   v ? selected.add(id) : selected.delete(id)
+  //   setSelected(new Set(selected))
+  // }
+  // const handleSelectAll = (v) => {
+  //   setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
+  // }
 
-  const handleDownload = async () => {
+  const handleDownload = async (id: number) => {
     showLoading({ title: '下载中' })
     try {
-      for (const id of selected) {
+      // for (const id of selected) {
         const res = await exportDocument({ id })
         if (res?.data) {
           showToast(`文件${id}下载成功`)
+          const fileID = res.data.file_id
+          const file = await downloadFile({ fileID });
+          openDocument({ filePath: file.tempFilePath });
         } else {
-          showToast(res?.msg)
+          showToast(res?.prompts)
         }
-      }
+      // }
+    } catch (e) {
+      showToast(e)
     } finally {
       hideLoading()
     }
@@ -155,8 +160,10 @@ const DocumentListPage: FC = () => {
                   key={item.id}
                   info={item}
                   extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
-                  selected={canDownload ? selected.has(item.id) : undefined}
-                  onSelect={(v) => handleSelect(item.id, v)}
+                  // selected={canDownload ? selected.has(item.id) : undefined}
+                  // onSelect={(v) => handleSelect(item.id, v)}
+                  canDownload={canDownload}
+                  onDownload={() => handleDownload(item.id)}
                 />
               ))
             }
@@ -164,7 +171,7 @@ const DocumentListPage: FC = () => {
         )}
         {!documentList.length && (<EmptyBox style={{marginTop: '50px', margin: '8px'}}>暂无数据</EmptyBox>)}
       </View>
-      {
+      {/* {
         canDownload && documentList.length > 0 && (
           <Footer className='two-buttons-group three-and-seven'>
             <View className='button select-all-wrapper'>
@@ -174,7 +181,7 @@ const DocumentListPage: FC = () => {
             <Button disabled={selected.size === 0} onClick={handleDownload} type='primary'>下载档案</Button>
           </Footer>
         )
-      }
+      } */}
     </View>
   )
 }

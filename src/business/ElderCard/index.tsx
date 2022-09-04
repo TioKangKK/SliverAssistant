@@ -6,6 +6,7 @@ import Split from '@/components/Split';
 import Checkbox from '@/components/Checkbox';
 
 import IconArrowRight from '@/assets/arrow_right.svg'
+import IconDownload from '@/assets/download.svg'
 
 import { livingLevelToName, statusToName } from '@/constants/user';
 import { TDocument } from '@/service/types';
@@ -20,15 +21,24 @@ type Props = {
   },
   selected?: boolean;
   onSelect?: (v: boolean) => void;
+  canDownload?: boolean;
+  onDownload?: () => void;
 }
 
-const ElderCard: FC<Props> = ({ info, extra, selected, onSelect }) => {
+const ElderCard: FC<Props> = ({ info, extra, selected, canDownload, onSelect, onDownload }) => {
   return (
     <Card className='elder-card'>
       {
         selected !== undefined && (
           <View className='elder-card-left'>
             <Checkbox value={selected} onChange={(v) => onSelect && onSelect(v)}  />
+          </View>
+        )
+      }
+      {
+        canDownload && (
+          <View className='elder-card-left'>
+            <Image className='icon-download' src={IconDownload} onClick={onDownload} />
           </View>
         )
       }

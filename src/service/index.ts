@@ -30,6 +30,15 @@ export const uploadFile = async ({ type, path }: { type: 'image', path: string }
   return res
 }
 
+export const downloadFile = async ({ fileID }: { fileID: string }) => {
+  await client.init();
+  const res = await client.downloadFile({
+    fileID,
+  })
+  console.log(res)
+  return res;
+}
+
 const call = async ({
   path, method = 'POST', data = {}, header = {}
 }: {
@@ -212,15 +221,14 @@ export const editDocument = async (params) => {
   return res?.data.data as (TDocument | undefined)
 }
 
-export const exportDocument = async (params) => {
+export const exportDocument = async (params, retry = 0) => {
   const res = await call({
     path: `${prefix}/doc/${params.id}/export/`,
     method: 'GET',
-    header: {
-      'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    }
   })
-  console.log(res?.data)
+  if (res?.data.code === 5003 && retry < 5) {
+    return exportDocument(params, retry + 1)
+  }
   return res?.data
 }
 

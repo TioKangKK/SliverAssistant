@@ -12,6 +12,7 @@ import { navigateTo } from '@/utils/navigator'
 
 import { getDashboard } from '@/service'
 import { DashboardItems, DashboardItemType } from '@/service/types'
+import userInfoStore from '@/store/userInfo'
 
 import VolunteerAndElder from './components/VolunteerAndElder'
 import UserProfile from './components/UserProfile'
@@ -28,13 +29,22 @@ const btnIdToPath = {
   2: '/pagesGroups/groupList/index',
 }
 
+const updateUserInfo = (dashboard: DashboardItems) => {
+  const basicConfig = dashboard.find(item => item.item_type === DashboardItemType.Basic)
+  const userInfo = basicConfig?.item_info.user_info
+  if (!userInfo) { return }
+  userInfoStore.set(userInfo)
+}
+
 const MainPage: FC = () => {
   const [dashboard, setDashboard] = useState<DashboardItems>([])
 
   useDidShow(async () => {
     const dashboardRes = await getDashboard()
     console.log('dashboard', dashboardRes)
+
     setDashboard(dashboardRes)
+    updateUserInfo(dashboardRes)
   })
 
   const userProfile = useMemo(() => {

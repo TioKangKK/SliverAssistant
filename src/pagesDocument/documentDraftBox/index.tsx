@@ -14,6 +14,8 @@ import { navigateTo } from '@/utils/navigator'
 import { DocumentStatus, TDocument } from '@/service/types'
 import { getDocumentList } from '@/service'
 
+import userInfoStore from '@/store/userInfo'
+
 import './index.less'
 
 const DocumentDraftBoxPage: FC = () => {
@@ -39,7 +41,8 @@ const DocumentDraftBoxPage: FC = () => {
   const handleClickElderCard = (id) => navigateTo(`/pagesDocument/documentForm/index?id=${id}`)
 
   useDidShow(async () => {
-    await getData({})
+    const createdId =  userInfoStore.get('id')
+    await getData(createdId ? { created_by_id: createdId }: {})
   })
 
   const handleScrollToLower = () => {

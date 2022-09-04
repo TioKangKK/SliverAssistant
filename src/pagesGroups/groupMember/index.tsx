@@ -25,7 +25,7 @@ const getList = async (type: GroupMemberType) => {
     const list = await getVolunteerList()
     return list.map(item => ({ id: item.id, name: item.name }))
   } else {
-    const { list } = await getDocumentList({ params: {} })
+    const { list } = await getDocumentList({ params: { group_id: -1 } })
     return list.filter(item => item.status === DocumentStatus.APPROVED).map(item => ({ id: item.id, name: item.name, image: item.individual_info.photo_uris?.[0] }))
   }
 }
@@ -88,7 +88,7 @@ const GroupMemberPage: FC = () => {
         ))}
         {data.length === 0 && (
           <EmptyBox>
-            { type === GroupMemberType.VOLUNTEER ? '请先添加志愿者' : '请先添加老人档案' }
+            { type === GroupMemberType.VOLUNTEER ? '暂无未分组的志愿者，请先添加志愿者' : '暂无未分组的老人，请先添加老人档案' }
           </EmptyBox>
         )}
       </Card>

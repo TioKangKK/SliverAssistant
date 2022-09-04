@@ -24,7 +24,6 @@ const config = [
     title: '添加档案',
     subTitle: '添加新的档案',
     icon: IconDoc,
-    iconClassName: 'special-icon',
     onClick: () => { navigateTo(`/pagesDocument/documentForm/index?id=${null}`) },
   },
   {
@@ -43,7 +42,7 @@ const CardsEntry: FC = () => {
         <Card key={item.key} onClick={item.onClick}>
           <View className='cards-entry-item-title'>{item.title}</View>
           <View className='cards-entry-item-sub-title'>{item.subTitle}</View>
-          <Image className={`cards-entry-item-icon ${item.iconClassName || ''}`} src={item.icon} />
+          <Image className='cards-entry-item-icon' src={item.icon} />
         </Card>
       ))}
     </View>

@@ -1,14 +1,36 @@
 .progress-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   position: relative;
+  padding-left: 0;
+  padding-right: 0;
 
   &-item {
+    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
+
+    &::after {
+      content: '';
+      width: calc(100% - 40px);
+      position: absolute;
+      height: 2px;
+      border-radius: 2px;
+      background: #F2994A;
+      top: 11px;
+      left: calc(50% + 20px);
+      // z-index: -1;
+    }
+
+    &:last-child {
+      &::after {
+        content: none;
+      }
+    }
   }
 
   &-icon {
@@ -24,6 +46,9 @@
     margin-top: 6px;
   }
 
+  &-item-todo::after {
+    background-color: #EDEDED;
+  }
   &-item-todo &-title {
     color: #999999;
   }

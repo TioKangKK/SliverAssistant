@@ -60,7 +60,7 @@ const genFilterConfig = (communityList: Community[]): FilterConfigItem[] => [
     transfer: (value) => ({ age_lower_bound: ageMap[value][0] || 0, age_upper_bound: ageMap[value][1] || 200 })
   },
   {
-    id: 5, name: '日期', type: 'date-range-picker',
+    id: 5, name: '观护日期', type: 'date-range-picker',
     title: '观护日期范围',
     transfer: (value) => ({ archive_date_lower_bound: dayjs(value[0]).format('YYYY-MM-DD'), archive_date_upper_bound: dayjs(value[1]).format('YYYY-MM-DD') })
   },

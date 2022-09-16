@@ -129,7 +129,7 @@ const DocumentListPage: FC = () => {
           showToast(`文件${id}下载成功`)
           const fileID = res.data.file_id
           const file = await downloadFile({ fileID });
-          openDocument({ filePath: file.tempFilePath });
+          openDocument({ filePath: file.tempFilePath, showMenu: true });
         } else {
           showToast(res?.prompts)
         }

@@ -232,6 +232,15 @@ export const exportDocument = async (params, retry = 0) => {
   return res?.data
 }
 
+export const exportDocs = async (params) => {
+  const res = await call({
+    path: `${prefix}/doc/export/`,
+    method: 'GET',
+    data: params,
+  })
+  return res?.data
+}
+
 export const operateDocument = async ({ id, op }: { id: number; op: DocumentOperate }) => {
   const res = await call({
     path: `${prefix}/doc/${id}/op`,

@@ -17,7 +17,7 @@ import { navigateTo } from '@/utils/navigator'
 import { getParamsFromFilters } from '@/utils/filter'
 import { showToast } from '@/utils/toast'
 
-import { downloadFile, exportDocument, getCommunityList, getDocumentList } from '@/service'
+import { downloadFile, exportDocs, exportDocument, getCommunityList, getDocumentList } from '@/service'
 import { Community, DocumentStatus, TDocument } from '@/service/types'
 
 import './index.less'
@@ -111,29 +111,28 @@ const DocumentListPage: FC = () => {
     await getData({})
   });
 
-  // const [selected, setSelected] = useState<Set<number>>(new Set())
-  // const handleSelect = (id: number, v: boolean) => {
-  //   v ? selected.add(id) : selected.delete(id)
-  //   setSelected(new Set(selected))
-  // }
-  // const handleSelectAll = (v) => {
-  //   setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
-  // }
+  const [selected, setSelected] = useState<Set<number>>(new Set())
+  const handleSelect = (id: number, v: boolean) => {
+    v ? selected.add(id) : selected.delete(id)
+    setSelected(new Set(selected))
+  }
+  const handleSelectAll = (v) => {
+    setSelected(v ? new Set(documentList.map(item => item.id)) : new Set())
+  }
 
-  const handleDownload = async (id: number) => {
+  const handleDownload = async () => {
     showLoading({ title: '下载中' })
     try {
-      // for (const id of selected) {
-        const res = await exportDocument({ id })
-        if (res?.data) {
-          showToast(`文件${id}下载成功`)
-          const fileID = res.data.file_id
-          const file = await downloadFile({ fileID });
-          openDocument({ filePath: file.tempFilePath, showMenu: true });
-        } else {
-          showToast(res?.prompts)
-        }
-      // }
+      const id = [...selected][0];
+      const res = selected.size === 1 ? await exportDocument({ id: id }) :  await exportDocs({ 'doc_ids': [...selected] });
+      if (res?.data) {
+        showToast(selected.size === 1 ?  `文件${[...selected][0]}下载成功，即将打开预览` : `文件下载成功，即将打开预览`)
+        const fileID = res.data.file_id
+        const file = await downloadFile({ fileID });
+        openDocument({ filePath: file.tempFilePath, showMenu: true });
+      } else {
+        showToast(res?.prompts)
+      }
     } catch (e) {
       showToast(e)
     } finally {
@@ -160,10 +159,10 @@ const DocumentListPage: FC = () => {
                   key={item.id}
                   info={item}
                   extra={{ text: '查看', onClick: () => handleClickElderCard(item.id) }}
-                  // selected={canDownload ? selected.has(item.id) : undefined}
-                  // onSelect={(v) => handleSelect(item.id, v)}
-                  canDownload={canDownload}
-                  onDownload={() => handleDownload(item.id)}
+                  selected={canDownload ? selected.has(item.id) : undefined}
+                  onSelect={(v) => handleSelect(item.id, v)}
+                  // canDownload={canDownload}
+                  // onDownload={() => handleDownload(item.id)}
                 />
               ))
             }
@@ -171,17 +170,17 @@ const DocumentListPage: FC = () => {
         )}
         {!documentList.length && (<EmptyBox style={{marginTop: '50px', margin: '8px'}}>暂无数据</EmptyBox>)}
       </View>
-      {/* {
+      {
         canDownload && documentList.length > 0 && (
           <Footer className='two-buttons-group three-and-seven'>
             <View className='button select-all-wrapper'>
               <Checkbox value={selected.size === documentList.length} onChange={(v) => handleSelectAll(v)} />
               全选
             </View>
-            <Button disabled={selected.size === 0} onClick={handleDownload} type='primary'>下载档案</Button>
+            <Button disabled={selected.size === 0} onClick={() => handleDownload()} type='primary'>下载档案</Button>
           </Footer>
         )
-      } */}
+      }
     </View>
   )
 }

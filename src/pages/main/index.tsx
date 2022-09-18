@@ -87,7 +87,7 @@ const MainPage: FC = () => {
       style: index > 0 ? { marginTop: '6px' } : {},
       type: buttonStyleToType[btn.style],
       name: btn.name,
-      onClick: () => navigateTo(btnIdToPath[index + 1])
+      onClick: () => navigateTo(btnIdToPath[btn.click_type])
     })) as { id: number | string, style: CSSProperties, type: 'primary' | 'default' | undefined, name: string, onClick: () => void }[]
   }, [dashboard])
 

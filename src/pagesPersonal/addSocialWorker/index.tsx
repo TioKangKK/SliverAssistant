@@ -13,13 +13,12 @@ import Page from "@/components/Page"
 import { showToast } from '@/utils/toast'
 import { navigateBack } from '@/utils/navigator'
 import { getCheckMsg, getParamsFromForm } from '@/utils/form'
-import { Community } from '@/service/types'
-import { createSocialWorker, getCommunityList } from '@/service'
+import { createSocialWorker } from '@/service'
 import { delay } from '@/utils'
 
 import './index.less'
 
-const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
+const formConfig: FormConfigItem[] = [
   {
     key: 'name',
     label: '姓名',
@@ -84,16 +83,16 @@ const genFormConfig = (communityList: Community[]): FormConfigItem[] => [
       return null
     }
   },
-  {
-    key: 'community_id',
-    label: '所属社区',
-    render: (value, onChange) => {
-      const range = communityList.map(item => item.name)
-      return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
-    },
-    checker: (value: number) => value ? null : { tip: '必填', msg: '社区未选择' },
-    transfer: (value: number) => communityList[value].id,
-  },
+  // {
+  //   key: 'community_id',
+  //   label: '所属社区',
+  //   render: (value, onChange) => {
+  //     const range = communityList.map(item => item.name)
+  //     return <Selector range={range} value={value} onChange={onChange} placeholder='请选择社区' />
+  //   },
+  //   checker: (value: number) => value ? null : { tip: '必填', msg: '社区未选择' },
+  //   transfer: (value: number) => communityList[value].id,
+  // },
   {
     key: 'address',
     label: '家庭住址',
@@ -110,14 +109,6 @@ const AddSocialWorkerPage: FC = () => {
   const handleChange = (key, value) => {
     setData({ ...data, [key]: value })
   }
-
-  const [communityList, setCommunityList] = useState([] as Community[])
-  useDidShow(async () => {
-    const list = await getCommunityList()
-    setCommunityList(list)
-  })
-
-  const formConfig = useMemo(() => genFormConfig(communityList), [communityList])
 
   const handleCancel = () => navigateBack()
   const handleAdd = async () => {

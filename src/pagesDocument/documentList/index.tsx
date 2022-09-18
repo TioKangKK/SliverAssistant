@@ -124,7 +124,7 @@ const DocumentListPage: FC = () => {
     showLoading({ title: '下载中' })
     try {
       const id = [...selected][0];
-      const res = selected.size === 1 ? await exportDocument({ id: id }) :  await exportDocs({ 'doc_ids': [...selected] });
+      const res = selected.size === 1 ? await exportDocument({ id: id }) :  await exportDocs({ doc_ids: [...selected] });
       if (res?.data) {
         showToast(selected.size === 1 ?  `文件${[...selected][0]}下载成功，即将打开预览` : `文件下载成功，即将打开预览`)
         const fileID = res.data.file_id

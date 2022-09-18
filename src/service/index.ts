@@ -235,8 +235,11 @@ export const exportDocument = async (params, retry = 0) => {
 export const exportDocs = async (params) => {
   const res = await call({
     path: `${prefix}/doc/export/`,
-    method: 'GET',
+    method: 'POST',
     data: params,
+    header: {
+      'Content-Type': 'application/json',
+    }
   })
   return res?.data
 }

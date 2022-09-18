@@ -6,6 +6,9 @@ import Footer from '@/components/Footer'
 import Form, { FormConfigItem } from '@/components/Form'
 import ImageList from '@/components/Displays/ImageList'
 
+import userInfoStore from '@/store/userInfo'
+import { Role } from '@/constants/user'
+
 const formConfig: FormConfigItem[] = [
   {
     key: 'photo_uris',
@@ -23,14 +26,15 @@ type Props = {
 const StepPhoto: FC<Props> = ({ data, onEdit, onPrevStep }) => {
   const handlePrevStep = () => onPrevStep()
   const handleEdit = () => onEdit()
+  const canEdit = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
 
   return (
     <>
       <Card>
         <Form config={formConfig} data={data} />
       </Card>
-      <Footer className='two-buttons-group'>
-        <Button onClick={handleEdit}>修改内容</Button>
+      <Footer className={canEdit ? 'two-buttons-group' : ''}>
+        {canEdit && <Button onClick={handleEdit}>修改内容</Button>}
         <Button onClick={handlePrevStep} type='default'>上一页</Button>
       </Footer>
     </>

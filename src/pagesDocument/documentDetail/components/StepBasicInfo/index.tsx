@@ -5,7 +5,9 @@ import Card from '@/components/Card'
 import FormContent from '@/components/Displays/FormContent'
 import Footer from '@/components/Footer'
 import Form, { FormConfigItem } from '@/components/Form'
-import { Gender } from '@/constants/user'
+
+import userInfoStore from '@/store/userInfo'
+import { Role, Gender } from '@/constants/user'
 
 const render = (value) => <FormContent>{value ?? '-'}</FormContent>
 
@@ -62,6 +64,8 @@ const StepBasicInfo: FC<Props> = ({ data, onNextStep, onEdit }) => {
   const handleNextStep = () => onNextStep()
   const handleEdit = () => onEdit()
 
+  const canEdit = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
+
   return (
     <>
       <Card>
@@ -70,8 +74,8 @@ const StepBasicInfo: FC<Props> = ({ data, onNextStep, onEdit }) => {
           data={data}
         />
       </Card>
-      <Footer className='two-buttons-group'>
-        <Button onClick={handleEdit}>修改内容</Button>
+      <Footer className={canEdit ? 'two-buttons-group' : ''}>
+        {canEdit && <Button onClick={handleEdit}>修改内容</Button>}
         <Button onClick={handleNextStep} type='primary'>下一页</Button>
       </Footer>
     </>

@@ -3,12 +3,14 @@
   justify-content: space-between;
   margin-top: 8px;
   margin-bottom: 8px;
+  gap: 8px;
 
   .card + .card {
     margin-top: 0;
   }
   .card {
     padding-bottom: 0;
+    width: calc(33% - 4px);
   }
 
   &-item-title {
@@ -30,13 +32,8 @@
   &-item-icon {
     width: 86px;
     height: 86px;
+    display: block;
+    margin: auto;
     margin-top: 4px;
-  }
-  &-item-icon.special-icon {
-    width: 72px;
-    height: 72px;
-    margin-top: 11px;
-    margin-left: 7px;
-    margin-right: 7px;
   }
 }

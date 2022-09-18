@@ -3,9 +3,9 @@ import { Image, View } from '@tarojs/components'
 
 import Card from '@/components/Card'
 
-import IconWatchOver from '@/assets/watch_over.svg'
-import IconDoc from '@/assets/doc.svg'
-import IconSavedDoc from '@/assets/saved_docs.svg'
+import IconWatchOver from '@/assets/watch_over.png'
+import IconDoc from '@/assets/doc.png'
+import IconSavedDoc from '@/assets/saved_docs.png'
 
 import { navigateTo } from '@/utils/navigator'
 

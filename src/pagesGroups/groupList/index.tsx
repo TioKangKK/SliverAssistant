@@ -94,7 +94,7 @@ const GroupListPage: FC = () => {
               <Image className='group-list-empty-icon' src={IconEmpty} />
               <View className='group-list-empty-text'>暂未分组</View>
             </View>  
-            <Button className='group-list-empty-btn' type='primary' onClick={() => navigateTo('/pagesGroups/groupForm/index')}>立即创建</Button>
+            <Button className='group-list-empty-btn' type='primary' onClick={() => handleCreate()}>立即创建</Button>
           </View>
         )
       }

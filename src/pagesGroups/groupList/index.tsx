@@ -37,7 +37,7 @@ const GroupListPage: FC = () => {
     try {
       const offset = (current - 1) * pagination.pageSize
       const { list: groupList, total } = await getGroupList({ offset, limit: pagination.pageSize });
-      setList(pre => [...pre, ...groupList])
+      setList(pre => current === 1 ? groupList : [...pre, ...groupList])
       setPagination(pre => ({ ...pre, current, total }))
     } finally {
       setLoading(false)
@@ -72,7 +72,7 @@ const GroupListPage: FC = () => {
                 <Card key={item.id} className='group-card'>
                   <View className='group-card-header'>
                     <View className='group-card-header-left'>{item.name}</View>
-                    <View onClick={() => handleGoToForm(item.id)} className='group-card-header-right'>
+                    <View onClick={() => handleGoToForm(item.group_id)} className='group-card-header-right'>
                       管理<Image src={IconArrowRight} className='icon-arrow-right' />
                     </View>
                   </View>

@@ -51,7 +51,7 @@ const NotificationListPage: FC = () => {
     try {
       const offset = (current - 1) * pagination.pageSize
       const { list, total } = await getNoticeList({ offset, limit: pagination.pageSize });
-      setData(pre => [...pre, ...list])
+      setData(pre => current === 1 ? list : [...pre, ...list])
       setPagination(pre => ({ ...pre, current, total }))
     } finally {
       setLoading(false)

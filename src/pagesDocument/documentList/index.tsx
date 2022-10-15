@@ -126,15 +126,15 @@ const DocumentListPage: FC = () => {
       const id = [...selected][0];
       const res = selected.size === 1 ? await exportDocument({ id: id }) :  await exportDocs({ doc_ids: [...selected] });
       if (res?.data) {
-        showToast(selected.size === 1 ?  `文件${[...selected][0]}下载成功，即将打开预览` : `文件下载成功，即将打开预览`)
         const fileID = res.data.file_id
         const file = await downloadFile({ fileID });
+        showToast(selected.size === 1 ?  `文件${[...selected][0]}下载成功，即将打开预览` : `文件下载成功，即将打开预览`)
         openDocument({ filePath: file.tempFilePath, showMenu: true });
       } else {
         showToast(res?.prompts)
       }
     } catch (e) {
-      showToast(e)
+      showToast(typeof e === 'string' ? e : e?.errMsg || '下载失败')
     } finally {
       hideLoading()
     }

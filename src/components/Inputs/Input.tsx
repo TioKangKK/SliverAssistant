@@ -8,10 +8,11 @@ type Props = {
   value: string;
   placeholder?: string;
   onChange?: (value) => void;
+  onBlur?: () => void;
   type?: "number" | "text" | "idcard" | "digit" | "safe-password" | "nickname"
 }
 
-const Input: FC<Props> = ({ style, className, value, onChange = () => {}, placeholder, type }) => {
+const Input: FC<Props> = ({ style, className, value, onChange = () => {}, onBlur, placeholder, type }) => {
   const handleInput = (e) => { onChange(e.detail.value) }
 
   return (
@@ -21,6 +22,7 @@ const Input: FC<Props> = ({ style, className, value, onChange = () => {}, placeh
       className={`input ${className || ''}`}
       value={value}
       onInput={handleInput}
+      onBlur={onBlur}
       placeholder={placeholder}
     />
   )

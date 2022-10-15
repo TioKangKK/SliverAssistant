@@ -27,7 +27,7 @@ const SearchBar = ({ onSearch }) => {
 
   const search = async (v) => {
     const { list: result } = await getDocumentList({ params: { keyword: v} });
-    setResults(v ? result.map(item => ({ id: item.id, name: item.name })) : [])
+    setResults(v ? result.filter(item => item.status === DocumentStatus.APPROVED).map(item => ({ id: item.id, name: item.name })) : [])
   }
 
   const handleSearch = (v) => {

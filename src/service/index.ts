@@ -146,6 +146,17 @@ export const getVolunteerList = async () => {
   return (res?.data.data.item_list || []) as Volunteer[]
 }
 
+export const exportVolunteer = async (retry = 0) => {
+  const res = await call({
+    path: `${prefix}/user/export/`,
+    method: 'POST',
+  })
+  if (res?.data.code === 5003 && retry < 5) {
+    return exportVolunteer(retry + 1)
+  }
+  return res?.data
+}
+
 export const getUserDetail = async ({ id }: { id: string }) => {
   const res = await call({
     path: `${prefix}/user/detail/`,
@@ -161,7 +172,6 @@ export const getNoticeList = async ({ offset, limit }) => {
     method: 'GET',
     data: { offset, limit },
   })
-  console.log(res?.data.data)
   return { 
     list: (res?.data.data.item_list || []).map(item => ({
       ...item, detail: JSON.parse(item.detail)
@@ -330,7 +340,7 @@ export const deleteGroupMember = async ({ id, member_id, member_type }) => {
 
 export const createWatchOver = async (params) => {
   const res = await call({
-    path: `${prefix}/care_record/create`,
+    path: `${prefix}/care_record/create/`,
     method: 'POST',
     data: params,
     header: {

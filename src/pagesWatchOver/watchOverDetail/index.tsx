@@ -15,14 +15,24 @@ import { navigateBack, navigateTo } from '@/utils/navigator'
 
 import { DocumentStatus, WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
 import { getDocumentList, getWatchOverDetail } from '@/service'
+import { Option } from '@/types'
+import { Role } from '@/constants/user'
+
+import userInfoStore from '@/store/userInfo'
 
 import './index.less'
 
+// TODO: 社工及以上可以看见跟进记录，以及修改跟进记录
+
 const render = value => <FormContent>{value}</FormContent>
+const renderNormalOrAbnormal = (value: number) => {
+  const options: Option[] = [{ id: 1, name: '正常' }, { id: 2, name: '异常' }]
+  return render(options.find(item => item.id === +value)?.name)
+};
 const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[]): FormConfigItem[] => [
   { key: 'date', render: (value) => <Banner>观护日期: {value}</Banner> },
   { key: 'user_id', render: (value) => render(elders.find(item => String(item.id) === String(value))?.name || '-') },
-  { key: 'health_situation', label: '身体情况', render, },
+  { key: 'health_situation', label: '身体情况', render: renderNormalOrAbnormal, },
   ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [
     {
       key: 'health_situation_reason',
@@ -33,7 +43,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
   {
     key: 'daily_diet',
     label: '饮食情况',
-    render,
+    render: renderNormalOrAbnormal,
   },
   ...(data.daily_diet === WatchOverSituationStatus.ABNORMAL ? [
     {
@@ -45,7 +55,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
   {
     key: 'emotion_situation',
     label: '情绪状态',
-    render,
+    render: renderNormalOrAbnormal,
   },
   ...(data.emotion_situation === WatchOverSituationStatus.ABNORMAL ? [
     {
@@ -57,7 +67,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
   {
     key: 'housing_security',
     label: '住房安全',
-    render,
+    render: renderNormalOrAbnormal,
   },
   ...(data.housing_security === WatchOverSituationStatus.ABNORMAL ? [
     {
@@ -69,7 +79,7 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
   {
     key: 'family_relation',
     label: '家庭关系',
-    render,
+    render: renderNormalOrAbnormal,
   },
   ...(data.family_relation === WatchOverSituationStatus.ABNORMAL ? [
     {
@@ -95,6 +105,7 @@ const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; na
 
 const WatchOverDetailPage: FC = () => {
   const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
+  const canOperate = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
 
   const [images, setImages] = useState<string[]>([]);
 
@@ -129,14 +140,18 @@ const WatchOverDetailPage: FC = () => {
       <Card>
         <Form config={formConfig} data={formData} />
       </Card>
-      <Card>
-        <View className='watch-over-photo-title'>照片</View>
-        <ImageList urls={images} />
-      </Card>
-      <Footer className='two-buttons-group'>
-        <Button onClick={handleEdit}>修改内容</Button>
-        <Button onClick={handleBack} type='primary'>返回</Button>
-      </Footer>
+      {images.length !== 0 && (
+        <Card>
+          <View className='watch-over-photo-title'>照片</View>
+          <ImageList urls={images} />
+        </Card>
+      )}
+      {canOperate && (
+        <Footer className='two-buttons-group'>
+          <Button onClick={handleEdit}>修改内容</Button>
+          <Button onClick={handleBack} type='primary'>返回</Button>
+        </Footer>
+      )}
     </Page>
   )
 }

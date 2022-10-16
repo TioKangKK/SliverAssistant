@@ -12,7 +12,7 @@ import { navigateTo } from '@/utils/navigator'
 
 import { getDocument, getWatchOverList } from '@/service'
 import { TDocument, WatchOverStatus } from '@/service/types'
-import { livingLevelToName } from '@/constants/user'
+import { livingLevelToName, Role } from '@/constants/user'
 
 import IconPolygon from '@/assets/polygon.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'
@@ -62,13 +62,13 @@ const WatchOverLogs: FC<{ docId: number | string }> = ({ docId }) => {
   const [date, setDate] = useState('')
 
   const getList = async () => {
-    const params = { id: docId, count: 100, offset: 0 } as { id: string | number; count: number; offset: number; query_time?: number; }
+    const params = { id: docId, count: 100, offset: 0, care_type: 2 } as { id: string | number; count: number; offset: number; query_time?: number; }
     if (date) { params.query_time = dayjs(date).valueOf()  }
     const { list } = await getWatchOverList(params)
     setData(list.map(item => ({
       id: item.id,
-      date: dayjs(item.care_time).format('YYYY-MM-DD'),
-      volunteer: item.name,
+      date: dayjs(item.care_time * 1000).format('YYYY-MM-DD'),
+      volunteer: '' + item.volunteer_id,
       status: item.care_status === WatchOverStatus.NORMAL ? '正常' : '异常',
       statusType: item.care_status,
       // statusDescription: item.XXX

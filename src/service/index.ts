@@ -35,7 +35,6 @@ export const downloadFile = async ({ fileID }: { fileID: string }) => {
   const res = await client.downloadFile({
     fileID,
   })
-  console.log(res)
   return res;
 }
 
@@ -343,11 +342,7 @@ export const createWatchOver = async (params) => {
     path: `${prefix}/care_record/create/`,
     method: 'POST',
     data: params,
-    header: {
-      'Content-Type': 'application/json',
-    }
   })
-  console.log('KTH: a', res?.data);
   return res?.data.data?.care_id as number | undefined
 }
 
@@ -369,13 +364,13 @@ export const getWatchOverList = async (params: {
   count: number;
   offset: number;
   query_time?: number;
+  care_type?: 1 | 2 | 3;
 }) => {
   const res = await call({
-    path: `${prefix}/care_record/list`,
+    path: `${prefix}/care_record/list/`,
     method: 'GET',
     data: params,
   })
-  console.log('KTH: a', res?.data);
   return {
     list: (res?.data.data?.list || []) as WatchOverListItem[],
     total: res?.data.data.total || 0,
@@ -384,7 +379,7 @@ export const getWatchOverList = async (params: {
 
 export const getWatchOverDetail = async (id: string | number): Promise<WatchOverDetail | undefined> => {
   const res = await call({
-    path: `${prefix}/care_record/list`,
+    path: `${prefix}/care_record/detail/`,
     method: 'GET',
     data: { id },
   })

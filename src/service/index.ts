@@ -137,10 +137,11 @@ export const getDashboard = async () => {
   return (res?.data.data.item_list || []) as DashboardItems
 }
 
-export const getVolunteerList = async () => {
+export const getVolunteerList = async (params: {[x: string]: any} = {}) => {
   const res = await call({
     path: `${prefix}/user/list/`,
-    method: 'GET'
+    method: 'GET',
+    data: params
   })
   return (res?.data.data.item_list || []) as Volunteer[]
 }

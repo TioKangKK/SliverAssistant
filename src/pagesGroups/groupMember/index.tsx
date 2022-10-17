@@ -22,7 +22,7 @@ import './index.less'
 
 const getList = async (type: GroupMemberType) => {
   if (type === GroupMemberType.VOLUNTEER) {
-    const list = await getVolunteerList()
+    const list = await getVolunteerList({ source_from: 'group' })
     return list.map(item => ({ id: item.id, name: item.name }))
   } else {
     const { list } = await getDocumentList({ params: { group_id: -1 } })

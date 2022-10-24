@@ -299,7 +299,7 @@ export const createGroup = async () => {
 
 export const deleteGroup = async ({ id }) => {
   const res = await call({
-    path: `${prefix}/group_info/${id}`,
+    path: `${prefix}/group_info/${id}/`,
     method: 'DELETE',
     header: {
       'Content-Type': 'application/json',

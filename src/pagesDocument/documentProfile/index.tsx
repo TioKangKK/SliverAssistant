@@ -63,15 +63,15 @@ const WatchOverLogs: FC<{ docId: number | string }> = ({ docId }) => {
 
   const getList = async () => {
     const params = { id: docId, count: 100, offset: 0, care_type: 2 } as { id: string | number; count: number; offset: number; query_time?: number; }
-    if (date) { params.query_time = dayjs(date).valueOf()  }
+    if (date) { params.query_time = dayjs(date).valueOf() / 1000  }
     const { list } = await getWatchOverList(params)
     setData(list.map(item => ({
       id: item.id,
       date: dayjs(item.care_time * 1000).format('YYYY-MM-DD'),
-      volunteer: '' + item.volunteer_id,
+      volunteer: item.volunteer_name,
       status: item.care_status === WatchOverStatus.NORMAL ? '正常' : '异常',
       statusType: item.care_status,
-      // statusDescription: item.XXX
+      statusDescription: item.reason,
     })))
   }
 

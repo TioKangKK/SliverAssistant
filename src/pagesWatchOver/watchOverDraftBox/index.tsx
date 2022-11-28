@@ -8,18 +8,17 @@ import EmptyBox from '@/components/EmptyBox'
 import ElderCard from '@/business/ElderCard'
 
 import { navigateTo } from '@/utils/navigator'
-import { DocumentStatus, WatchOverListItem } from '@/service/types'
-import { getDocumentList, getWatchOverList } from '@/service'
+import { TDocument } from '@/service/types'
+import { getWatchOverList } from '@/service'
 
 import './index.less'
 
 const WatchOverDraftBoxPage: FC = () => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<TDocument[]>([])
 
   const getData = async () => {
-    // TODO 仅保留草稿态
-    const { list: watchOverList } = await getWatchOverList({ count: 1000, offset: 0, care_type: 3 });
-    // const docList = (await getDocumentList({ params: {} })).list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation);
+    const { list: watchOverList } = await getWatchOverList({ count: 1000, offset: 0, care_type: 1 });
+    setData(watchOverList.map(item => ({ name: item.name || '-', id: item.id } as TDocument)));
   }
 
   useDidShow(async () => {

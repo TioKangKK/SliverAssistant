@@ -199,30 +199,39 @@ const WatchOverFormPage: FC = () => {
     return true
   }
   const handleSaveDraft = async () => {
-    if (!formData.user_id) {
+    const p = transformDataToParams(formConfig, formData, images);
+    if (!p.user_id) {
       showToast("选择老人后才能保存草稿");
       return
     }
-    if (!id.current) {
-      const newId = await createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.DRAFT })
-      if (newId) { id.current = newId }
-    } else {
-      updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.DRAFT })
+    try {
+      if (!id.current) {
+        const newId = await createWatchOver({ ...p, status: WatchOverDetailStatus.DRAFT })
+        if (newId) { id.current = newId }
+      } else {
+        await updateWatchOver({ id: id.current, ...p, status: WatchOverDetailStatus.DRAFT })
+      }
+      showToast('保存成功')
+    } catch (e) {
+      showToast(e.msg || e.errMsg);
     }
-    showToast('保存成功')
   }
   const handleCommit = async () => {
     if (!isValidate()) { return }
-    if (!id.current) {
-      const newId = await createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
-      if (newId) { id.current = newId }
-    } else {
-      await updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
+    try {
+      if (!id.current) {
+        const newId = await createWatchOver({ ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
+        if (newId) { id.current = newId }
+      } else {
+        await updateWatchOver({ id: id.current, ...transformDataToParams(formConfig, formData, images), status: WatchOverDetailStatus.SUBMITTED })
+      }
+      showToast('提交成功')
+      await delay(1000)
+      // 提交
+      navigateBack();
+    } catch (e) {
+      showToast(e.msg || e.errMsg);
     }
-    showToast('提交成功')
-    await delay(1000)
-    // 提交
-    navigateBack();
   }
   const handleGoToDraftBox = () => { navigateTo('/pagesWatchOver/watchOverDraftBox/index') }
 

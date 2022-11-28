@@ -349,14 +349,13 @@ export const createWatchOver = async (params) => {
 
 export const updateWatchOver = async (params) => {
   const res = await call({
-    path: `${prefix}/care_record/update`,
+    path: `${prefix}/care_record/update/`,
     method: 'POST',
     data: params,
     header: {
       'Content-Type': 'application/json',
     }
   })
-  console.log('KTH: a', res?.data);
   return res?.data.data
 }
 

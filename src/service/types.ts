@@ -156,9 +156,11 @@ export enum WatchOverStatus {
 export type WatchOverListItem = {
   id: number,     // 主键id
   volunteer_id: number, // 志愿者id
+  volunteer_name: string, // 志愿者id
   name: string,
   care_status: WatchOverStatus, // 关护状态 0-正常 1-异常
   care_time: number, // 观护时间，时间戳
+  reason: string,
 }
 
 export enum WatchOverSituationStatus {

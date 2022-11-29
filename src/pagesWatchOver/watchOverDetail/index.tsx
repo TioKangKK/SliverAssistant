@@ -13,8 +13,8 @@ import Page from '@/components/Page'
 
 import { navigateBack, navigateTo } from '@/utils/navigator'
 
-import { DocumentStatus, WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
-import { getDocumentList, getWatchOverDetail } from '@/service'
+import { WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
+import { getWatchOverDetail } from '@/service'
 import { Option } from '@/types'
 import { Role } from '@/constants/user'
 
@@ -29,9 +29,9 @@ const renderNormalOrAbnormal = (value: number) => {
   const options: Option[] = [{ id: 1, name: '正常' }, { id: 2, name: '异常' }]
   return render(options.find(item => item.id === +value)?.name)
 };
-const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[]): FormConfigItem[] => [
+const getFormConfig = (data: { [x: string]: any }): FormConfigItem[] => [
   { key: 'date', render: (value) => <Banner>观护日期: {value}</Banner> },
-  { key: 'user_id', render: (value) => render(elders.find(item => String(item.id) === String(value))?.name || '-') },
+  { key: 'elder_name', label: '姓名',  render },
   { key: 'health_situation', label: '身体情况', render: renderNormalOrAbnormal, },
   ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [
     {
@@ -90,14 +90,8 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
   ] : []),
 ]
 
-const getElders = async () => {
-  const { list } = await getDocumentList({ params: {} })
-  return list.filter(item => item.status === DocumentStatus.APPROVED && item.need_probation).map(item => ({ id: '' + item.id, name: item.name }))
-}
-
-const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; name:string }[]): { [x: string]: any } => {
+const transformDetailToData = (detail: WatchOverDetail): { [x: string]: any } => {
   const data: Partial<WatchOverDetail> = { ...detail }
-  data.user_id = elders.findIndex(item => String(item.id) === String(detail.user_id))
   delete data.pictures
   delete data.status
   return data
@@ -109,24 +103,20 @@ const WatchOverDetailPage: FC = () => {
 
   const [images, setImages] = useState<string[]>([]);
 
-  const [elders, setElders] = useState<{ id:string, name: string }[]>([]);
-
   const [formData, setFormData] = useState<{ [x: string]: any }>({
     // date: dayjs().format('YYYY-MM-DD')
   })
 
-  const formConfig = getFormConfig(formData, elders);
+  const formConfig = getFormConfig(formData);
 
   const init = async () => {
-    const elderList = await getElders()
-    setElders(elderList);
     if (params.id) {
       const detail = await getWatchOverDetail(params.id);
       if (!detail) return;
       if (detail.pictures) {
         setImages(detail.pictures.split(','))
       }
-      setFormData(transformDetailToData(detail, elderList))
+      setFormData(transformDetailToData(detail))
     }
   }
 

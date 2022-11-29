@@ -352,9 +352,6 @@ export const updateWatchOver = async (params) => {
     path: `${prefix}/care_record/update/`,
     method: 'POST',
     data: params,
-    header: {
-      'Content-Type': 'application/json',
-    }
   })
   return res?.data.data
 }

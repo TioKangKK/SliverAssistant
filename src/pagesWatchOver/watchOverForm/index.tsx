@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { View } from '@tarojs/components'
 import dayjs from 'dayjs'
-import { useRouter } from '@tarojs/taro'
+import { useRouter, setNavigationBarTitle } from '@tarojs/taro'
 
 import Button from '@/components/Button'
 import Card from '@/components/Card'
@@ -26,6 +26,9 @@ import { delay } from '@/utils'
 import { createWatchOver, getDocumentList, getWatchOverDetail, updateWatchOver } from '@/service'
 import { DocumentStatus, WatchOverDetail, WatchOverDetailStatus, WatchOverSituationStatus } from '@/service/types'
 
+import { Role } from '@/constants/user'
+import userInfoStore from '@/store/userInfo'
+
 import './index.less'
 
 const renderNormalOrAbnormal = (value: number, onChange: (number) => void) => {
@@ -33,7 +36,7 @@ const renderNormalOrAbnormal = (value: number, onChange: (number) => void) => {
   return <Radio options={options} value={value} onChange={onChange} />
 };
 
-const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[]): FormConfigItem[] => [
+const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[], canFollow: boolean): FormConfigItem[] => [
   {
     key: 'date',
     render: (value) => <Banner>观护日期: {value}</Banner>
@@ -64,6 +67,15 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
       checker: (value) => value ? null : { tip: '必填', msg: '身体情况异常记录未填写' }
     },
   ] : []),
+  ...(data.health_situation === WatchOverSituationStatus.ABNORMAL && canFollow ? [
+    {
+      key: 'health_situation_follow',
+      label: '身体情况跟进记录',
+      render: (value, onChange) => {
+        return <Textarea value={value} onChange={onChange} placeholder='请描述老人的跟进记录' />
+      },
+    }
+  ] : []),
   {
     key: 'daily_diet',
     label: '饮食情况',
@@ -79,6 +91,15 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
       },
       checker: (value) => value ? null : { tip: '必填', msg: '饮食情况异常记录未填写' }
     },
+  ] : []),
+  ...(data.daily_diet === WatchOverSituationStatus.ABNORMAL && canFollow ? [
+    {
+      key: 'daily_diet_follow',
+      label: '饮食情况跟进记录',
+      render: (value, onChange) => {
+        return <Textarea value={value} onChange={onChange} placeholder='请描述老人的跟进记录' />
+      },
+    }
   ] : []),
   {
     key: 'emotion_situation',
@@ -96,6 +117,15 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
       checker: (value) => value ? null : { tip: '必填', msg: '情绪情况异常记录未填写' }
     },
   ] : []),
+  ...(data.emotion_situation === WatchOverSituationStatus.ABNORMAL && canFollow ? [
+    {
+      key: 'emotion_situation_follow',
+      label: '情绪状态跟进记录',
+      render: (value, onChange) => {
+        return <Textarea value={value} onChange={onChange} placeholder='请描述老人的跟进记录' />
+      },
+    }
+  ] : []),
   {
     key: 'housing_security',
     label: '住房安全',
@@ -112,6 +142,15 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
       checker: (value) => value ? null : { tip: '必填', msg: '住房安全异常记录未填写' }
     },
   ] : []),
+  ...(data.housing_security === WatchOverSituationStatus.ABNORMAL && canFollow ? [
+    {
+      key: 'housing_security_follow',
+      label: '住房安全跟进记录',
+      render: (value, onChange) => {
+        return <Textarea value={value} onChange={onChange} placeholder='请描述老人的跟进记录' />
+      },
+    }
+  ] : []),
   {
     key: 'family_relation',
     label: '家庭关系',
@@ -127,6 +166,15 @@ const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: st
       },
       checker: (value) => value ? null : { tip: '必填', msg: '家庭关系异常记录未填写' }
     },
+  ] : []),
+  ...(data.family_relation === WatchOverSituationStatus.ABNORMAL && canFollow ? [
+    {
+      key: 'family_relation_follow',
+      label: '家庭关系跟进记录',
+      render: (value, onChange) => {
+        return <Textarea value={value} onChange={onChange} placeholder='请描述老人的跟进记录' />
+      },
+    }
   ] : []),
 ]
 
@@ -156,9 +204,10 @@ const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; na
 }
 
 const WatchOverFormPage: FC = () => {
-  const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
+  const { params } = useRouter<Required<{ id: string; type?: 'edit' }>>(); // 路由上的参数
   const id = useRef(+params.id)
-  
+  const canFollow = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
+
   const [images, setImages] = useState<string[]>([]);
 
   const [elders, setElders] = useState<{ id:string, name: string }[]>([]);
@@ -182,7 +231,13 @@ const WatchOverFormPage: FC = () => {
   }
 
   useEffect(() => { init() }, [])
-  const formConfig = getFormConfig(formData, elders);
+  useEffect(() => {
+    if (params.type === 'edit') {
+      setNavigationBarTitle({ title: '编辑观护' });
+    }
+  }, [params.type])
+
+  const formConfig = getFormConfig(formData, elders, canFollow);
   const handleFormChange = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value })
   }

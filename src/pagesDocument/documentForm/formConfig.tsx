@@ -385,7 +385,7 @@ export const specialFormConfig: FormConfigItem[] = [
 ]
 
 /**
- * TODO 自动计算规则
+ * 自动计算规则
  *  1级 -> 选择“行动不便，需要轮椅或卧床”
  *  2级 -> 独居 & 80及以上
  *  3级 -> 独居 & 65->80

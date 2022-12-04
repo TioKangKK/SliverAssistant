@@ -216,6 +216,7 @@ const WatchOverFormPage: FC = () => {
   const [formData, setFormData] = useState<{ [x: string]: any }>({
     care_time: dayjs().valueOf() / 1000
   })
+  const [canSaveDraft, setCanSaveDraft] = useState(true);
   
   const init = async () => {
     const elderList = await getElders()
@@ -225,6 +226,9 @@ const WatchOverFormPage: FC = () => {
       if (!detail) return;
       if (detail.pictures) {
         setImages(detail.pictures.split(','))
+      }
+      if (detail.status === WatchOverDetailStatus.SUBMITTED) {
+        setCanSaveDraft(false)
       }
       setFormData(transformDetailToData(detail, elderList))
     }
@@ -267,6 +271,9 @@ const WatchOverFormPage: FC = () => {
         await updateWatchOver({ id: id.current, ...p, status: WatchOverDetailStatus.DRAFT })
       }
       showToast('保存成功')
+      await delay(1000)
+      // 提交
+      navigateBack();
     } catch (e) {
       showToast(e.msg || e.errMsg);
     }
@@ -300,10 +307,16 @@ const WatchOverFormPage: FC = () => {
         <View className='image-upload-card-title'>点击拍照或上传照片</View>
         <ImageUploader files={images} onChange={(v) => setImages(v)} />
       </Card>
-      <Footer className='two-buttons-group'>
-        <Button onClick={handleSaveDraft} type='default'>保存草稿</Button>
-        <Button onClick={handleCommit} type='primary'>提交</Button>
-      </Footer>
+      {canSaveDraft ? (
+        <Footer className='two-buttons-group'>
+          <Button onClick={handleSaveDraft} type='default'>保存草稿</Button>
+          <Button onClick={handleCommit} type='primary'>提交</Button>
+        </Footer>
+      ) : (
+        <Footer>
+          <Button onClick={handleCommit} type='primary'>修改</Button>
+        </Footer>
+      )}
     </Page>
   )
 }

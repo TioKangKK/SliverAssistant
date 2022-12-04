@@ -14,7 +14,7 @@ import './index.less'
 const VolunteerListPage: FC = () => {
   const [volunteers, setVolunteers] = useState<Volunteer[]>([])
   useDidShow(async () => {
-    const list = await getVolunteerList()
+    const list = await getVolunteerList({ limit: 100, offset: 0 })
     setVolunteers(list)
   })
 

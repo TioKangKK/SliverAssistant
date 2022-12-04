@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { View } from '@tarojs/components'
 
 import Card from '@/components/Card'
@@ -11,7 +11,7 @@ import { Option } from '@/types'
 
 import { WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
 import { Role } from '@/constants/user'
-import { useRouter } from '@tarojs/taro'
+import { useDidShow, useRouter } from '@tarojs/taro'
 import { getWatchOverDetail } from '@/service'
 import Footer from '@/components/Footer'
 import { navigateTo } from '@/utils/navigator'
@@ -152,7 +152,7 @@ const WatchOverDetailPage: FC = () => {
     }
   }
 
-  useEffect(() => { init() }, [])
+  useDidShow(() => { init() })
 
   const handleEdit = () => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${params.id}&type=edit`)
 

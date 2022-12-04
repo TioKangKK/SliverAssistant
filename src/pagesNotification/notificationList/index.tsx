@@ -74,8 +74,7 @@ const NotificationListPage: FC = () => {
       const id = detail.doc_id
       navigateTo(`/pagesNotification/notificationDocument/index?id=${id}`)
     } else if (noticeType === NoticeType.SubmitRiskCare) {
-      // ..
-      const id = detail.user_id
+      const id = detail.card_id
       navigateTo(`/pagesNotification/notificationWatchOver/index?id=${id}`)
     }
   }

@@ -23,6 +23,7 @@ export type NoticeItem = {
     user_id: number,
     text: string,
     doc_id: number,
+    card_id: number,
   },
   id: number
   notice_type: NoticeType,

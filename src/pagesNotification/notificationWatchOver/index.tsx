@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { View } from '@tarojs/components'
 
 import Card from '@/components/Card'
@@ -7,49 +7,169 @@ import FormContent from '@/components/Displays/FormContent'
 import ImageList from '@/components/Displays/ImageList'
 import Form, { FormConfigItem } from '@/components/Form'
 import Page from '@/components/Page'
+import { Option } from '@/types'
+
+import { WatchOverDetail, WatchOverSituationStatus } from '@/service/types'
+import { Role } from '@/constants/user'
+import { useRouter } from '@tarojs/taro'
+import { getWatchOverDetail } from '@/service'
+import Footer from '@/components/Footer'
+import { navigateTo } from '@/utils/navigator'
+import userInfoStore from '@/store/userInfo'
+import dayjs from 'dayjs'
+import Button from '@/components/Button'
 
 import './index.less'
 
 const render = value => <FormContent>{value}</FormContent>
-const getFormConfig = (data: { [x: string]: any }): FormConfigItem[] => [
-  { key: 'date', render: (value) => <Banner>观护日期: {value}</Banner> },
-  { key: 'name', label: '姓名', render, },
-  { key: 'health', label: '身体情况', render },
-  ...(data.health === 0 ? [
-    { key: 'healthAbnormal', label: '身体情况异常记录', render },
-    { key: 'healthFollowUp', label: '身体情况跟进记录', render }
+const renderNormalOrAbnormal = (value: number) => {
+  const options: Option[] = [{ id: 1, name: '正常' }, { id: 2, name: '异常' }]
+  return render(options.find(item => item.id === +value)?.name)
+};
+const getFormConfig = (data: { [x: string]: any }, canOperate: boolean): FormConfigItem[] => [
+  { key: 'care_time', render: (value) => value && <Banner>观护日期: {dayjs(value * 1000).format('YYYY-MM-DD')}</Banner> },
+  { key: 'elder_name', label: '姓名',  render },
+  { key: 'health_situation', label: '身体情况', render: renderNormalOrAbnormal, },
+  ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'health_situation_reason',
+      label: '身体情况异常记录',
+      render,
+    },
   ] : []),
-  { key: 'diet', label: '饮食情况', render, },
-  ...(data.diet === 0 ? [
-    { key: 'dietAbnormal', label: '饮食情况异常记录', render, },
-    { key: 'dietFollowUp', label: '饮食情况跟进记录', render }
+  ...(data.health_situation_follow && canOperate ? [
+    {
+      key: 'health_situation_follow',
+      label: '身体情况跟进记录',
+      render,
+    }
+  ] : []),
+  {
+    key: 'daily_diet',
+    label: '饮食情况',
+    render: renderNormalOrAbnormal,
+  },
+  ...(data.daily_diet === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'daily_diet_reason',
+      label: '饮食情况异常记录',
+      render,
+    },
+  ] : []),
+  ...(data.daily_diet_follow && canOperate ? [
+    {
+      key: 'daily_diet_follow',
+      label: '饮食情况跟进记录',
+      render,
+    }
+  ] : []),
+  {
+    key: 'emotion_situation',
+    label: '情绪状态',
+    render: renderNormalOrAbnormal,
+  },
+  ...(data.emotion_situation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'emotion_situation_reason',
+      label: '情绪状态异常记录',
+      render,
+    },
+  ] : []),
+  ...(data.emotion_situation_follow && canOperate ? [
+    {
+      key: 'emotion_situation_follow',
+      label: '情绪状态跟进记录',
+      render,
+    }
+  ] : []),
+  {
+    key: 'housing_security',
+    label: '住房安全',
+    render: renderNormalOrAbnormal,
+  },
+  ...(data.housing_security === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'housing_security_reason',
+      label: '住房安全异常记录',
+      render,
+    },
+  ] : []),
+  ...(data.housing_security_follow && canOperate ? [
+    {
+      key: 'housing_security_follow',
+      label: '住房安全跟进记录',
+      render,
+    }
+  ] : []),
+  {
+    key: 'family_relation',
+    label: '家庭关系',
+    render: renderNormalOrAbnormal,
+  },
+  ...(data.family_relation === WatchOverSituationStatus.ABNORMAL ? [
+    {
+      key: 'family_relation_reason',
+      label: '家庭关系异常记录',
+      render,
+    },
+  ] : []),
+  ...(data.family_relation_follow && canOperate ? [
+    {
+      key: 'family_relation_follow',
+      label: '家庭关系跟进记录',
+      render,
+    }
   ] : []),
 ]
 
-const image = 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132'
-const mockData = {
-  id: 1,
-  date: '2022-06-06',
-  name: '康康康',
-  health: 1,
-  diet: 0,
-  dietAbnormal: '???',
-  dietFollowUp: '???',
-  images: new Array(5).fill(image)
+const transformDetailToData = (detail: WatchOverDetail): { [x: string]: any } => {
+  const data: Partial<WatchOverDetail> = { ...detail }
+  delete data.pictures
+  delete data.status
+  return data
 }
 
 const WatchOverDetailPage: FC = () => {
-  const formConfig = getFormConfig(mockData)
+  const { params } = useRouter<Required<{ id: string }>>(); // 路由上的参数
+  const canOperate = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
+
+  const [images, setImages] = useState<string[]>([]);
+  const [formData, setFormData] = useState<{ [x: string]: any }>({
+    // date: dayjs().format('YYYY-MM-DD')
+  })
+
+  const formConfig = getFormConfig(formData, canOperate)
+
+  const init = async () => {
+    console.log(params.id)
+    if (params.id) {
+      const detail = await getWatchOverDetail(params.id);
+      if (!detail) return;
+      if (detail.pictures) {
+        setImages(detail.pictures.split(','))
+      }
+      setFormData(transformDetailToData(detail))
+    }
+  }
+
+  useEffect(() => { init() }, [])
+
+  const handleEdit = () => navigateTo(`/pagesWatchOver/watchOverForm/index?id=${params.id}&type=edit`)
 
   return (
     <Page>
       <Card>
-        <Form config={formConfig} data={mockData} />
+        <Form config={formConfig} data={formData} />
       </Card>
       <Card>
         <View className='watch-over-photo-title'>照片</View>
-        <ImageList urls={mockData.images} />
+        <ImageList urls={images} />
       </Card>
+      {canOperate && (
+        <Footer>
+          <Button onClick={handleEdit}>跟进</Button>
+        </Footer>
+      )}
     </Page>
   )
 }

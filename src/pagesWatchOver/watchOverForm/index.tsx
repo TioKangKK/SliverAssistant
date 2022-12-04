@@ -38,8 +38,8 @@ const renderNormalOrAbnormal = (value: number, onChange: (number) => void) => {
 
 const getFormConfig = (data: { [x: string]: any }, elders: {id: string, name: string}[], canFollow: boolean): FormConfigItem[] => [
   {
-    key: 'date',
-    render: (value) => <Banner>观护日期: {value}</Banner>
+    key: 'care_time',
+    render: (value) => value && <Banner>观护日期: {dayjs(value * 1000).format('YYYY-MM-DD')}</Banner>
   },
   {
     key: 'user_id',
@@ -206,7 +206,7 @@ const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; na
 const WatchOverFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string; type?: 'edit' }>>(); // 路由上的参数
   const id = useRef(+params.id)
-  const canFollow = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role'))
+  const canFollow = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role')) && Boolean(id.current);
 
   const [images, setImages] = useState<string[]>([]);
 
@@ -214,7 +214,7 @@ const WatchOverFormPage: FC = () => {
 
   const [showTip, setShowTip] = useState(false);
   const [formData, setFormData] = useState<{ [x: string]: any }>({
-    date: dayjs().format('YYYY-MM-DD')
+    care_time: dayjs().valueOf() / 1000
   })
   
   const init = async () => {

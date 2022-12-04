@@ -19,6 +19,7 @@ import { Option } from '@/types'
 import { Role } from '@/constants/user'
 
 import userInfoStore from '@/store/userInfo'
+import dayjs from 'dayjs'
 
 import './index.less'
 
@@ -30,7 +31,7 @@ const renderNormalOrAbnormal = (value: number) => {
   return render(options.find(item => item.id === +value)?.name)
 };
 const getFormConfig = (data: { [x: string]: any }, canOperate: boolean): FormConfigItem[] => [
-  { key: 'date', render: (value) => <Banner>观护日期: {value}</Banner> },
+  { key: 'care_time', render: (value) => value && <Banner>观护日期: {dayjs(value * 1000).format('YYYY-MM-DD')}</Banner> },
   { key: 'elder_name', label: '姓名',  render },
   { key: 'health_situation', label: '身体情况', render: renderNormalOrAbnormal, },
   ...(data.health_situation === WatchOverSituationStatus.ABNORMAL ? [

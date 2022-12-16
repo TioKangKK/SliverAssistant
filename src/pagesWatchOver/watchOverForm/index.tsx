@@ -206,7 +206,7 @@ const transformDetailToData = (detail: WatchOverDetail, elders: { id: string; na
 const WatchOverFormPage: FC = () => {
   const { params } = useRouter<Required<{ id: string; type?: 'edit' }>>(); // 路由上的参数
   const id = useRef(+params.id)
-  const canFollow = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role')) && Boolean(id.current);
+  const canFollow = [Role.SocialWorker, Role.SuperManager].includes(userInfoStore.get('role')) && Boolean(id.current) && params.type === 'edit';
 
   const [images, setImages] = useState<string[]>([]);
 

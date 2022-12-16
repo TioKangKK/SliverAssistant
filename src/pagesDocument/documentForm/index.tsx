@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react'
-import { useDidShow, useRouter } from '@tarojs/taro'
+import { useDidShow, useRouter, showLoading, hideLoading } from '@tarojs/taro'
 
 import Page from '@/components/Page'
 
@@ -164,6 +164,7 @@ const DocumentFormPage: FC = () => {
       }
     }
   }
+  const committing = useRef(false);
   const handleCommit = async (v: {[x: string]: any}) => {
     setData(v);
 
@@ -175,11 +176,21 @@ const DocumentFormPage: FC = () => {
       return;
     }
 
-    await handleSaveDraft(v, false) // 先保存草稿
-    await operateDocument({ id: id.current, op: DocumentOperate.SUBMIT });
-    showToast('成功提交')
-    await delay(1000);
-    navigateTo(`/pagesDocument/documentProfile/index?id=${id.current}`)
+    if (committing.current) return;
+    committing.current = true;
+    try {
+      showLoading({ title: '正在提交' });
+      await handleSaveDraft(v, false) // 先保存草稿
+      await operateDocument({ id: id.current, op: DocumentOperate.SUBMIT });
+      showToast('成功提交')
+      await delay(1000);
+      hideLoading();
+      navigateTo(`/pagesDocument/documentProfile/index?id=${id.current}`)
+    } catch (e) {
+      showToast('提交失败')
+    } finally {
+      committing.current = false
+    }
   }
 
   const getData = async () => {

@@ -25,7 +25,7 @@ const DocumentProfileCard: FC<{ info: TDocument }> = ({ info }) => {
   return (
     <Card className='document-profile-card'>
       <Button onClick={handleCheckDoc} className='document-profile-card-btn'>查看档案 &gt;</Button>
-      <Image className='document-profile-card-avatar' src={info.individual_info.photo_uris[0]} />
+      <Image className='document-profile-card-avatar' src={info.individual_info.photo_uris?.[0]} />
       <View className='document-profile-card-basic'>
         <View className='document-profile-card-basic-1'>
           <View className='document-profile-card-name'>{info.name}</View>

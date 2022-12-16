@@ -67,16 +67,20 @@ const ElderCard: FC<Props> = ({ info, extra, selected, canDownload, onSelect, on
             </View>
           </View>
         </View>
-        <View className='elder-card-footer'>
-          {info.need_probation ? (
-            <>
-              <View className='elder-card-footer-item'>观护志愿者: {info.volunteer_id}</View>
-              <View className='elder-card-footer-item'>观护日期: {info.updated_at}</View>
-            </>
-          ) : (
-            <View className='elder-card-footer-item'>不需要观护</View>
-          )}
-        </View>
+        {
+          info.need_probation !== undefined && (
+            <View className='elder-card-footer'>
+              {info.need_probation ? (
+                <>
+                  <View className='elder-card-footer-item'>观护志愿者: {info.volunteer_id}</View>
+                  <View className='elder-card-footer-item'>观护日期: {info.updated_at?.slice(0,10) || '-'}</View>
+                </>
+              ) : (
+                <View className='elder-card-footer-item'>不需要观护</View>
+              )}
+            </View>
+          )
+        }
       </View>
       
     </Card>

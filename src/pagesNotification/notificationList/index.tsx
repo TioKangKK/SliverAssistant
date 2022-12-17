@@ -86,7 +86,7 @@ const NotificationListPage: FC = () => {
           <NotificationItem
             key={item.id}
             text={item.detail.text}
-            createTime={dayjs(item.create_time).format('YYYY-MM-DD hh:mm:ss')}
+            createTime={dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss')}
             onClick={() => handleClick(item.detail, item.notice_type)}
           />
         ))}

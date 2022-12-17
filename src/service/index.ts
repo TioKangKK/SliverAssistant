@@ -69,10 +69,10 @@ const pageMap = {
   dashboard: '/pages/main/index',
   pending_approve: '/pagesPersonal/registerResult/index',
 }
-export const login = async ({ cloudId }: { cloudId: string }) => {
+export const login = async ({ cloudId, orgId }: { cloudId: string; orgId: string | number; }) => {
   const loginInfo = await call({ 
     path: `${prefix}/login/wx/`,
-    data: { cloud_id: cloudId }
+    data: { cloud_id: cloudId, org_id: orgId }
   })
   if (loginInfo === null) { return }
   const cookie = loginInfo.header['set-cookie']

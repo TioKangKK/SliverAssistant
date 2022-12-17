@@ -12,7 +12,7 @@ import { navigateTo } from '@/utils/navigator'
 
 import { getDocument, getWatchOverList } from '@/service'
 import { TDocument, WatchOverStatus } from '@/service/types'
-import { livingLevelToName, Role } from '@/constants/user'
+import { livingLevelToName } from '@/constants/user'
 
 import IconPolygon from '@/assets/polygon.svg'
 import IconArrowRight from '@/assets/arrow_right.svg'

@@ -1,13 +1,16 @@
-import { FC } from 'react'
-import { View } from '@tarojs/components'
+import { FC, useState } from 'react'
+import { Image, Picker, View } from '@tarojs/components'
 
 import Button from "@/components/Button"
 import Card from "@/components/Card"
 import PageWithoutTopBar from "@/components/PageWithoutTopBar"
+import { orgList } from '@/constants/org'
 
 import { navigateTo } from '@/utils/navigator'
 
 import { login } from '@/service'
+
+import IconPolygon from '@/assets/polygon.svg'
 
 import './index.less'
 
@@ -35,14 +38,22 @@ const RegisterEntry: FC = () => {
 }
 
 const LoginPage: FC = () => {
+  const [org, setOrg] = useState(1);
+
   const handleGetPhoneNumber = async (e) => {
     const cloudID = e.detail.cloudID
-    await login({ cloudId: cloudID })
+    await login({ cloudId: cloudID, orgId: orgList[org].id })
   }
 
   return (
     <PageWithoutTopBar>
-      <Card>
+      <Card style={{ position: 'relative' }}>
+        <Picker mode='selector' range={orgList.map(item => item.name)} value={org} onChange={(e) => setOrg(e.detail.value as number)}>
+          <View className='org-selector'>
+            <View>{orgList[org].name || '选择所属机构'}</View>
+            <Image className='icon-polygon' src={IconPolygon} />
+          </View>
+        </Picker>
         <LoginPageTitle />
         <Button
           openType='getPhoneNumber'

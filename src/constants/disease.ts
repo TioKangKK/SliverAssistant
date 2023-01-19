@@ -67,7 +67,7 @@ const diseaseConfig = [
     children: [
       '糖尿病',
       '营养缺乏病',
-      '通风',
+      '痛风',
       '骨质疏松',
     ]
   },

@@ -8,6 +8,8 @@ export default defineAppConfig({
       root: "pagesPersonal",
       pages: [
         "login/index",
+        "privacyPolicy/index",
+        "serviceAgreement/index",
         "register/index",
         "registerResult/index",
         "addSocialWorker/index",
